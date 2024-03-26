@@ -226,6 +226,20 @@ files = [
 ]
 
 [[package]]
+name = "eval-type-backport"
+version = "0.1.3"
+description = "Like `typing._eval_type`, but lets older Python versions use newer typing features."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "eval_type_backport-0.1.3-py3-none-any.whl", hash = "sha256:519d2a993b3da286df9f90e17f503f66435106ad870cf26620c5720e2158ddf2"},
+    {file = "eval_type_backport-0.1.3.tar.gz", hash = "sha256:d83ee225331dfa009493cec1f3608a71550b515ee4749abe78da14e3c5e314f5"},
+]
+
+[package.extras]
+tests = ["pytest"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.0"
 description = "Backport of PEP 654 (exception groups)"
@@ -1564,4 +1578,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9"
-content-hash = "53a0649f9e8d6dbd9e5467db810525c84ece4b92b0e447975eebc4696f05cdae"
+content-hash = "d63d2fb5279a254c7fe62afac19955ef27e44bef9fa004c08f6574cded48fc9d"
