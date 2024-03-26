@@ -1,0 +1,1 @@
+::: pynyaa._enums.NyaaCategory
