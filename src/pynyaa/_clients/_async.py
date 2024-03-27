@@ -22,10 +22,12 @@ class AsyncNyaa:
         Parameters
         ----------
         base_url : str, optional
-            The base URL of Nyaa. Default is "https://nyaa.si".
+            The base URL of Nyaa. Default is `https://nyaa.si`.
+            This is only used when a Nyaa ID is passed.
+            If a full URL is passed then this gets ignored and the base_url is parsed from the given URL instead.
         cache : bool, optional
-            Whether to enable caching. Default is True.
-            This will cache a page upon it's first request and then use the cached results
+            Whether to enable caching. Default is `True`.
+            This will cache the page upon it's first request and then use the cached result
             for any subsequent requests for the same page.
             This helps in avoiding [HTTP 429 Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) but
             do note some fields like seeders, leechers, and completed are constantly changing and thus caching would
