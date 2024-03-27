@@ -14,7 +14,7 @@ class ParentModel(BaseModel):
     All models ahead will inherit from this.
     """
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    model_config = ConfigDict(arbitrary_types_allowed=True, frozen=True)
 
 
 class Submitter(ParentModel):
@@ -31,7 +31,7 @@ class Submitter(ParentModel):
 
 
 class NyaaTorrentPage(ParentModel):
-    """Nyaa's torrent page"""
+    """Nyaa's torrent page."""
 
     id: int
     """Nyaa ID of the torrent (`https://nyaa.si/view/{id}`)."""

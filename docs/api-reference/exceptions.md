@@ -2,7 +2,7 @@
     `pynyaa` only provides a single exception of its own (`HTMLParsingError`).
     The rest are simply re-exports from 
     [`httpx`](https://www.python-httpx.org/exceptions/) and 
-    [`pydantic`](https://docs.pydantic.dev/latest/api/pydantic_core/#pydantic_core.ValidationError) for convenience
+    [`pydantic`](https://docs.pydantic.dev/latest/api/pydantic_core/#pydantic_core.ValidationError) for convenience.
 
 ::: pynyaa._exceptions.HTMLParsingError
 ::: pynyaa._exceptions.CloseError

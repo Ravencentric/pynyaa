@@ -1,5 +1,5 @@
 !!! note
-    `pynyaa` didn't need any custom types beyond what came out of the box in [`pydantic`](https://docs.pydantic.dev/latest/) and [`torf`](https://torf.readthedocs.io/en/latest/), so it just re-exports the ones that are used:
+    `pynyaa` didn't need any custom types beyond what came out of the box in [`pydantic`](https://docs.pydantic.dev/latest/) and [`torf`](https://torf.readthedocs.io/en/latest/), so it just re-exports the ones that are used for convenience:
 
     - [AnyUrl](https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.AnyUrl)
     - [HttpUrl](https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.HttpUrl)

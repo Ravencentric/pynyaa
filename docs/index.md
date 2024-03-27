@@ -23,11 +23,12 @@
 
 ## About
 
-I needed to parse details out of nyaa torrent pages for one of my personal projects so I initially wrote a little module to do just that but then decided it'll probably be useful as an independent library so here we are.
+I needed to parse the details out of nyaa torrent pages for one of my personal projects so I initially wrote a little module to do just that but then decided it'll probably be useful as an independent library so here we are.
 
 Some features:
 
 - Supports both sync and async.
+- Supports caching.
 - Provides easy access to every field except comments (comments are useless).
 - Parses both the nyaa page itself and it's accompanying `.torrent` file.
 
