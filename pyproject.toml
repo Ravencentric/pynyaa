@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pynyaa"
-version = "0.1.0"
+version = "0.1.1"
 description = "Turn nyaa.si torrent pages into neat Python objects"
 authors = ["Raventric <78981416+Ravencentric@users.noreply.github.com>"]
 license = "Unlicense"
@@ -26,7 +26,7 @@ httpx = ">=0.27.0"
 pydantic = ">=2.6.4"
 beautifulsoup4 = ">=4.12.3"
 lxml = ">=5.1.0"
-hishel = ">=0.0.24"
+hishel = ">=0.0.25"
 torf = ">=4.2.6"
 typing-extensions = ">=4.10.0"
 strenum = { version = ">=0.4.15", python = "<3.11" }
