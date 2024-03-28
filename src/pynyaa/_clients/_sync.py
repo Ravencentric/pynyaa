@@ -3,8 +3,8 @@ from __future__ import annotations
 from io import BytesIO
 from typing import Any
 
-import hishel
 from bs4 import BeautifulSoup
+from hishel import CacheClient, FileStorage
 from pydantic import validate_call
 from pydantic_core import Url
 from torf import Torrent
@@ -12,6 +12,7 @@ from torf import Torrent
 from .._exceptions import HTMLParsingError
 from .._models import NyaaTorrentPage
 from .._types import HTTPXClientKwargs
+from .._utils import _get_user_cache_path
 
 
 class Nyaa:
@@ -191,7 +192,7 @@ class Nyaa:
             host = Url(page).host
             self.base_url = f"https://{host}" if host is not None else "https://nyaa.si"
 
-        with hishel.CacheClient(**self.kwargs) as client:
+        with CacheClient(storage=FileStorage(base_path=_get_user_cache_path()), **self.kwargs) as client:
             extensions = {"force_cache": self.cache, "cache_disabled": not self.cache}
             nyaa = client.get(url, extensions=extensions).raise_for_status()
 
