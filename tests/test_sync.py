@@ -70,5 +70,5 @@ def test_nyaa_banned_and_trusted() -> None:
 
 def test_nyaa_empty_desc_info() -> None:
     nyaa = client.get("https://nyaa.si/view/1586776")
-    assert nyaa.information == "No information."
-    assert nyaa.description == "#### No description."
+    assert nyaa.information is None
+    assert nyaa.description is None

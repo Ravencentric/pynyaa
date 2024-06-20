@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import AnyUrl, BaseModel, ConfigDict, HttpUrl
+from pydantic import AnyUrl, BaseModel, ConfigDict, HttpUrl, field_validator
 from torf import Torrent
 
 from ._enums import NyaaCategory
@@ -51,7 +51,7 @@ class NyaaTorrentPage(ParentModel):
     submitter: Submitter
     """User who submitted the torrent."""
 
-    information: str
+    information: str | None
     """Information about the torrent."""
 
     seeders: int
@@ -78,7 +78,7 @@ class NyaaTorrentPage(ParentModel):
     This is a current limitation that I don't know how to work around.
     """
 
-    description: str
+    description: str | None
     """Torrent description."""
 
     torrent_file: HttpUrl
@@ -101,6 +101,28 @@ class NyaaTorrentPage(ParentModel):
     A [`torf.Torrent`](https://torf.readthedocs.io/en/latest/#torf.Torrent) object 
     representing the data stored in the `.torrent` file.
     """
+
+    @field_validator("information")
+    @classmethod
+    def replace_empty_info_with_none(cls, information: str) -> str | None:
+        """
+        If the information field is empty, Nyaa replaces it with a placeholder value.
+        This replaces said placeholder value with `None`.
+        """
+        if information == "No information.":
+            return None
+        return information
+
+    @field_validator("description")
+    @classmethod
+    def replace_empty_desc_with_none(cls, description: str) -> str | None:
+        """
+        If the description field is empty, Nyaa replaces it with a placeholder value.
+        This replaces said placeholder value with `None`.
+        """
+        if description == "#### No description.":
+            return None
+        return description
 
 
 __all__ = [
