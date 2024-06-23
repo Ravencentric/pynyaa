@@ -7,6 +7,11 @@ from torf import Torrent
 
 from ._enums import NyaaCategory
 
+__all__ = (
+    "Submitter",
+    "NyaaTorrentPage",
+)
+
 
 class ParentModel(BaseModel):
     """
@@ -124,8 +129,3 @@ class NyaaTorrentPage(ParentModel):
             return None
         return description
 
-
-__all__ = [
-    "Submitter",
-    "NyaaTorrentPage",
-]

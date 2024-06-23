@@ -13,4 +13,4 @@ if sys.version_info >= (3, 10):
 else:
     import importlib_metadata as metadata
 
-__all__ = ["metadata", "StrEnum"]
+__all__ = ("metadata", "StrEnum")

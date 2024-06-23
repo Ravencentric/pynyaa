@@ -9,7 +9,7 @@ from ._version import Version, _get_version
 __version__ = _get_version()
 __version_tuple__ = Version(*tuple(map(int, __version__.split("."))))
 
-__all__ = [
+__all__ = (
     # Clients
     "AsyncNyaa",
     "Nyaa",
@@ -20,4 +20,4 @@ __all__ = [
     # Exceptions
     "HTTPStatusError",
     "ValidationError",
-]
+)
