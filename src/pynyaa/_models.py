@@ -5,7 +5,7 @@ from datetime import datetime
 from pydantic import AnyUrl, BaseModel, ConfigDict, HttpUrl, field_validator
 from torf import Torrent
 
-from ._enums import NyaaCategory
+from ._enums import Anime, Audio, Literature, LiveAction, Pictures, Software
 
 __all__ = (
     "Submitter",
@@ -47,7 +47,7 @@ class NyaaTorrentPage(ParentModel):
     title: str
     """Title of the torrent."""
 
-    category: NyaaCategory
+    category: Anime | Audio | Literature | LiveAction | Pictures | Software
     """Torrent category."""
 
     date: datetime
@@ -128,4 +128,6 @@ class NyaaTorrentPage(ParentModel):
         if description == "#### No description.":
             return None
         return description
+    
+
 
