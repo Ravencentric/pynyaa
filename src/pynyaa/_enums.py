@@ -1,9 +1,37 @@
 from ._compat import StrEnum
 
-__all__ = ("NyaaCategory",)
 
+class NyaaCategory(StrEnum):
+    """Nyaa categories"""
 
-class BaseStrEnumWithID(StrEnum):
+    ANIME = "Anime"
+    ANIME_MUSIC_VIDEO = "Anime - Anime Music Video"
+    ANIME_ENGLISH_TRANSLATED = "Anime - English-translated"
+    ANIME_NON_ENGLISH_TRANSLATED = "Anime - Non-English-translated"
+    ANIME_RAW = "Anime - Raw"
+
+    AUDIO = "Audio"
+    AUDIO_LOSSLESS = "Audio - Lossless"
+    AUDIO_LOSSY = "Audio - Lossy"
+
+    LITERATURE = "Literature"
+    LITERATURE_ENGLISH_TRANSLATED = "Literature - English-translated"
+    LITERATURE_NON_ENGLISH_TRANSLATED = "Literature - Non-English-translated"
+    LITERATURE_RAW = "Literature - Raw"
+
+    LIVE_ACTION = "Live Action"
+    LIVE_ACTION_ENGLISH_TRANSLATED = "Live Action - English-translated"
+    LIVE_ACTION_IDOL_PROMOTIONAL_VIDEO = "Live Action - Idol/Promotional Video"
+    LIVE_ACTION_NON_ENGLISH_TRANSLATED = "Live Action - Non-English-translated"
+    LIVE_ACTION_RAW = "Live Action - Raw"
+
+    PICTURES = "Pictures"
+    PICTURES_GRAPHICS = "Pictures - Graphics"
+    PICTURES_PHOTOS = "Pictures - Photos"
+
+    SOFTWARE = "Software"
+    SOFTWARE_APPLICATIONS = "Software - Applications"
+    SOFTWARE_GAMES = "Software - Games"
 
     @property
     def id(self) -> str:
@@ -51,55 +79,3 @@ class BaseStrEnumWithID(StrEnum):
         }
 
         return mapping.get(self.value, "0_0")
-
-
-class Anime(BaseStrEnumWithID):
-    ALL = "Anime"
-    MUSIC_VIDEO = "Anime - Anime Music Video"
-    ENGLISH_TRANSLATED = "Anime - English-translated"
-    NON_ENGLISH_TRANSLATED = "Anime - Non-English-translated"
-    RAW = "Anime - Raw"
-
-
-class Audio(BaseStrEnumWithID):
-    ALL = "Audio"
-    LOSSLESS = "Audio - Lossless"
-    LOSSY = "Audio - Lossy"
-
-
-class Literature(BaseStrEnumWithID):
-    ALL = "Literature"
-    ENGLISH_TRANSLATED = "Literature - English-translated"
-    NON_ENGLISH_TRANSLATED = "Literature - Non-English-translated"
-    RAW = "Literature - Raw"
-
-
-class LiveAction(BaseStrEnumWithID):
-    ALL = "Live Action"
-    ENGLISH_TRANSLATED = "Live Action - English-translated"
-    IDOL_PROMOTIONAL_VIDEO = "Live Action - Idol/Promotional Video"
-    NON_ENGLISH_TRANSLATED = "Live Action - Non-English-translated"
-    RAW = "Live Action - Raw"
-
-
-class Pictures(BaseStrEnumWithID):
-    ALL = "Pictures"
-    GRAPHICS = "Pictures - Graphics"
-    PHOTOS = "Pictures - Photos"
-
-
-class Software(BaseStrEnumWithID):
-    ALL = "Software"
-    APPLICATIONS = "Software - Applications"
-    GAMES = "Software - Games"
-
-
-class NyaaCategory:
-    """This class holds enums for all the available categories on Nyaa.si"""
-
-    ANIME = Anime
-    AUDIO = Audio
-    LITERATURE = Literature
-    LIVE_ACTION = LiveAction
-    PICTURES = Pictures
-    SOFTWARE = Software

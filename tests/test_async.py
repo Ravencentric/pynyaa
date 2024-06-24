@@ -34,7 +34,7 @@ Please read this short [playback guide](https://gist.github.com/motbob/754c24d5c
     assert nyaa.is_remake is False
     assert nyaa.is_trusted is True
     assert nyaa.description == description
-    assert nyaa.category == NyaaCategory.ANIME.ENGLISH_TRANSLATED
+    assert nyaa.category == NyaaCategory.ANIME_ENGLISH_TRANSLATED
 
 
 async def test_nyaa_trusted_and_remake() -> None:
@@ -57,7 +57,7 @@ async def test_nyaa_anon() -> None:
     assert nyaa.url.__str__() == "https://nyaa.si/view/1765655"
     assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
     assert nyaa.submitter.name == "Anonymous"
-    assert nyaa.category == NyaaCategory.LITERATURE.ENGLISH_TRANSLATED
+    assert nyaa.category == NyaaCategory.LITERATURE_ENGLISH_TRANSLATED
 
 
 async def test_nyaa_banned_and_trusted() -> None:
