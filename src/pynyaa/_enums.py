@@ -50,7 +50,7 @@ class BaseStrEnumWithID(StrEnum):
             "Software - Games": "6_2",
         }
 
-        return mapping[self.value]
+        return mapping.get(self.value, "0_0")
 
 
 class Anime(BaseStrEnumWithID):
@@ -95,7 +95,7 @@ class Software(BaseStrEnumWithID):
 
 
 class NyaaCategory:
-    """This class holds all the available categories on Nyaa.si"""
+    """This class holds enums for all the available categories on Nyaa.si"""
 
     ANIME = Anime
     AUDIO = Audio
