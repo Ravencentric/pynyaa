@@ -1,4 +1,4 @@
-from pynyaa import AsyncNyaa, NyaaCategory
+from pynyaa import AsyncNyaa, NyaaCategory, NyaaFilter
 
 headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
@@ -60,6 +60,15 @@ async def test_nyaa_anon() -> None:
     assert nyaa.category == NyaaCategory.LITERATURE_ENGLISH_TRANSLATED
 
 
+async def test_nyaa_banned() -> None:
+    # Thoughts and Prayers for our good friend succ_
+    nyaa = await client.get("https://nyaa.si/view/1422797")
+    assert nyaa.title == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC]"
+    assert nyaa.submitter.is_trusted is False
+    assert nyaa.submitter.is_banned is True
+    assert len(nyaa.torrent.files) == 20
+
+
 async def test_nyaa_banned_and_trusted() -> None:
     nyaa = await client.get("https://nyaa.si/view/884488")
     assert nyaa.title == "[FMA1394] Fullmetal Alchemist (2003) [Dual Audio] [US BD] (batch)"
@@ -72,3 +81,23 @@ async def test_nyaa_empty_desc_info() -> None:
     nyaa = await client.get("https://nyaa.si/view/1586776")
     assert nyaa.information is None
     assert nyaa.description is None
+
+
+async def test_nyaa_search() -> None:
+    zero = await client.search("akldlaskdjsaljdksd")
+    assert zero == tuple()
+
+    single = await client.search("smol shelter")
+    assert single[0].title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
+
+    single = await client.search('"[smol] Shelter (2016) (BD 1080p HEVC FLAC)"', limit=74)
+    assert single[0].title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
+
+    limited = await client.search("smol", limit=2)
+    assert len(limited) == 2
+
+    limited_not_trusted_literature = await client.search("smol", category=NyaaCategory.LITERATURE_ENGLISH_TRANSLATED, filter=NyaaFilter.TRUSTED_ONLY, limit=2)
+    assert len(limited_not_trusted_literature) == 0
+
+    limited_trusted_english = await client.search("mtbb", category=NyaaCategory.ANIME_ENGLISH_TRANSLATED, filter=NyaaFilter.NO_FILTER, limit=2)
+    assert len(limited_trusted_english) == 2

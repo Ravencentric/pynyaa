@@ -257,6 +257,9 @@ class AsyncNyaa:
             except KeyError:
                 return tuple()
 
+            if isinstance(items, dict): # RSS returns single results as a dict instead of a list
+                items = [items]
+
             if limit > len(items):
                 parsed = [await self.get(item["guid"]["#text"]) for item in items]
             else:

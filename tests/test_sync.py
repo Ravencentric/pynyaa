@@ -60,6 +60,14 @@ def test_nyaa_anon() -> None:
     assert nyaa.category == NyaaCategory.LITERATURE_ENGLISH_TRANSLATED
 
 
+def test_nyaa_banned() -> None:
+    nyaa = client.get("https://nyaa.si/view/1422797")
+    assert nyaa.title == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC]"
+    assert nyaa.submitter.is_trusted is False
+    assert nyaa.submitter.is_banned is True
+    assert len(nyaa.torrent.files) == 20
+
+
 def test_nyaa_banned_and_trusted() -> None:
     nyaa = client.get("https://nyaa.si/view/884488")
     assert nyaa.title == "[FMA1394] Fullmetal Alchemist (2003) [Dual Audio] [US BD] (batch)"

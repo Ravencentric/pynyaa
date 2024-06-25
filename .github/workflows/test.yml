@@ -55,8 +55,10 @@ jobs:
       - name: Install the project dependencies
         run: poetry install
 
-      - name: Run tests
-        run: poetry run pytest
+      - name: Run tests and generate coverage
+        run: |
+          poetry run coverage run -m pytest -vv
+          poetry run coverage xml
 
       - name: Build
         run: poetry build
@@ -69,3 +71,10 @@ jobs:
         with:
           name: pynyaa-${{ steps.version.outputs.version }}-${{ matrix.python-version }}-${{ matrix.os }}
           path: "dist/*"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          env_vars: OS,PYTHON
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
