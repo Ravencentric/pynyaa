@@ -246,7 +246,10 @@ class Nyaa:
                 items = xmltodict_parse(nyaa.text, encoding="utf-8")["rss"]["channel"]["item"]
             except KeyError:
                 return tuple()
-            
+
+            if isinstance(items, dict):  # RSS returns single results as a dict instead of a list
+                items = [items]
+
             if limit > len(items):
                 parsed = [self.get(item["guid"]["#text"]) for item in items]
             else:
