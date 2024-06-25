@@ -1,6 +1,4 @@
-from enum import IntEnum
-
-from ._compat import StrEnum
+from ._compat import IntEnum, StrEnum
 
 
 class NyaaCategory(StrEnum):

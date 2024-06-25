@@ -10,15 +10,19 @@
   </p>
 </p>
 
-<p align="center">
+<div align="center">
+
 <a href="https://pypi.org/project/pynyaa/"><img src="https://img.shields.io/pypi/v/pynyaa" alt="PyPI - Version" ></a>
 <img src="https://img.shields.io/pypi/pyversions/pynyaa" alt="PyPI - Python Version">
-<img src="https://img.shields.io/github/actions/workflow/status/Ravencentric/pynyaa/release.yml?" alt="GitHub Workflow Status">
-<img src="https://img.shields.io/github/actions/workflow/status/Ravencentric/pynyaa/test.yml?label=tests" alt="GitHub Workflow Status">
 <img src="https://img.shields.io/github/license/Ravencentric/pynyaa" alt="License">
 <img src="https://www.mypy-lang.org/static/mypy_badge.svg" alt="Checked with mypy">
 <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff">
-</p>
+
+<img src="https://img.shields.io/github/actions/workflow/status/Ravencentric/pynyaa/release.yml?" alt="GitHub Workflow Status">
+<img src="https://img.shields.io/github/actions/workflow/status/Ravencentric/pynyaa/test.yml?label=tests" alt="GitHub Workflow Status">
+<a href="https://codecov.io/gh/Ravencentric/pynyaa"><img src="https://codecov.io/gh/Ravencentric/pynyaa/graph/badge.svg?token=9LZ2I4LDYT"/></a>
+
+</div>
 
 ## Table Of Contents
 
