@@ -2,7 +2,7 @@ from httpx import HTTPStatusError
 from pydantic import ValidationError
 
 from ._clients import AsyncNyaa, Nyaa
-from ._enums import NyaaCategory
+from ._enums import NyaaCategory, NyaaFilter
 from ._models import NyaaTorrentPage
 from ._version import Version, _get_version
 
@@ -15,6 +15,7 @@ __all__ = (
     "Nyaa",
     # Enums
     "NyaaCategory",
+    "NyaaFilter",
     # Models
     "NyaaTorrentPage",
     # Exceptions

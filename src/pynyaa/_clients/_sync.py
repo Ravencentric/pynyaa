@@ -8,9 +8,12 @@ from hishel import CacheClient, FileStorage
 from pydantic import validate_call
 from pydantic_core import Url
 from torf import Torrent
+from xmltodict import parse as xmltodict_parse
 
+from .._enums import NyaaCategory, NyaaFilter
 from .._models import NyaaTorrentPage
 from .._utils import _get_user_cache_path
+from ._types import SearchLimit
 
 
 class Nyaa:
@@ -38,6 +41,8 @@ class Nyaa:
         self.base_url = base_url.strip("/")
         self.cache = cache
         self.kwargs = kwargs
+        self.extensions = {"force_cache": self.cache, "cache_disabled": not self.cache}
+        self.storage = FileStorage(base_path=_get_user_cache_path())
 
     def _parse_nyaa(self, html: str) -> dict[str, Any]:
         """
@@ -180,20 +185,71 @@ class Nyaa:
             host = Url(page).host
             self.base_url = f"https://{host}" if host is not None else "https://nyaa.si"
 
-        with CacheClient(storage=FileStorage(base_path=_get_user_cache_path()), **self.kwargs) as client:
-            extensions = {"force_cache": self.cache, "cache_disabled": not self.cache}
-            nyaa = client.get(url, extensions=extensions).raise_for_status()
-
+        with CacheClient(storage=self.storage, **self.kwargs) as client:
+            
+            nyaa = client.get(url, extensions=self.extensions).raise_for_status()
             info = self._parse_nyaa(nyaa.text)
 
             # Get the torrent file and convert it to a torf.Torrent object
-            torrent = Torrent.read_stream(
-                BytesIO(client.get(info["torrent_file"], extensions=extensions).raise_for_status().content)
+            torrent_file = client.get(info["torrent_file"], extensions=self.extensions).raise_for_status().content
+            torrent = Torrent.read_stream(BytesIO(torrent_file))
+
+            return NyaaTorrentPage(id=id, url=url, torrent=torrent, **info) # type: ignore
+    
+    @validate_call
+    def search(
+        self,
+        query: str,
+        *,
+        category: NyaaCategory | None = None,
+        filter: NyaaFilter | None = None,
+        limit: SearchLimit = 3,
+    ) -> tuple[NyaaTorrentPage, ...]:
+        """
+        Search for torrents on Nyaa.
+
+        Parameters
+        ----------
+        query : str
+            The search query string.
+        category : NyaaCategory, optional
+            The category to filter the search. If None, searches all categories.
+        filter : NyaaFilter, optional
+            The filter to apply to the search results. If None, no filter is applied.
+        limit : SearchLimit, optional
+            Maximum number of search results to retrieve. Defaults to 3. Maximum is 75.
+            Be cautious with this; higher limits increase the number of requests,
+            which may trigger rate limiting responses (HTTP 429) or get your IP banned entirely.
+
+        Raises
+        ------
+        ValidationError
+            Invalid input
+        HTTPStatusError
+            Nyaa returned a non 2xx response.
+
+        Returns
+        -------
+        tuple[NyaaTorrentPage, ...]
+            A tuple of NyaaTorrentPage objects representing the retrieved data.
+        """
+        with CacheClient(storage=self.storage, **self.kwargs) as client:
+            params = dict(
+                page="rss", 
+                f=filter if filter is not None else 0,
+                c=category.id if category is not None else "0_0",
+                q=query
             )
 
-            return NyaaTorrentPage(
-                id=id,  # type: ignore
-                url=url,  # type: ignore
-                torrent=torrent,
-                **info,
-            )
+            nyaa = client.get(self.base_url, params=params, extensions=self.extensions).raise_for_status() # type: ignore
+            try:
+                items = xmltodict_parse(nyaa.text, encoding="utf-8")["rss"]["channel"]["item"]
+            except KeyError:
+                return tuple()
+            
+            if limit > len(items):
+                parsed = [self.get(item["guid"]["#text"]) for item in items]
+            else:
+                parsed = [self.get(item["guid"]["#text"]) for item in items[:limit]]
+            
+            return tuple(parsed)
