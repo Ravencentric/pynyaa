@@ -1,4 +1,4 @@
-from pynyaa import Nyaa, NyaaCategory
+from pynyaa import Nyaa, NyaaCategory, NyaaFilter
 
 headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0"
@@ -80,3 +80,23 @@ def test_nyaa_empty_desc_info() -> None:
     nyaa = client.get("https://nyaa.si/view/1586776")
     assert nyaa.information is None
     assert nyaa.description is None
+
+
+def test_nyaa_search() -> None:
+    zero = client.search("akldlaskdjsaljdksd")
+    assert zero == tuple()
+
+    single = client.search("smol shelter")
+    assert single[0].title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
+
+    single = client.search('"[smol] Shelter (2016) (BD 1080p HEVC FLAC)"', limit=74)
+    assert single[0].title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
+
+    limited = client.search("smol", limit=2)
+    assert len(limited) == 2
+
+    limited_not_trusted_literature = client.search("smol", category=NyaaCategory.LITERATURE_ENGLISH_TRANSLATED, filter=NyaaFilter.TRUSTED_ONLY, limit=2)
+    assert len(limited_not_trusted_literature) == 0
+
+    limited_trusted_english = client.search("mtbb", category=NyaaCategory.ANIME_ENGLISH_TRANSLATED, filter=NyaaFilter.NO_FILTER, limit=2)
+    assert len(limited_trusted_english) == 2
