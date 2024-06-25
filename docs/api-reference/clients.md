@@ -3,6 +3,7 @@
         members: 
             - __init__
             - get
+            - search
 
 
 ::: pynyaa.AsyncNyaa
@@ -10,3 +11,4 @@
         members: 
             - __init__
             - get
+            - search
