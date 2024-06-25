@@ -2,7 +2,7 @@
 
 import sys
 
-if sys.version_info >= (3, 9):
+if sys.version_info >= (3, 11):
     from enum import IntEnum, StrEnum
 else:
     from enum import IntEnum as IntEnumBase
