@@ -1392,6 +1392,20 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "respx"
+version = "0.21.1"
+description = "A utility for mocking out the Python HTTPX and HTTP Core libraries."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "respx-0.21.1-py2.py3-none-any.whl", hash = "sha256:05f45de23f0c785862a2c92a3e173916e8ca88e4caad715dd5f68584d6053c20"},
+    {file = "respx-0.21.1.tar.gz", hash = "sha256:0bd7fe21bfaa52106caa1223ce61224cf30786985f17c63c5d71eff0307ee8af"},
+]
+
+[package.dependencies]
+httpx = ">=0.21.0"
+
+[[package]]
 name = "ruff"
 version = "0.3.4"
 description = "An extremely fast Python linter and code formatter, written in Rust."
@@ -1664,4 +1678,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9"
-content-hash = "4225d01b955e01b9d5c79e2868022c7154fc13c3638a8e221a8598e1ae9479b4"
+content-hash = "e5323edca7f035bbdf5a9f9c279921afd903ff98bdd9951bac86322d9c193fa2"
