@@ -7,12 +7,14 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+      - '.github\workflows\test.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'src/**'
       - 'tests/**'
+      - '.github\workflows\test.yml'
   workflow_dispatch:
 
 defaults:
