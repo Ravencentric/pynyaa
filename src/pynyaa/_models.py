@@ -29,6 +29,21 @@ class Submitter(ParentModel):
     is_banned: bool
     """Indicates whether the user is banned or not."""
 
+    def __eq__(self, other: object) -> bool:
+        """
+        Implements equality method.
+        Two Submitter(s) are equal if they both point to the same URL.
+        """
+        if not isinstance(other, Submitter):
+            return NotImplemented
+        return self.url == other.url
+
+    def __hash__(self) -> int:
+        """
+        Makes Submitter hashable.
+        """
+        return self.url.__hash__()
+
 
 class NyaaTorrentPage(ParentModel):
     """Nyaa's torrent page."""
@@ -123,6 +138,18 @@ class NyaaTorrentPage(ParentModel):
         if description == "#### No description.":
             return None
         return description
-    
 
+    def __eq__(self, other: object) -> bool:
+        """
+        Implements equality method.
+        Two NyaaTorrentPage(s) are equal if they both point to the same URL.
+        """
+        if not isinstance(other, NyaaTorrentPage):
+            return NotImplemented
+        return self.url == other.url
 
+    def __hash__(self) -> int:
+        """
+        Makes NyaaTorrentPage hashable.
+        """
+        return self.url.__hash__()
