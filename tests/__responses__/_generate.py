@@ -22,6 +22,7 @@ links = [
     "https://nyaa.si/view/1755409",
     "https://nyaa.si/view/1837736",
     "https://nyaa.si/view/1837420",
+    "https://nyaa.si/view/1838091",
 ]
 
 searches = {
