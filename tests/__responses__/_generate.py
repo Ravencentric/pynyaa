@@ -1,5 +1,5 @@
 """
-This file saves the httpx.Response object returned by the GET method.
+This script saves the httpx.Response object returned by the GET method.
 These saved responses are then used as mock responses in the tests.
 """
 
@@ -26,7 +26,7 @@ links = [
 ]
 
 searches = {
-    "akldlaskdjsaljdksd": "",
+    "akldlaskdjsaljdksd": "https://nyaa.si?page=rss&f=0&c=0_0&q=akldlaskdjsaljdksd",
     "smol shelter": "https://nyaa.si?page=rss&f=0&c=0_0&q=smol%20shelter",
     '"[smol] Shelter (2016) (BD 1080p HEVC FLAC)"': "https://nyaa.si?page=rss&f=0&c=0_0&q=%22%5Bsmol%5D%20Shelter%20%282016%29%20%28BD%201080p%20HEVC%20FLAC%29%22",
     "vodes": "https://nyaa.si?page=rss&f=2&c=3_1&q=vodes",
