@@ -119,7 +119,7 @@ class NyaaTorrentPage(ParentModel):
 
     @field_validator("information")
     @classmethod
-    def replace_empty_info_with_none(cls, information: str) -> str | None:
+    def _replace_empty_info_with_none(cls, information: str) -> str | None:
         """
         If the information field is empty, Nyaa replaces it with a placeholder value.
         This replaces said placeholder value with `None`.
@@ -130,7 +130,7 @@ class NyaaTorrentPage(ParentModel):
 
     @field_validator("description")
     @classmethod
-    def replace_empty_desc_with_none(cls, description: str) -> str | None:
+    def _replace_empty_desc_with_none(cls, description: str) -> str | None:
         """
         If the description field is empty, Nyaa replaces it with a placeholder value.
         This replaces said placeholder value with `None`.
