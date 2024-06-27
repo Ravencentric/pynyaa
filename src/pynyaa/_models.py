@@ -43,6 +43,18 @@ class Submitter(ParentModel):
         Makes Submitter hashable.
         """
         return self.url.__hash__()
+    
+    def __repr__(self) -> str:
+        """
+        This matches Submitter's repr with NyaaTorrentPage's for consistency.
+        """
+        return f"{self.__class__.__name__}(name='{self.name}', url='{self.url}', is_trusted={self.is_trusted}, is_banned={self.is_banned})"
+
+    def __str__(self) -> str:
+        """
+        Same as __repr___.
+        """
+        return repr(self)
 
 
 class NyaaTorrentPage(ParentModel):
@@ -117,27 +129,16 @@ class NyaaTorrentPage(ParentModel):
     representing the data stored in the `.torrent` file.
     """
 
-    @field_validator("information")
+    @field_validator("information", "description")
     @classmethod
-    def _replace_empty_info_with_none(cls, information: str) -> str | None:
+    def _replace_placeholder(cls, placeholder: str) -> str | None:
         """
-        If the information field is empty, Nyaa replaces it with a placeholder value.
+        If the information or description field is empty, Nyaa replaces it with a placeholder value.
         This replaces said placeholder value with `None`.
         """
-        if information == "No information.":
+        if placeholder in ("No information.", "#### No description."):
             return None
-        return information
-
-    @field_validator("description")
-    @classmethod
-    def _replace_empty_desc_with_none(cls, description: str) -> str | None:
-        """
-        If the description field is empty, Nyaa replaces it with a placeholder value.
-        This replaces said placeholder value with `None`.
-        """
-        if description == "#### No description.":
-            return None
-        return description
+        return placeholder
 
     def __eq__(self, other: object) -> bool:
         """
@@ -153,3 +154,16 @@ class NyaaTorrentPage(ParentModel):
         Makes NyaaTorrentPage hashable.
         """
         return self.url.__hash__()
+    
+    def __repr__(self) -> str:
+        """
+        A shorter human readable __repr__ because
+        the default one is too long.
+        """
+        return f"{self.__class__.__name__}(title='{self.title}', url='{self.url}', date='{self.date.isoformat()}', submitter='{self.submitter.name}')"
+
+    def __str__(self) -> str:
+        """
+        Same as __repr__
+        """
+        return repr(self)

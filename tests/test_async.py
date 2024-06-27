@@ -97,6 +97,24 @@ async def test_nyaa_banned_and_trusted(respx_mock) -> None:
     assert len(nyaa.torrent.files) == 51
 
 
+async def test_nyaa_empty_info(respx_mock) -> None:
+    respx_mock.get("https://nyaa.si/view/5819").mock(return_value=get_response(5819))
+    respx_mock.get("https://nyaa.si/download/5819.torrent").mock(return_value=get_torrent(5819))
+
+    nyaa = await client.get("https://nyaa.si/view/5819")
+    assert nyaa.information is None
+    assert nyaa.description is not None
+
+
+async def test_nyaa_empty_desc(respx_mock) -> None:
+    respx_mock.get("https://nyaa.si/view/76777").mock(return_value=get_response(76777))
+    respx_mock.get("https://nyaa.si/download/76777.torrent").mock(return_value=get_torrent(76777))
+
+    nyaa = await client.get("https://nyaa.si/view/76777")
+    assert nyaa.information is not None
+    assert nyaa.description is None
+
+
 async def test_nyaa_empty_desc_info(respx_mock) -> None:
     respx_mock.get("https://nyaa.si/view/1586776").mock(return_value=get_response(1586776))
     respx_mock.get("https://nyaa.si/download/1586776.torrent").mock(return_value=get_torrent(1586776))

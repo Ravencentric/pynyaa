@@ -17,7 +17,9 @@ links = [
     "https://nyaa.si/view/1755409",
     "https://nyaa.si/view/1765655",
     "https://nyaa.si/view/884488",
-    # Called within .searc()
+    "https://nyaa.si/view/5819",
+    "https://nyaa.si/view/76777",
+    # Called within .search()
     "https://nyaa.si/view/1755409",
     "https://nyaa.si/view/1755409",
     "https://nyaa.si/view/1837736",
