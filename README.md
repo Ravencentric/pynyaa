@@ -56,12 +56,11 @@ pip install pynyaa
       ```py
       from pynyaa import Nyaa
 
-      nyaa = Nyaa().get("https://nyaa.si/view/1693817")  # Full URL
-
-      # You can also pass any httpx.Client() keyword argument to Nyaa()
+      # You can pass any httpx.Client() keyword argument to Nyaa()
       headers = {"user-agent": "my-app/0.0.1"}
       client = Nyaa(headers=headers)
 
+      nyaa = client.get("https://nyaa.si/view/1693817")  # Full URL
       nyaa = client.get(1693817)  # Only the ID also works
 
       print(nyaa.title)
@@ -88,17 +87,17 @@ pip install pynyaa
       import asyncio
       from pynyaa import AsyncNyaa
 
-      nyaa = asyncio.run(AsyncNyaa().get("https://nyaa.si/view/1794334")) # Full URL
 
-      # You can also pass any httpx.AsyncClient() keyword argument to AsyncNyaa()
+      # You can pass any httpx.AsyncClient() keyword argument to AsyncNyaa()
       headers = {"user-agent": "my-app/0.0.1"}
       client = AsyncNyaa(headers=headers)
 
+      nyaa = asyncio.run(client.get("https://nyaa.si/view/1816037"))  # Full URL
       nyaa = asyncio.run(client.get(1794334)) # Only the ID also works
 
       print(nyaa.title)
       """
-      [MTBB] The Dangers in My Heart S2 - 12 (WEB 1080p) | Boku no Kokoro no Yabai Yatsu S2
+      [MTBB] K-ON! the Movie (2011) (BD 1080p)
       """
       print(nyaa.submitter)
       """
@@ -106,11 +105,11 @@ pip install pynyaa
       """
       print(nyaa.torrent.files)
       """
-      [File('[MTBB] The Dangers in My Heart S2 - 12 (WEB 1080p) [DE972341].mkv', size=758024360)]
+      [File('[MTBB] K-ON! the Movie (2011) (BD 1080p) [805DBF12].mkv', size=9697743037)]
       """
       print(nyaa.torrent.infohash)
       """
-      fccba66ad15e9d3918fb965654b93679a6c59936
+      31b11cc115eed6851277d6a3ca5e4ad119796526
       """
       ```
 
