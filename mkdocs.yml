@@ -57,6 +57,7 @@ plugins:
             show_symbol_type_toc: true
             signature_crossrefs: true
             merge_init_into_class: true
+            filters: ["!^_", "^__init__$"]
             preload_modules:
               - httpx
               - pydantic
