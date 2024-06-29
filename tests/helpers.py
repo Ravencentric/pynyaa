@@ -18,7 +18,8 @@ def get_response(nyaa_id: int) -> Response:
     with open(filename, "rb") as file:
         response: Response = pickle.load(file)
         return Response(status_code=response.status_code, content=response.content)
-    
+
+
 def get_torrent(nyaa_id: int) -> Response:
     """
     Grab the response object of the torrent corresponding to nyaa_id,
@@ -28,7 +29,8 @@ def get_torrent(nyaa_id: int) -> Response:
     with open(filename, "rb") as file:
         response: Response = pickle.load(file)
         return Response(status_code=response.status_code, content=response.content)
-    
+
+
 def get_search(query: str) -> Response:
     """
     Grab the response object of a search string,

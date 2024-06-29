@@ -8,7 +8,6 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from hishel import AsyncCacheClient, AsyncFileStorage
 from pydantic import validate_call
-from pydantic_core import Url
 from torf import Torrent
 from xmltodict import parse as xmltodict_parse
 
@@ -210,7 +209,7 @@ class AsyncNyaa:
             response.raise_for_status()
             torrent = Torrent.read_stream(BytesIO(response.content))
 
-            return NyaaTorrentPage(id=nyaaid, url=url, torrent=torrent, **info) # type: ignore
+            return NyaaTorrentPage(id=nyaaid, url=url, torrent=torrent, **info)  # type: ignore
 
     @validate_call
     async def search(

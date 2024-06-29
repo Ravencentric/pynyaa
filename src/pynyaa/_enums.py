@@ -80,6 +80,7 @@ class NyaaCategory(StrEnum):
 
 class NyaaFilter(IntEnum):
     """Nyaa search filters"""
+
     NO_FILTER = 0
     NO_REMAKES = 1
     TRUSTED_ONLY = 2

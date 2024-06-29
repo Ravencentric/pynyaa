@@ -8,7 +8,6 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from hishel import CacheClient, FileStorage
 from pydantic import validate_call
-from pydantic_core import Url
 from torf import Torrent
 from xmltodict import parse as xmltodict_parse
 

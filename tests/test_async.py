@@ -8,6 +8,7 @@ headers = {
 }
 client = AsyncNyaa(headers=headers)
 
+
 async def test_nyaa_default(respx_mock) -> None:
     respx_mock.get("https://nyaa.si/view/1755409").mock(return_value=get_response(1755409))
     respx_mock.get("https://nyaa.si/download/1755409.torrent").mock(return_value=get_torrent(1755409))
@@ -125,7 +126,9 @@ async def test_nyaa_empty_desc_info(respx_mock) -> None:
 
 
 async def test_nyaa_search_empty(respx_mock) -> None:
-    respx_mock.get("https://nyaa.si?page=rss&f=0&c=0_0&q=akldlaskdjsaljdksd").mock(return_value=get_search("akldlaskdjsaljdksd"))
+    respx_mock.get("https://nyaa.si?page=rss&f=0&c=0_0&q=akldlaskdjsaljdksd").mock(
+        return_value=get_search("akldlaskdjsaljdksd")
+    )
 
     zero = await client.search("akldlaskdjsaljdksd")
     assert zero == tuple()
@@ -133,7 +136,9 @@ async def test_nyaa_search_empty(respx_mock) -> None:
 
 async def test_search_single(respx_mock) -> None:
     respx_mock.get("https://nyaa.si?page=rss&f=0&c=0_0&q=smol%20shelter").mock(return_value=get_search("smol shelter"))
-    respx_mock.get("https://nyaa.si?page=rss&f=0&c=0_0&q=%22%5Bsmol%5D%20Shelter%20%282016%29%20%28BD%201080p%20HEVC%20FLAC%29%22").mock(return_value=get_search('"[smol] Shelter (2016) (BD 1080p HEVC FLAC)"'))
+    respx_mock.get(
+        "https://nyaa.si?page=rss&f=0&c=0_0&q=%22%5Bsmol%5D%20Shelter%20%282016%29%20%28BD%201080p%20HEVC%20FLAC%29%22"
+    ).mock(return_value=get_search('"[smol] Shelter (2016) (BD 1080p HEVC FLAC)"'))
     respx_mock.get("https://nyaa.si/view/1755409").mock(return_value=get_response(1755409))
     respx_mock.get("https://nyaa.si/download/1755409.torrent").mock(return_value=get_torrent(1755409))
 
@@ -141,12 +146,16 @@ async def test_search_single(respx_mock) -> None:
     assert single[0].title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
 
     single_with_limit = await client.search('"[smol] Shelter (2016) (BD 1080p HEVC FLAC)"', limit=74)
-    assert single_with_limit[0].title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
+    assert (
+        single_with_limit[0].title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
+    )
 
 
 async def test_search_0_results(respx_mock) -> None:
     respx_mock.get("https://nyaa.si?page=rss&f=2&c=3_1&q=vodes").mock(return_value=get_search("vodes"))
-    limited_not_trusted_literature = await client.search("vodes", category=NyaaCategory.LITERATURE_ENGLISH_TRANSLATED, filter=NyaaFilter.TRUSTED_ONLY, limit=2)
+    limited_not_trusted_literature = await client.search(
+        "vodes", category=NyaaCategory.LITERATURE_ENGLISH_TRANSLATED, filter=NyaaFilter.TRUSTED_ONLY, limit=2
+    )
     assert len(limited_not_trusted_literature) == 0
 
 
@@ -162,5 +171,7 @@ async def test_search_filtered(respx_mock) -> None:
     respx_mock.get("https://nyaa.si/view/1838091").mock(return_value=get_response(1838091))
     respx_mock.get("https://nyaa.si/download/1838091.torrent").mock(return_value=get_torrent(1838091))
 
-    limited_trusted_english = await client.search("mtbb", category=NyaaCategory.ANIME_ENGLISH_TRANSLATED, filter=NyaaFilter.NO_FILTER, limit=2)
+    limited_trusted_english = await client.search(
+        "mtbb", category=NyaaCategory.ANIME_ENGLISH_TRANSLATED, filter=NyaaFilter.NO_FILTER, limit=2
+    )
     assert len(limited_trusted_english) == 2

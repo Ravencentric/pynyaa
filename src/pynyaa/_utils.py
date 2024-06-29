@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from platformdirs import user_cache_path
 
-if TYPE_CHECKING: # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
     from pathlib import Path
 
 

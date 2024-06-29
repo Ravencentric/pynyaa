@@ -44,7 +44,7 @@ class Submitter(ParentModel):
         Makes Submitter hashable.
         """
         return self.url.__hash__()
-    
+
     def __repr__(self) -> str:
         """
         This matches Submitter's repr with NyaaTorrentPage's for consistency.
@@ -155,7 +155,7 @@ class NyaaTorrentPage(ParentModel):
         Makes NyaaTorrentPage hashable.
         """
         return self.url.__hash__()
-    
+
     def __repr__(self) -> str:
         """
         A shorter human readable __repr__ because

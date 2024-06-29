@@ -46,6 +46,7 @@ def save_pages() -> None:
         with open(filename, "wb") as file:
             pickle.dump(response, file=file)
 
+
 def save_torrents() -> None:
     for link in links:
         id = link.split("/")[-1]
@@ -58,9 +59,9 @@ def save_torrents() -> None:
         with open(filename, "wb") as file:
             pickle.dump(response, file=file)
 
+
 def save_searches() -> None:
     for query, url in searches.items():
-
         response = httpx.get(url)
         name = sha256(query.encode()).hexdigest()
         filename = Path(__file__).with_name(f"{name}.search")
