@@ -194,12 +194,10 @@ class Nyaa:
 
         if isinstance(page, int):
             url = urljoin(self._base_url, f"/view/{page}")
-            id = page
+            nyaaid = page
         else:
             url = page
-            id = page.split("/")[-1]  # type: ignore
-            host = Url(page).host
-            self._base_url = f"https://{host}/" if host is not None else "https://nyaa.si/"
+            nyaaid = page.split("/")[-1]  # type: ignore
 
         with CacheClient(storage=self._storage, **self._kwargs) as client:
             nyaa = client.get(url, extensions=self._extensions).raise_for_status()
@@ -209,7 +207,7 @@ class Nyaa:
             torrent_file = client.get(info["torrent_file"], extensions=self._extensions).raise_for_status().content
             torrent = Torrent.read_stream(BytesIO(torrent_file))
 
-            return NyaaTorrentPage(id=id, url=url, torrent=torrent, **info)  # type: ignore
+            return NyaaTorrentPage(id=nyaaid, url=url, torrent=torrent, **info)  # type: ignore
 
     @validate_call
     def search(

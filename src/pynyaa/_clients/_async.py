@@ -194,12 +194,10 @@ class AsyncNyaa:
 
         if isinstance(page, int):
             url = urljoin(self._base_url, f"/view/{page}")
-            id = page
+            nyaaid = page
         else:
             url = page
-            id = page.split("/")[-1]  # type: ignore
-            host = Url(page).host
-            self._base_url = f"https://{host}/" if host is not None else "https://nyaa.si/"
+            nyaaid = page.split("/")[-1]  # type: ignore
 
         async with AsyncCacheClient(storage=self._storage, **self._kwargs) as client:
             nyaa = await client.get(url, extensions=self._extensions)
@@ -212,12 +210,7 @@ class AsyncNyaa:
             response.raise_for_status()
             torrent = Torrent.read_stream(BytesIO(response.content))
 
-            return NyaaTorrentPage(
-                id=id,  # type: ignore
-                url=url,  # type: ignore
-                torrent=torrent,
-                **info,
-            )
+            return NyaaTorrentPage(id=nyaaid, url=url, torrent=torrent, **info) # type: ignore
 
     @validate_call
     async def search(
