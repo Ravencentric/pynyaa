@@ -14,7 +14,7 @@ from .._enums import NyaaCategory, NyaaFilter
 from .._models import NyaaTorrentPage
 from .._parser import parse_nyaa_torrent_page
 from .._types import SearchLimit
-from .._utils import _get_user_cache_path
+from .._utils import get_user_cache_path
 
 
 class Nyaa:
@@ -43,7 +43,7 @@ class Nyaa:
         self._cache = cache
         self._kwargs = kwargs
         self._extensions = {"force_cache": self._cache, "cache_disabled": not self._cache}
-        self._storage = FileStorage(base_path=_get_user_cache_path())
+        self._storage = FileStorage(base_path=get_user_cache_path())
 
     @property
     def base_url(self) -> str:
@@ -57,7 +57,7 @@ class Nyaa:
         """
         Path where cache files are stored.
         """
-        return _get_user_cache_path()
+        return get_user_cache_path()
 
 
 

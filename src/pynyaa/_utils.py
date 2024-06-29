@@ -8,5 +8,5 @@ if TYPE_CHECKING:  # pragma: no cover
     from pathlib import Path
 
 
-def _get_user_cache_path() -> Path:
+def get_user_cache_path() -> Path:
     return user_cache_path(appname="pynaa", ensure_exists=True)
