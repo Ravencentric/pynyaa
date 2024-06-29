@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from io import BytesIO
 from typing import Any
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 from hishel import CacheClient, FileStorage
@@ -18,14 +19,14 @@ from ._types import SearchLimit
 
 class Nyaa:
     @validate_call
-    def __init__(self, base_url: str = "https://nyaa.si", cache: bool = True, **kwargs: Any) -> None:
+    def __init__(self, base_url: str = "https://nyaa.si/", cache: bool = True, **kwargs: Any) -> None:
         """
         Nyaa client.
 
         Parameters
         ----------
         base_url : str, optional
-            The base URL of Nyaa. Default is `https://nyaa.si`.
+            The base URL of Nyaa. Default is `https://nyaa.si/`.
             This is only used when a Nyaa ID is passed.
             If a full URL is passed then this gets ignored and the base_url is parsed from the given URL instead.
         cache : bool, optional
@@ -39,7 +40,7 @@ class Nyaa:
             Keyword arguments to pass to the underlying [httpx.Client()](https://www.python-httpx.org/api/#client)
             used to make the GET request.
         """
-        self._base_url = base_url.strip("/")
+        self._base_url = base_url
         self._cache = cache
         self._kwargs = kwargs
         self._extensions = {"force_cache": self._cache, "cache_disabled": not self._cache}
@@ -91,7 +92,7 @@ class Nyaa:
         row_two = rows[1].find_all("div", class_="col-md-5")
         submitter = row_two[0].get_text().strip()
         if submitter.lower() != "anonymous":
-            submitter_url = f"{self._base_url}{row_two[0].find('a').get('href', f'/user/{submitter}')}"
+            submitter_url = urljoin(self._base_url, row_two[0].find('a').get('href', f'/user/{submitter}'))
             submitter_status = row_two[0].find("a").get("title", None)
 
             if submitter_status is not None:
@@ -125,7 +126,7 @@ class Nyaa:
 
         # ROW FOOTER
         footer = body.find("div", class_="panel-footer clearfix").find_all("a")  # type: ignore
-        torrent_file = f"{self._base_url}{footer[0]['href']}"
+        torrent_file = urljoin(self._base_url, footer[0]['href'])
         magnet = footer[1]["href"]
 
         # DESCRIPTION
@@ -178,13 +179,13 @@ class Nyaa:
         """
 
         if isinstance(page, int):
-            url = f"{self._base_url}/view/{page}"
+            url = urljoin(self._base_url, f"/view/{page}")
             id = page
         else:
             url = page
             id = page.split("/")[-1]  # type: ignore
             host = Url(page).host
-            self._base_url = f"https://{host}" if host is not None else "https://nyaa.si"
+            self._base_url = f"https://{host}/" if host is not None else "https://nyaa.si/"
 
         with CacheClient(storage=self._storage, **self._kwargs) as client:
             
