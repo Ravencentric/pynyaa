@@ -17,6 +17,7 @@ from ._types import SearchLimit
 
 
 class Nyaa:
+    @validate_call
     def __init__(self, base_url: str = "https://nyaa.si", cache: bool = True, **kwargs: Any) -> None:
         """
         Nyaa client.
