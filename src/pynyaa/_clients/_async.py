@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
+from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
 
@@ -27,8 +28,7 @@ class AsyncNyaa:
         ----------
         base_url : str, optional
             The base URL of Nyaa. Default is `https://nyaa.si/`.
-            This is only used when a Nyaa ID is passed.
-            If a full URL is passed then this gets ignored and the base_url is parsed from the given URL instead.
+            This is used for constructing the full URL from relative URLs.
         cache : bool, optional
             Whether to enable caching. Default is `True`.
             This will cache the page upon it's first request and then use the cached result
@@ -37,7 +37,7 @@ class AsyncNyaa:
             do note some fields like seeders, leechers, and completed are constantly changing and thus caching would
             mean you won't get the latest data on said fields.
         kwargs : Any, optional
-            Keyword arguments to pass to the underlying [httpx.AsyncClient()](https://www.python-httpx.org/api/#asyncclient)
+            Keyword arguments to pass to the underlying [`httpx.AsyncClient`](https://www.python-httpx.org/api/#asyncclient)
             used to make the GET request.
         """
         self._base_url = base_url
@@ -45,6 +45,20 @@ class AsyncNyaa:
         self._kwargs = kwargs
         self._extensions = {"force_cache": self._cache, "cache_disabled": not self._cache}
         self._storage = AsyncFileStorage(base_path=_get_user_cache_path())
+
+    @property
+    def base_url(self) -> str:
+        """
+        This is the base URL, used for constructing the full URL from relative URLs.
+        """
+        return self._base_url
+    
+    @property
+    def cache_path(self) -> Path:
+        """
+        Path where cache files are stored.
+        """
+        return _get_user_cache_path()
 
     async def _parse_nyaa(self, html: str) -> dict[str, Any]:
         """
