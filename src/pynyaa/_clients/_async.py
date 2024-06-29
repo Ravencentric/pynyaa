@@ -39,11 +39,11 @@ class AsyncNyaa:
             Keyword arguments to pass to the underlying [httpx.AsyncClient()](https://www.python-httpx.org/api/#asyncclient)
             used to make the GET request.
         """
-        self.base_url = base_url.strip("/")
-        self.cache = cache
-        self.kwargs = kwargs
-        self.extensions = {"force_cache": self.cache, "cache_disabled": not self.cache}
-        self.storage = AsyncFileStorage(base_path=_get_user_cache_path())
+        self._base_url = base_url.strip("/")
+        self._cache = cache
+        self._kwargs = kwargs
+        self._extensions = {"force_cache": self._cache, "cache_disabled": not self._cache}
+        self._storage = AsyncFileStorage(base_path=_get_user_cache_path())
 
     async def _parse_nyaa(self, html: str) -> dict[str, Any]:
         """
@@ -91,7 +91,7 @@ class AsyncNyaa:
         row_two = rows[1].find_all("div", class_="col-md-5")
         submitter = row_two[0].get_text().strip()
         if submitter.lower() != "anonymous":
-            submitter_url = f"{self.base_url}{row_two[0].find('a').get('href', f'/user/{submitter}')}"
+            submitter_url = f"{self._base_url}{row_two[0].find('a').get('href', f'/user/{submitter}')}"
             submitter_status = row_two[0].find("a").get("title", None)
 
             if submitter_status is not None:
@@ -108,7 +108,7 @@ class AsyncNyaa:
                     submitter_trusted = False
                     submitter_banned = False
         else:
-            submitter_url = self.base_url
+            submitter_url = self._base_url
             submitter_trusted = False
             submitter_banned = False
 
@@ -125,7 +125,7 @@ class AsyncNyaa:
 
         # ROW FOOTER
         footer = body.find("div", class_="panel-footer clearfix").find_all("a")  # type: ignore
-        torrent_file = f"{self.base_url}{footer[0]['href']}"
+        torrent_file = f"{self._base_url}{footer[0]['href']}"
         magnet = footer[1]["href"]
 
         # DESCRIPTION
@@ -178,23 +178,23 @@ class AsyncNyaa:
         """
 
         if isinstance(page, int):
-            url = f"{self.base_url}/view/{page}"
+            url = f"{self._base_url}/view/{page}"
             id = page
         else:
             url = page
             id = page.split("/")[-1]  # type: ignore
             host = Url(page).host
-            self.base_url = f"https://{host}" if host is not None else "https://nyaa.si"
+            self._base_url = f"https://{host}" if host is not None else "https://nyaa.si"
 
-        async with AsyncCacheClient(storage=self.storage, **self.kwargs) as client:
+        async with AsyncCacheClient(storage=self._storage, **self._kwargs) as client:
             
-            nyaa = await client.get(url, extensions=self.extensions)
+            nyaa = await client.get(url, extensions=self._extensions)
             nyaa.raise_for_status()
 
             info = await self._parse_nyaa(nyaa.text)
 
             # Get the torrent file and convert it to a torf.Torrent object
-            response = await client.get(info["torrent_file"], extensions=self.extensions)
+            response = await client.get(info["torrent_file"], extensions=self._extensions)
             response.raise_for_status()
             torrent = Torrent.read_stream(BytesIO(response.content))
 
@@ -242,7 +242,7 @@ class AsyncNyaa:
         tuple[NyaaTorrentPage, ...]
             A tuple of NyaaTorrentPage objects representing the retrieved data.
         """
-        async with AsyncCacheClient(storage=self.storage, **self.kwargs) as client:
+        async with AsyncCacheClient(storage=self._storage, **self._kwargs) as client:
             params = dict(
                 page="rss",
                 f=filter if filter is not None else 0,
@@ -250,7 +250,7 @@ class AsyncNyaa:
                 q=query,
             )
 
-            nyaa = await client.get(self.base_url, params=params, extensions=self.extensions) # type: ignore
+            nyaa = await client.get(self._base_url, params=params, extensions=self._extensions) # type: ignore
             nyaa.raise_for_status()
 
             try:

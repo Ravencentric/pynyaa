@@ -39,11 +39,11 @@ class Nyaa:
             Keyword arguments to pass to the underlying [httpx.Client()](https://www.python-httpx.org/api/#client)
             used to make the GET request.
         """
-        self.base_url = base_url.strip("/")
-        self.cache = cache
-        self.kwargs = kwargs
-        self.extensions = {"force_cache": self.cache, "cache_disabled": not self.cache}
-        self.storage = FileStorage(base_path=_get_user_cache_path())
+        self._base_url = base_url.strip("/")
+        self._cache = cache
+        self._kwargs = kwargs
+        self._extensions = {"force_cache": self._cache, "cache_disabled": not self._cache}
+        self._storage = FileStorage(base_path=_get_user_cache_path())
 
     def _parse_nyaa(self, html: str) -> dict[str, Any]:
         """
@@ -91,7 +91,7 @@ class Nyaa:
         row_two = rows[1].find_all("div", class_="col-md-5")
         submitter = row_two[0].get_text().strip()
         if submitter.lower() != "anonymous":
-            submitter_url = f"{self.base_url}{row_two[0].find('a').get('href', f'/user/{submitter}')}"
+            submitter_url = f"{self._base_url}{row_two[0].find('a').get('href', f'/user/{submitter}')}"
             submitter_status = row_two[0].find("a").get("title", None)
 
             if submitter_status is not None:
@@ -108,7 +108,7 @@ class Nyaa:
                     submitter_trusted = False
                     submitter_banned = False
         else:
-            submitter_url = self.base_url
+            submitter_url = self._base_url
             submitter_trusted = False
             submitter_banned = False
 
@@ -125,7 +125,7 @@ class Nyaa:
 
         # ROW FOOTER
         footer = body.find("div", class_="panel-footer clearfix").find_all("a")  # type: ignore
-        torrent_file = f"{self.base_url}{footer[0]['href']}"
+        torrent_file = f"{self._base_url}{footer[0]['href']}"
         magnet = footer[1]["href"]
 
         # DESCRIPTION
@@ -178,21 +178,21 @@ class Nyaa:
         """
 
         if isinstance(page, int):
-            url = f"{self.base_url}/view/{page}"
+            url = f"{self._base_url}/view/{page}"
             id = page
         else:
             url = page
             id = page.split("/")[-1]  # type: ignore
             host = Url(page).host
-            self.base_url = f"https://{host}" if host is not None else "https://nyaa.si"
+            self._base_url = f"https://{host}" if host is not None else "https://nyaa.si"
 
-        with CacheClient(storage=self.storage, **self.kwargs) as client:
+        with CacheClient(storage=self._storage, **self._kwargs) as client:
             
-            nyaa = client.get(url, extensions=self.extensions).raise_for_status()
+            nyaa = client.get(url, extensions=self._extensions).raise_for_status()
             info = self._parse_nyaa(nyaa.text)
 
             # Get the torrent file and convert it to a torf.Torrent object
-            torrent_file = client.get(info["torrent_file"], extensions=self.extensions).raise_for_status().content
+            torrent_file = client.get(info["torrent_file"], extensions=self._extensions).raise_for_status().content
             torrent = Torrent.read_stream(BytesIO(torrent_file))
 
             return NyaaTorrentPage(id=id, url=url, torrent=torrent, **info) # type: ignore
@@ -234,7 +234,7 @@ class Nyaa:
         tuple[NyaaTorrentPage, ...]
             A tuple of NyaaTorrentPage objects representing the retrieved data.
         """
-        with CacheClient(storage=self.storage, **self.kwargs) as client:
+        with CacheClient(storage=self._storage, **self._kwargs) as client:
             params = dict(
                 page="rss", 
                 f=filter if filter is not None else 0,
@@ -242,7 +242,7 @@ class Nyaa:
                 q=query
             )
 
-            nyaa = client.get(self.base_url, params=params, extensions=self.extensions).raise_for_status() # type: ignore
+            nyaa = client.get(self._base_url, params=params, extensions=self._extensions).raise_for_status() # type: ignore
             try:
                 items = xmltodict_parse(nyaa.text, encoding="utf-8")["rss"]["channel"]["item"]
             except KeyError:
