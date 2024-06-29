@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import AnyUrl, BaseModel, ConfigDict, HttpUrl, field_validator
+from pydantic import BaseModel, ConfigDict, HttpUrl, field_validator
 from torf import Torrent
 
 from ._enums import NyaaCategory
+from ._types import MagnetUrl
 
 
 class ParentModel(BaseModel):
@@ -111,7 +112,7 @@ class NyaaTorrentPage(ParentModel):
     torrent_file: HttpUrl
     """URL pointing to the `.torrent` file (`https://nyaa.si/download/123456.torrent`)"""
 
-    magnet: AnyUrl
+    magnet: MagnetUrl
     """
     Magnet link of the torrent. 
     

@@ -14,8 +14,8 @@ from xmltodict import parse as xmltodict_parse
 
 from .._enums import NyaaCategory, NyaaFilter
 from .._models import NyaaTorrentPage
+from .._types import SearchLimit
 from .._utils import _get_user_cache_path
-from ._types import SearchLimit
 
 
 class AsyncNyaa:
@@ -52,7 +52,7 @@ class AsyncNyaa:
         This is the base URL, used for constructing the full URL from relative URLs.
         """
         return self._base_url
-    
+
     @property
     def cache_path(self) -> Path:
         """
@@ -202,7 +202,6 @@ class AsyncNyaa:
             self._base_url = f"https://{host}/" if host is not None else "https://nyaa.si/"
 
         async with AsyncCacheClient(storage=self._storage, **self._kwargs) as client:
-            
             nyaa = await client.get(url, extensions=self._extensions)
             nyaa.raise_for_status()
 
@@ -265,7 +264,7 @@ class AsyncNyaa:
                 q=query,
             )
 
-            nyaa = await client.get(self._base_url, params=params, extensions=self._extensions) # type: ignore
+            nyaa = await client.get(self._base_url, params=params, extensions=self._extensions)  # type: ignore
             nyaa.raise_for_status()
 
             try:
@@ -273,7 +272,7 @@ class AsyncNyaa:
             except KeyError:
                 return tuple()
 
-            if isinstance(items, dict): # RSS returns single results as a dict instead of a list
+            if isinstance(items, dict):  # RSS returns single results as a dict instead of a list
                 items = [items]
 
             if limit > len(items):
