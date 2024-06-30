@@ -48,7 +48,7 @@ types-xmltodict = "^0.13.0.3"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^9.5.27"
-mkdocstrings = {extras = ["python"], version = "^0.24.0"}
+mkdocstrings = {extras = ["python"], version = "^0.25.1"}
 mkdocs-autorefs = "^1.0.1"
 
 [tool.pytest.ini_options]

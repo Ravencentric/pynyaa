@@ -20,7 +20,46 @@ class ParentModel(BaseModel):
 
 
 class Submitter(ParentModel):
-    """User who submitted the torrent."""
+    """
+    Model representing the user who submitted the torrent.
+
+    Features
+    --------
+    - Immutable
+    - Hashable
+    - Inherits from [`pydantic.BaseModel`][pydantic.BaseModel], so you get all of pydantic's fancy methods
+    - Supports equality checking (based on the URL)
+
+    Examples
+    --------
+
+    ```py
+    >>> a = Submitter(name="John", url="https://nyaa.si/user/john", is_trusted=True, is_banned=False)
+    >>> b = Submitter(name="John", url="https://nyaa.si/user/john", is_trusted=True, is_banned=False) # dupe
+    >>> c = Submitter(name="Jane", url="https://nyaa.si/user/jane", is_trusted=False, is_banned=False)
+
+    >>> print(a)
+    Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)
+
+    >>> a == b
+    True
+
+    >>> a == c
+    False
+
+    >>> set((a, b, c)) # dedupe
+    {
+        Submitter(name='Jane', url='https://nyaa.si/user/jane', is_trusted=False, is_banned=False),
+        Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)
+    }
+
+    >>> a.model_dump()
+    {'name': 'John', 'url': Url('https://nyaa.si/user/john'), 'is_trusted': True, 'is_banned': False}
+
+    >>> a.model_dump_json()
+    '{"name":"John","url":"https://nyaa.si/user/john","is_trusted":true,"is_banned":false}'
+    ```
+    """
 
     name: str
     """Username of the submitter."""
@@ -60,7 +99,113 @@ class Submitter(ParentModel):
 
 
 class NyaaTorrentPage(ParentModel):
-    """Nyaa's torrent page."""
+    """
+    Model representing Nyaa's torrent page.
+
+    Features
+    --------
+    - Immutable
+    - Hashable
+    - Inherits from [`pydantic.BaseModel`][pydantic.BaseModel], so you get all of pydantic's fancy methods
+    - Supports equality checking (based on the URL)
+
+    Examples
+    --------
+
+    ```py
+    >>> from pynyaa import Nyaa
+    >>> nyaa = Nyaa()
+    >>> a = nyaa.get(1839783)
+    >>> b = nyaa.get(1839783) # dupe
+    >>> c = nyaa.get(1839609)
+
+    >>> print(a)
+    NyaaTorrentPage(title='[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv', url='https://nyaa.si/view/1839783', category='Anime - English-translated', date='2024-06-30T10:32:46+00:00', submitter='subsplease')
+    >>> a == b
+    True
+
+    >>> a == c
+    False
+
+    >>> set((a, b, c)) # dedupe
+    {
+        NyaaTorrentPage(title='[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv', url='https://nyaa.si/view/1839783', category='Anime - English-translated', date='2024-06-30T10:32:46+00:00', submitter='subsplease'),
+        NyaaTorrentPage(title='[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv', url='https://nyaa.si/view/1839609', category='Anime - English-translated', date='2024-06-30T02:12:07+00:00', submitter='subsplease')
+    }
+
+    >>> a.model_dump()
+    {
+        "id": 1839783,
+        "url": Url("https://nyaa.si/view/1839783"),
+        "title": "[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv",
+        "category": NyaaCategory.ANIME_ENGLISH_TRANSLATED,
+        "date": datetime.datetime(2024, 6, 30, 10, 32, 46),
+        "submitter": {
+            "name": "subsplease",
+            "url": Url("https://nyaa.si/user/subsplease"),
+            "is_trusted": True,
+            "is_banned": False,
+        },
+        "information": "https://subsplease.org/",
+        "seeders": 1122,
+        "leechers": 421,
+        "completed": 1945,
+        "is_trusted": True,
+        "is_remake": False,
+        "description": "...",
+        "torrent_file": Url("https://nyaa.si/download/1839783.torrent"),
+        "magnet": Url("magnet:?xt=urn:btih:...&dn=..."),
+        "torrent": Torrent(
+            name="[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv",
+            trackers=[
+                ["http://nyaa.tracker.wf:7777/announce"],
+                ["wss://tracker.openwebtorrent.com"],
+                ["udp://open.stealth.si:80/announce"],
+            ],
+            comment="https://nyaa.si/view/1839783",
+            creation_date=datetime.datetime(2024, 6, 30, 16, 2, 46, tzinfo=TzInfo(UTC)),
+            created_by="NyaaV2",
+            piece_size=1048576,
+        ),
+    }
+
+    >>> a.model_dump_json()
+    {
+      "id": 1839783,
+      "url": "https://nyaa.si/view/1839783",
+      "title": "[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv",
+      "category": "Anime - English-translated",
+      "date": "2024-06-30T10:32:46Z",
+      "submitter": {
+        "name": "subsplease",
+        "url": "https://nyaa.si/user/subsplease",
+        "is_trusted": true,
+        "is_banned": false
+      },
+      "information": "https://subsplease.org/",
+      "seeders": 1122,
+      "leechers": 421,
+      "completed": 1945,
+      "is_trusted": true,
+      "is_remake": false,
+      "description": "...",
+      "torrent_file": "https://nyaa.si/download/1839783.torrent",
+      "magnet": "magnet:?xt=urn:btih:...&dn=...",
+      "torrent": {
+        "name": "[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv",
+        "trackers": [
+          ["http://nyaa.tracker.wf:7777/announce"],
+          ["wss://tracker.openwebtorrent.com"],
+          ["udp://open.stealth.si:80/announce"]
+        ],
+        "comment": "https://nyaa.si/view/1839783",
+        "creation_date": "2024-06-30T16:02:46",
+        "created_by": "NyaaV2",
+        "piece_size": 1048576
+      }
+    }
+    ```
+    """
 
     id: int
     """Nyaa ID of the torrent (`https://nyaa.si/view/{id}`)."""
