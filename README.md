@@ -48,74 +48,79 @@ pip install pynyaa
 ```
 
 ## Usage
+### API
+```py
+from pynyaa import Nyaa
 
-`pynyaa` offers two main classes:
+# You can pass any httpx.Client() keyword argument to Nyaa()
+headers = {"user-agent": "my-app/0.0.1"}
+client = Nyaa(headers=headers)
 
-1. `Nyaa()` - Synchronous class
+nyaa = client.get("https://nyaa.si/view/1693817")  # Full URL
+nyaa = client.get(1693817)  # Only the ID also works
 
-      ```py
-      from pynyaa import Nyaa
+print(nyaa.title)
+#> [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+print(nyaa.submitter)
+#> Submitter(name='pog42', url=Url('https://nyaa.si/user/pog42'), is_trusted=False, is_banned=False)
+print(nyaa.torrent.files)
+#> [File('Fate.stay.night.Heavens.Feel.I.Presage.Flower.2017.1080p.BluRay.Opus5.1.H.265-LYS1TH3A.mkv', size=12263052206)]
+print(nyaa.torrent.infohash)
+#> 6fdc0395a7fdde6ce3fb7f144b31f3cabdcbf537
 
-      # You can pass any httpx.Client() keyword argument to Nyaa()
-      headers = {"user-agent": "my-app/0.0.1"}
-      client = Nyaa(headers=headers)
+torrents = client.search("LYS1TH3A")
 
-      nyaa = client.get("https://nyaa.si/view/1693817")  # Full URL
-      nyaa = client.get(1693817)  # Only the ID also works
+for torrent in torrents:
+    print(torrent)
+    #> NyaaTorrentPage(title='[LYS1TH3A] Fate/Zero Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]', url='https://nyaa.si/view/1816742', category='Anime - English-translated', date='2024-05-09T23:06:45+00:00', submitter='Anonymous')
+    #> NyaaTorrentPage(title='[LYS1TH3A] Tamako Market Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]', url='https://nyaa.si/view/1693882', category='Anime - English-translated', date='2023-07-16T22:12:00+00:00', submitter='pog42')
+    #> NyaaTorrentPage(title='[LYS1TH3A] Tamako Love Story (2014) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]', url='https://nyaa.si/view/1693872', category='Anime - English-translated', date='2023-07-16T21:42:00+00:00', submitter='pog42')
+```
 
-      print(nyaa.title)
-      """
-      [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
-      """
-      print(nyaa.submitter)
-      """
-      Submitter(name='pog42', url=Url('https://nyaa.si/user/pog42'), is_trusted=False, is_banned=False)
-      """
-      print(nyaa.torrent.files)
-      """
-      [File('Fate.stay.night.Heavens.Feel.I.Presage.Flower.2017.1080p.BluRay.Opus5.1.H.265-LYS1TH3A.mkv', size=12263052206)]
-      """
-      print(nyaa.torrent.infohash)
-      """
-      6fdc0395a7fdde6ce3fb7f144b31f3cabdcbf537
-      """
-      ```
-
-2. `AsyncNyaa()` - Asynchronous class
-
-      ```py
-      import asyncio
-      from pynyaa import AsyncNyaa
-
-
-      # You can pass any httpx.AsyncClient() keyword argument to AsyncNyaa()
-      headers = {"user-agent": "my-app/0.0.1"}
-      client = AsyncNyaa(headers=headers)
-
-      nyaa = asyncio.run(client.get("https://nyaa.si/view/1816037"))  # Full URL
-      nyaa = asyncio.run(client.get(1794334)) # Only the ID also works
-
-      print(nyaa.title)
-      """
-      [MTBB] K-ON! the Movie (2011) (BD 1080p)
-      """
-      print(nyaa.submitter)
-      """
-      Submitter(name='motbob', url=Url('https://nyaa.si/user/motbob'), is_trusted=True, is_banned=False)
-      """
-      print(nyaa.torrent.files)
-      """
-      [File('[MTBB] K-ON! the Movie (2011) (BD 1080p) [805DBF12].mkv', size=9697743037)]
-      """
-      print(nyaa.torrent.infohash)
-      """
-      31b11cc115eed6851277d6a3ca5e4ad119796526
-      """
-      ```
+### CLI
+```shell
+$ pynyaa https://nyaa.si/view/1839609
+```
+```json
+{
+  "id": 1839609,
+  "url": "https://nyaa.si/view/1839609",
+  "title": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
+  "category": "Anime - English-translated",
+  "date": "2024-06-30T02:12:07Z",
+  "submitter": {
+    "name": "subsplease",
+    "url": "https://nyaa.si/user/subsplease",
+    "is_trusted": true,
+    "is_banned": false
+  },
+  "information": "https://subsplease.org/",
+  "seeders": 1998,
+  "leechers": 106,
+  "completed": 7736,
+  "is_trusted": true,
+  "is_remake": false,
+  "description": "...",
+  "torrent_file": "https://nyaa.si/download/1839609.torrent",
+  "magnet": "magnet:?xt=urn:btih:...&dn=...",
+  "torrent": {
+    "name": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
+    "trackers": [
+      ["http://nyaa.tracker.wf:7777/announce"],
+      ["wss://tracker.openwebtorrent.com"],
+      ["udp://open.stealth.si:80/announce"]
+    ],
+    "comment": "https://nyaa.si/view/1839609",
+    "creation_date": "2024-06-30T07:42:07",
+    "created_by": "NyaaV2",
+    "piece_size": 1048576
+  }
+}
+```
 
 # Docs
 
-Checkout the complete API Reference [here](https://ravencentric.github.io/pynyaa/).
+Checkout the complete documentation [here](https://ravencentric.github.io/pynyaa/).
 
 ## License
 

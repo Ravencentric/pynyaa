@@ -51,6 +51,9 @@ mkdocs-material = "^9.5.27"
 mkdocstrings = {extras = ["python"], version = "^0.25.1"}
 mkdocs-autorefs = "^1.0.1"
 
+[tool.poetry.scripts]
+pynyaa = "pynyaa.__main__:main"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 
