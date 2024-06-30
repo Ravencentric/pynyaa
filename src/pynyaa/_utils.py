@@ -9,4 +9,4 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 def get_user_cache_path() -> Path:
-    return user_cache_path(appname="pynaa", ensure_exists=True)
+    return user_cache_path(appname="pynyaa", ensure_exists=True).resolve()

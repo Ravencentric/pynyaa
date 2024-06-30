@@ -59,8 +59,6 @@ class Nyaa:
         """
         return get_user_cache_path()
 
-
-
     @validate_call
     def get(self, page: int | str) -> NyaaTorrentPage:
         """

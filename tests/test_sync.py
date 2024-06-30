@@ -1,4 +1,5 @@
 # type: ignore
+from platformdirs import user_cache_path
 from pynyaa import Nyaa, NyaaCategory, NyaaFilter
 
 from .helpers import get_response, get_search, get_torrent
@@ -7,6 +8,11 @@ headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0"
 }
 client = Nyaa(headers=headers)
+
+
+def test_properties() -> None:
+    assert client.base_url == "https://nyaa.si/"
+    assert client.cache_path == user_cache_path(appname="pynyaa").resolve()
 
 
 def test_nyaa_default(respx_mock) -> None:
