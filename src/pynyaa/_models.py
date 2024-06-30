@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, HttpUrl, field_validator
+from pydantic import BaseModel, ConfigDict, HttpUrl, field_serializer, field_validator
 from torf import Torrent
 
 from ._enums import NyaaCategory
@@ -130,6 +131,28 @@ class NyaaTorrentPage(ParentModel):
     representing the data stored in the `.torrent` file.
     """
 
+    @field_serializer("torrent", when_used="json")
+    def _serialize_torf_torrent(torrent: Torrent) -> dict[str, Any]:
+        """
+        JSON Serializer for torf.Torrent.
+        """
+        # Convert Trackers object into plain list
+        trackers = []
+        for tier in torrent.trackers:
+            tierlist = []
+            for url in tier:
+                tierlist.append(url)
+            trackers.append(tierlist)
+
+        return dict(
+            name=torrent.name,
+            trackers=trackers,
+            comment=torrent.comment,
+            creation_date=torrent.creation_date,
+            created_by=torrent.created_by,
+            piece_size=torrent.piece_size,
+        )
+
     @field_validator("information", "description")
     @classmethod
     def _replace_placeholder(cls, placeholder: str) -> str | None:
@@ -161,7 +184,7 @@ class NyaaTorrentPage(ParentModel):
         A shorter human readable __repr__ because
         the default one is too long.
         """
-        return f"{self.__class__.__name__}(title='{self.title}', url='{self.url}', date='{self.date.isoformat()}', submitter='{self.submitter.name}')"
+        return f"{self.__class__.__name__}(title='{self.title}', url='{self.url}', category='{self.category}', date='{self.date.isoformat()}', submitter='{self.submitter.name}')"
 
     def __str__(self) -> str:
         """
