@@ -8,12 +8,6 @@
 |----------------|-------------------------------------------------------|
 | `pynyaa <url>` | Fetches JSON representation of a Nyaa torrent page.   |
 
-### Arguments
-| Argument | Type  | Description                                    |
-|----------|-------|------------------------------------------------|
-| `<url>`  | `str` | Nyaa URL (format: `https://nyaa.si/view/...`). |
-
-
 ### Options
 | Option                | Short Form | Type        | Default | Description                           |
 |-----------------------|------------|-------------|---------|---------------------------------------|
