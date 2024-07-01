@@ -1,12 +1,12 @@
 # CLI
 
-`pynyaa` offers a very simple command-line interface. This is mostly meant for quickly getting the JSON representation of a torrent page.
+`pynyaa` offers a very simple command-line interface.
 
 ## Usage
 
-| Command        | Description                                           |
-|----------------|-------------------------------------------------------|
-| `pynyaa <url>` | Fetches JSON representation of a Nyaa torrent page.   |
+| Command        | Description                                              |
+|----------------|----------------------------------------------------------|
+| `pynyaa <url>` | Prints the JSON representation of a Nyaa torrent page.   |
 
 ### Options
 | Option                | Short Form | Type        | Default | Description                           |
