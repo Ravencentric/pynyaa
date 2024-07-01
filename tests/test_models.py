@@ -11,7 +11,7 @@ def test_submitter() -> None:
     c = Submitter(name="Jane", url="https://nyaa.si/user/jane", is_trusted=False, is_banned=False)
 
     assert a.__repr__() == "Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)"
-    assert a.__str__() == "Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)"
+    assert a.__str__() == "John"
 
     assert a == b
     assert a != c
@@ -84,10 +84,7 @@ def test_nyaa_torrent_page() -> None:
         page_a.__repr__()
         == "NyaaTorrentPage(title='title', url='https://nyaa.si/view/123456', category='Anime - English-translated', date='2024-06-30T00:00:00', submitter='John')"
     )
-    assert (
-        page_a.__str__()
-        == "NyaaTorrentPage(title='title', url='https://nyaa.si/view/123456', category='Anime - English-translated', date='2024-06-30T00:00:00', submitter='John')"
-    )
+    assert page_a.__str__() == "title"
 
     assert page_a == page_b
     assert page_a != page_c

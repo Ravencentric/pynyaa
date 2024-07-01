@@ -55,7 +55,7 @@ nyaa = client.get(1693817)  # Only the ID also works
 print(nyaa.title)
 #> [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
 print(nyaa.submitter)
-#> Submitter(name='pog42', url=Url('https://nyaa.si/user/pog42'), is_trusted=False, is_banned=False)
+#> pog42
 print(nyaa.torrent.files)
 #> [File('Fate.stay.night.Heavens.Feel.I.Presage.Flower.2017.1080p.BluRay.Opus5.1.H.265-LYS1TH3A.mkv', size=12263052206)]
 print(nyaa.torrent.infohash)
@@ -65,9 +65,9 @@ torrents = client.search("LYS1TH3A")
 
 for torrent in torrents:
     print(torrent)
-    #> NyaaTorrentPage(title='[LYS1TH3A] Fate/Zero Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]', url='https://nyaa.si/view/1816742', category='Anime - English-translated', date='2024-05-09T23:06:45+00:00', submitter='Anonymous')
-    #> NyaaTorrentPage(title='[LYS1TH3A] Tamako Market Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]', url='https://nyaa.si/view/1693882', category='Anime - English-translated', date='2023-07-16T22:12:00+00:00', submitter='pog42')
-    #> NyaaTorrentPage(title='[LYS1TH3A] Tamako Love Story (2014) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]', url='https://nyaa.si/view/1693872', category='Anime - English-translated', date='2023-07-16T21:42:00+00:00', submitter='pog42')
+    #> [LYS1TH3A] Fate/Zero Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+    #> [LYS1TH3A] Tamako Market Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+    #> [LYS1TH3A] Tamako Love Story (2014) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
 ```
 
 ### CLI

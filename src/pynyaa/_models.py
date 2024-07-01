@@ -39,6 +39,9 @@ class Submitter(ParentModel):
     >>> c = Submitter(name="Jane", url="https://nyaa.si/user/jane", is_trusted=False, is_banned=False)
 
     >>> print(a)
+    John
+
+    >>> print(repr(a))
     Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)
 
     >>> a == b
@@ -93,9 +96,9 @@ class Submitter(ParentModel):
 
     def __str__(self) -> str:
         """
-        Same as __repr___.
+        Stringify into something easily readable.
         """
-        return repr(self)
+        return self.name
 
 
 class NyaaTorrentPage(ParentModel):
@@ -120,7 +123,11 @@ class NyaaTorrentPage(ParentModel):
     >>> c = nyaa.get(1839609)
 
     >>> print(a)
+    [SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv
+
+    >>> print(repr(a))
     NyaaTorrentPage(title='[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv', url='https://nyaa.si/view/1839783', category='Anime - English-translated', date='2024-06-30T10:32:46+00:00', submitter='subsplease')
+
     >>> a == b
     True
 
@@ -333,6 +340,6 @@ class NyaaTorrentPage(ParentModel):
 
     def __str__(self) -> str:
         """
-        Same as __repr__
+        Stringify into something easily readable.
         """
-        return repr(self)
+        return self.title
