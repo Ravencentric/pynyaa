@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pynyaa"
-version = "0.2.0"
+version = "1.0.0"
 description = "Turn nyaa.si torrent pages into neat Python objects"
 authors = ["Raventric <78981416+Ravencentric@users.noreply.github.com>"]
 license = "Unlicense"
