@@ -4,6 +4,7 @@ from typing import Any
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
+from xmltodict import parse as xmltodict_parse
 
 
 def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
@@ -114,3 +115,35 @@ def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
         torrent_file=torrent_file,
         magnet=magnet,
     )
+
+
+def parse_nyaa_rss_page(xml: str, limit: int) -> tuple[str, ...]:
+    """
+    Parse the torrent links out of the RSS page
+
+    Parameters
+    ----------
+    xml : str
+        Nyaa's RSS XML data as a string
+    limit : str
+        Maximum number of links to parse out of the RSS page
+
+    Returns
+    -------
+    tuple[str, ...]
+        A tuple of torrent links
+    """
+    try:
+        items = xmltodict_parse(xml, encoding="utf-8")["rss"]["channel"]["item"]
+    except KeyError:
+        return tuple()
+
+    if isinstance(items, dict):  # RSS returns single results as a dict instead of a list
+        items = [items]
+
+    if limit > len(items):
+        parsed = [item["guid"]["#text"] for item in items]
+    else:
+        parsed = [item["guid"]["#text"] for item in items[:limit]]
+
+    return tuple(parsed)

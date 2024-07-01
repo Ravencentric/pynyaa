@@ -8,11 +8,10 @@ from urllib.parse import urljoin
 from hishel import CacheClient, FileStorage
 from pydantic import validate_call
 from torf import Torrent
-from xmltodict import parse as xmltodict_parse
 
 from .._enums import NyaaCategory, NyaaFilter
 from .._models import NyaaTorrentPage
-from .._parser import parse_nyaa_torrent_page
+from .._parser import parse_nyaa_rss_page, parse_nyaa_torrent_page
 from .._types import SearchLimit
 from .._utils import get_user_cache_path
 
@@ -147,17 +146,8 @@ class Nyaa:
             )
 
             nyaa = client.get(self._base_url, params=params, extensions=self._extensions).raise_for_status()  # type: ignore
-            try:
-                items = xmltodict_parse(nyaa.text, encoding="utf-8")["rss"]["channel"]["item"]
-            except KeyError:
-                return tuple()
+            results = parse_nyaa_rss_page(nyaa.text, limit)
 
-            if isinstance(items, dict):  # RSS returns single results as a dict instead of a list
-                items = [items]
-
-            if limit > len(items):
-                parsed = [self.get(item["guid"]["#text"]) for item in items]
-            else:
-                parsed = [self.get(item["guid"]["#text"]) for item in items[:limit]]
+            parsed = [self.get(link) for link in results]
 
             return tuple(parsed)
