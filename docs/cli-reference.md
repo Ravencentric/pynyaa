@@ -11,14 +11,14 @@
 ### Options
 | Option                | Short Form | Type        | Default | Description                           |
 |-----------------------|------------|-------------|---------|---------------------------------------|
-| `--indent <level>`    | `-i`       | `int`       | `2`     | Indentation level for JSON output.    |
+| `--indent <level>`    | `-i`       | `int`       | `None`  | Indentation level for JSON output.    |
 | `--include <keys...>` | `-inc`     | `list[str]` | `None`  | Keys to include in the JSON output.   |
 | `--exclude <keys...>` | `-exc`     | `list[str]` | `None`  | Keys to exclude from the JSON output. |
 
 
 ## Examples
 
-1. `$ pynyaa https://nyaa.si/view/1839609`
+1. `$ pynyaa https://nyaa.si/view/1839609 -i 2`
 
     ```json
     {
@@ -44,20 +44,29 @@
       "magnet": "magnet:?xt=urn:btih:...&dn=...",
       "torrent": {
         "name": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
+        "size": 1455173416,
+        "infohash": "767d16e0aef5888b1a513a26709e963478ed4123",
+        "piece_size": 1048576,
+        "private": null,
         "trackers": [
           ["http://nyaa.tracker.wf:7777/announce"],
-          ["wss://tracker.openwebtorrent.com"],
-          ["udp://open.stealth.si:80/announce"]
+          ["wss://tracker.openwebtorrent.com"]
         ],
         "comment": "https://nyaa.si/view/1839609",
         "creation_date": "2024-06-30T07:42:07",
         "created_by": "NyaaV2",
-        "piece_size": 1048576
+        "source": null,
+        "files": [
+          {
+            "path": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
+            "size": 1455173416
+          }
+        ]
       }
     }
     ```
 
-2. `$ pynyaa https://nyaa.si/view/1839609 --include url title category date`
+2. `$ pynyaa https://nyaa.si/view/1839609 -i 2 --include url title category date`
 
     ```json
     {
@@ -69,7 +78,7 @@
     ```
 
 
-3. `$ pynyaa https://nyaa.si/view/1839609 --exclude description magnet torrent`
+3. `$ pynyaa https://nyaa.si/view/1839609 -i 2 --exclude description magnet torrent`
 
     ```json
     {

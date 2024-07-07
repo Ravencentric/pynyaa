@@ -2,14 +2,14 @@
 name = "pynyaa"
 version = "1.0.0"
 description = "Turn nyaa.si torrent pages into neat Python objects"
-authors = ["Raventric <78981416+Ravencentric@users.noreply.github.com>"]
+authors = ["Ravencentric <me@ravencentric.cc>"]
 license = "Unlicense"
 readme = "README.md"
 keywords = ["anime", "nyaa", "nyaa.si", "torrent", "python"]
 packages = [{include = "pynyaa", from = "src"}]
-homepage = "https://ravencentric.github.io/pynyaa"
+homepage = "https://pynyaa.ravencentric.cc"
 repository = "https://github.com/Ravencentric/pynyaa"
-documentation = "https://ravencentric.github.io/pynyaa"
+documentation = "https://pynyaa.ravencentric.cc"
 classifiers = [
     "License :: OSI Approved :: The Unlicense (Unlicense)",
     "Operating System :: OS Independent",

@@ -72,7 +72,7 @@ for torrent in torrents:
 
 ### CLI
 ```shell
-$ pynyaa https://nyaa.si/view/1839609
+$ pynyaa https://nyaa.si/view/1839609 --indent 2
 ```
 ```json
 {
@@ -98,15 +98,24 @@ $ pynyaa https://nyaa.si/view/1839609
   "magnet": "magnet:?xt=urn:btih:...&dn=...",
   "torrent": {
     "name": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
+    "size": 1455173416,
+    "infohash": "767d16e0aef5888b1a513a26709e963478ed4123",
+    "piece_size": 1048576,
+    "private": null,
     "trackers": [
       ["http://nyaa.tracker.wf:7777/announce"],
-      ["wss://tracker.openwebtorrent.com"],
-      ["udp://open.stealth.si:80/announce"]
+      ["wss://tracker.openwebtorrent.com"]
     ],
     "comment": "https://nyaa.si/view/1839609",
     "creation_date": "2024-06-30T07:42:07",
     "created_by": "NyaaV2",
-    "piece_size": 1048576
+    "source": null,
+    "files": [
+      {
+        "path": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
+        "size": 1455173416
+      }
+    ]
   }
 }
 ```
