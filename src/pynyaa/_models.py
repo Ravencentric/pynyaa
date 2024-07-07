@@ -288,7 +288,7 @@ class NyaaTorrentPage(ParentModel):
         """
         JSON Serializer for torf.Torrent.
         """
-        # Convert Trackers object into plain list
+        # Convert torf.Trackers object into a plain nested list
         trackers = []
         for tier in torrent.trackers:
             tierlist = []
@@ -296,13 +296,23 @@ class NyaaTorrentPage(ParentModel):
                 tierlist.append(url)
             trackers.append(tierlist)
 
+        # Convert torf.Files object into a list of dictionaries
+        files = []
+        for file in torrent.files:
+            files.append(dict(path=file.__fspath__(), size=file.size))
+
         return dict(
             name=torrent.name,
+            size=torrent.size,
+            infohash=torrent.infohash,
+            piece_size=torrent.piece_size,
+            private=torrent.private,
             trackers=trackers,
             comment=torrent.comment,
             creation_date=torrent.creation_date,
             created_by=torrent.created_by,
-            piece_size=torrent.piece_size,
+            source=torrent.source,
+            files=files,
         )
 
     @field_validator("information", "description")
