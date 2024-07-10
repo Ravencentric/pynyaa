@@ -119,7 +119,7 @@ $ pynyaa https://nyaa.si/view/1839609 --indent 2
     "source": null,
     "files": [
       {
-        "path": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
+        "file": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
         "size": 1455173416
       }
     ]

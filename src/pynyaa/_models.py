@@ -55,13 +55,6 @@ class Submitter(ParentModel):
         Submitter(name='Jane', url='https://nyaa.si/user/jane', is_trusted=False, is_banned=False),
         Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)
     }
-
-    >>> a.model_dump()
-    {'name': 'John', 'url': Url('https://nyaa.si/user/john'), 'is_trusted': True, 'is_banned': False}
-
-    >>> a.model_dump_json()
-    '{"name":"John","url":"https://nyaa.si/user/john","is_trusted":true,"is_banned":false}'
-    ```
     """
 
     name: str
@@ -139,79 +132,6 @@ class NyaaTorrentPage(ParentModel):
         NyaaTorrentPage(title='[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv', url='https://nyaa.si/view/1839783', category='Anime - English-translated', date='2024-06-30T10:32:46+00:00', submitter='subsplease'),
         NyaaTorrentPage(title='[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv', url='https://nyaa.si/view/1839609', category='Anime - English-translated', date='2024-06-30T02:12:07+00:00', submitter='subsplease')
     }
-
-    >>> a.model_dump()
-    {
-        "id": 1839783,
-        "url": Url("https://nyaa.si/view/1839783"),
-        "title": "[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv",
-        "category": NyaaCategory.ANIME_ENGLISH_TRANSLATED,
-        "date": datetime.datetime(2024, 6, 30, 10, 32, 46),
-        "submitter": {
-            "name": "subsplease",
-            "url": Url("https://nyaa.si/user/subsplease"),
-            "is_trusted": True,
-            "is_banned": False,
-        },
-        "information": "https://subsplease.org/",
-        "seeders": 1122,
-        "leechers": 421,
-        "completed": 1945,
-        "is_trusted": True,
-        "is_remake": False,
-        "description": "...",
-        "torrent_file": Url("https://nyaa.si/download/1839783.torrent"),
-        "magnet": Url("magnet:?xt=urn:btih:...&dn=..."),
-        "torrent": Torrent(
-            name="[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv",
-            trackers=[
-                ["http://nyaa.tracker.wf:7777/announce"],
-                ["wss://tracker.openwebtorrent.com"],
-                ["udp://open.stealth.si:80/announce"],
-            ],
-            comment="https://nyaa.si/view/1839783",
-            creation_date=datetime.datetime(2024, 6, 30, 16, 2, 46, tzinfo=TzInfo(UTC)),
-            created_by="NyaaV2",
-            piece_size=1048576,
-        ),
-    }
-
-    >>> a.model_dump_json()
-    {
-      "id": 1839783,
-      "url": "https://nyaa.si/view/1839783",
-      "title": "[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv",
-      "category": "Anime - English-translated",
-      "date": "2024-06-30T10:32:46Z",
-      "submitter": {
-        "name": "subsplease",
-        "url": "https://nyaa.si/user/subsplease",
-        "is_trusted": true,
-        "is_banned": false
-      },
-      "information": "https://subsplease.org/",
-      "seeders": 1122,
-      "leechers": 421,
-      "completed": 1945,
-      "is_trusted": true,
-      "is_remake": false,
-      "description": "...",
-      "torrent_file": "https://nyaa.si/download/1839783.torrent",
-      "magnet": "magnet:?xt=urn:btih:...&dn=...",
-      "torrent": {
-        "name": "[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv",
-        "trackers": [
-          ["http://nyaa.tracker.wf:7777/announce"],
-          ["wss://tracker.openwebtorrent.com"],
-          ["udp://open.stealth.si:80/announce"]
-        ],
-        "comment": "https://nyaa.si/view/1839783",
-        "creation_date": "2024-06-30T16:02:46",
-        "created_by": "NyaaV2",
-        "piece_size": 1048576
-      }
-    }
-    ```
     """
 
     id: int
@@ -299,7 +219,7 @@ class NyaaTorrentPage(ParentModel):
         # Convert torf.Files object into a list of dictionaries
         files = []
         for file in torrent.files:
-            files.append(dict(path=file.__fspath__(), size=file.size))
+            files.append(dict(file=file.__fspath__(), size=file.size))
 
         return dict(
             name=torrent.name,
