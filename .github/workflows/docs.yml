@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - docs/**/*.*
+      - src/**/*.*
       - .github/workflows/docs.yml
       - mkdocs.yml
   workflow_dispatch:
@@ -44,7 +45,7 @@ jobs:
       - uses: actions/cache@v4
         name: Define a cache for the venv based on the dependencies lock file
         with:
-          key: ubuntu-latest-${{ hashFiles('poetry.lock') }}
+          key: ubuntu-latest-3.12-${{ hashFiles('poetry.lock') }}
           path: ./.venv
 
       - name: Install dependencies
