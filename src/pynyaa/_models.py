@@ -55,6 +55,7 @@ class Submitter(ParentModel):
         Submitter(name='Jane', url='https://nyaa.si/user/jane', is_trusted=False, is_banned=False),
         Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)
     }
+    ```
     """
 
     name: str
@@ -132,6 +133,7 @@ class NyaaTorrentPage(ParentModel):
         NyaaTorrentPage(title='[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv', url='https://nyaa.si/view/1839783', category='Anime - English-translated', date='2024-06-30T10:32:46+00:00', submitter='subsplease'),
         NyaaTorrentPage(title='[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv', url='https://nyaa.si/view/1839609', category='Anime - English-translated', date='2024-06-30T02:12:07+00:00', submitter='subsplease')
     }
+    ```
     """
 
     id: int
