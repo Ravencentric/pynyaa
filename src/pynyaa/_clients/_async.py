@@ -6,18 +6,16 @@ from typing import Any
 from urllib.parse import urljoin
 
 from hishel import AsyncCacheClient, AsyncFileStorage
-from pydantic import validate_call
 from torf import Torrent
+from typing_extensions import AsyncGenerator
 
-from .._enums import NyaaCategory, NyaaFilter
-from .._models import NyaaTorrentPage
-from .._parser import parse_nyaa_rss_page, parse_nyaa_torrent_page
-from .._types import SearchLimit
-from .._utils import get_user_cache_path
+from pynyaa._enums import NyaaCategory, NyaaFilter
+from pynyaa._models import NyaaTorrentPage
+from pynyaa._parser import parse_nyaa_rss_page, parse_nyaa_torrent_page
+from pynyaa._utils import get_user_cache_path
 
 
 class AsyncNyaa:
-    @validate_call
     def __init__(self, base_url: str = "https://nyaa.si/", cache: bool = True, **kwargs: Any) -> None:
         """
         Async Nyaa client.
@@ -58,7 +56,6 @@ class AsyncNyaa:
         """
         return get_user_cache_path()
 
-    @validate_call
     async def get(self, page: int | str) -> NyaaTorrentPage:
         """
         Retrieve information from a Nyaa torrent page.
@@ -72,8 +69,6 @@ class AsyncNyaa:
 
         Raises
         ------
-        ValidationError
-            Invalid input
         HTTPStatusError
             Nyaa returned a non 2xx response.
 
@@ -103,15 +98,13 @@ class AsyncNyaa:
 
             return NyaaTorrentPage(id=nyaaid, url=url, torrent=torrent, **parsed)  # type: ignore
 
-    @validate_call
     async def search(
         self,
         query: str,
         *,
         category: NyaaCategory | None = None,
         filter: NyaaFilter | None = None,
-        limit: SearchLimit = 3,
-    ) -> tuple[NyaaTorrentPage, ...]:
+    ) -> AsyncGenerator[NyaaTorrentPage]:
         """
         Search for torrents on Nyaa.
 
@@ -123,22 +116,16 @@ class AsyncNyaa:
             The category to filter the search. If None, searches all categories.
         filter : NyaaFilter, optional
             The filter to apply to the search results. If None, no filter is applied.
-        limit : SearchLimit, optional
-            Maximum number of search results to retrieve. Defaults to 3. Maximum is 75.
-            Be cautious with this; higher limits increase the number of requests,
-            which may trigger rate limiting responses (HTTP 429) or get your IP banned entirely.
 
         Raises
         ------
-        ValidationError
-            Invalid input
         HTTPStatusError
             Nyaa returned a non 2xx response.
 
-        Returns
+        Yields
         -------
-        tuple[NyaaTorrentPage, ...]
-            A tuple of NyaaTorrentPage objects representing the retrieved data.
+        AsyncGenerator[NyaaTorrentPage]
+            An async generator that yields NyaaTorrentPage.
         """
         async with AsyncCacheClient(storage=self._storage, **self._kwargs) as client:
             params = dict(
@@ -150,8 +137,7 @@ class AsyncNyaa:
 
             nyaa = await client.get(self._base_url, params=params, extensions=self._extensions)  # type: ignore
             nyaa.raise_for_status()
-            results = parse_nyaa_rss_page(nyaa.text, limit)
+            results = parse_nyaa_rss_page(nyaa.text)
 
-            parsed = [await self.get(link) for link in results]
-
-            return tuple(parsed)
+            for link in results:
+                yield await self.get(link)

@@ -4,7 +4,7 @@ def main() -> None:
     """
     import argparse
 
-    from ._clients import Nyaa
+    from pynyaa._clients._sync import Nyaa
 
     parser = argparse.ArgumentParser(prog="pynyaa", description="Get the JSON representation of a Nyaa torrent page.")
     parser.add_argument("url", type=str, help="Nyaa URL", metavar="https://nyaa.si/view/...")

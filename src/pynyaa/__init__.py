@@ -1,13 +1,13 @@
 from httpx import HTTPStatusError
-from pydantic import ValidationError
 
-from ._clients import AsyncNyaa, Nyaa
-from ._enums import NyaaCategory, NyaaFilter
-from ._models import NyaaTorrentPage, Submitter
-from ._version import Version, _get_version
+from pynyaa._clients._async import AsyncNyaa
+from pynyaa._clients._sync import Nyaa
+from pynyaa._enums import NyaaCategory, NyaaFilter
+from pynyaa._models import NyaaTorrentPage, Submitter
+from pynyaa._version import Version, _get_version
 
 __version__ = _get_version()
-__version_tuple__ = Version(*map(int, __version__.split(".")))
+__version_tuple__ = Version(*[int(i) for i in __version__.split(".")])
 
 __all__ = (
     # Clients
@@ -21,5 +21,4 @@ __all__ = (
     "Submitter",
     # Exceptions
     "HTTPStatusError",
-    "ValidationError",
 )
