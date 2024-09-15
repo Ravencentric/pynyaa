@@ -7,14 +7,14 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
-      - '.github\workflows\test.yml'
+      - '.github/workflows/test.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'src/**'
       - 'tests/**'
-      - '.github\workflows\test.yml'
+      - '.github/workflows/test.yml'
   workflow_dispatch:
 
 defaults:
@@ -27,9 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,7 +52,7 @@ jobs:
       - uses: actions/cache@v4
         name: Define a cache for the venv based on the dependencies lock file
         with:
-          key: ${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: ${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
           path: ./.venv
 
       - name: Install the project dependencies
@@ -73,7 +72,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: pynyaa-${{ steps.version.outputs.version }}-${{ matrix.python-version }}-${{ matrix.os }}
+          name: pynyaa-${{ steps.version.outputs.version }}-${{ matrix.python-version }}
           path: "dist/*"
 
       - name: Upload coverage to Codecov
