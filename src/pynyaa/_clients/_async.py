@@ -124,8 +124,8 @@ class AsyncNyaa:
 
         Yields
         -------
-        AsyncGenerator[NyaaTorrentPage]
-            An async generator that yields NyaaTorrentPage.
+        NyaaTorrentPage
+            A NyaaTorrentPage object representing the retrieved data.
         """
         async with AsyncCacheClient(storage=self._storage, **self._kwargs) as client:
             params = dict(

@@ -121,8 +121,8 @@ class Nyaa:
 
         Yields
         -------
-        Generator[NyaaTorrentPage]
-            A generator that yields NyaaTorrentPage.
+        NyaaTorrentPage
+            A NyaaTorrentPage object representing the retrieved data.
         """
         with CacheClient(storage=self._storage, **self._kwargs) as client:
             params = dict(
