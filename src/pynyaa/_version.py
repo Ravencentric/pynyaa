@@ -1,6 +1,6 @@
-from typing_extensions import NamedTuple
+from importlib import metadata
 
-from ._compat import metadata
+from typing_extensions import NamedTuple
 
 
 class Version(NamedTuple):
@@ -9,12 +9,5 @@ class Version(NamedTuple):
     micro: int
 
 
-def _get_version() -> str:
-    """
-    Get the version of pynyaa
-    """
-    try:
-        return metadata.version("pynyaa")
-
-    except metadata.PackageNotFoundError:
-        return "0.0.0"
+__version__ = metadata.version("pynyaa")
+__version_tuple__ = Version(*[int(i) for i in __version__.split(".")])
