@@ -1,4 +1,5 @@
 from platformdirs import user_cache_path
+
 from pynyaa import Nyaa, NyaaCategory
 
 headers = {

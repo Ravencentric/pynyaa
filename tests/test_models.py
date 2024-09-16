@@ -1,8 +1,9 @@
 # type: ignore
 from datetime import datetime
 
-from pynyaa import NyaaCategory, NyaaTorrentPage, Submitter
 from torf import Torrent
+
+from pynyaa import NyaaCategory, NyaaTorrentPage, Submitter
 
 
 def test_submitter() -> None:
