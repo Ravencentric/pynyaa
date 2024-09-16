@@ -6,7 +6,7 @@ authors = ["Ravencentric <me@ravencentric.cc>"]
 license = "Unlicense"
 readme = "README.md"
 keywords = ["anime", "nyaa", "nyaa.si", "torrent", "python"]
-packages = [{include = "pynyaa", from = "src"}]
+packages = [{ include = "pynyaa", from = "src" }]
 homepage = "https://pynyaa.ravencentric.cc"
 repository = "https://github.com/Ravencentric/pynyaa"
 documentation = "https://pynyaa.ravencentric.cc"
@@ -42,14 +42,14 @@ pytest = "^8.2.2"
 pytest-asyncio = "^0.23.5.post1"
 pre-commit = "^3.7.1"
 coverage = "^7.5.4"
-respx = "^0.21.1"
 types-beautifulsoup4 = "^4.12.0.20240511"
 types-xmltodict = "^0.13.0.3"
 
+
 [tool.poetry.group.docs.dependencies]
-mkdocs-material = "^9.5.27"
-mkdocstrings = {extras = ["python"], version = "^0.25.1"}
-mkdocs-autorefs = "^1.0.1"
+mkdocs-material = "^9.5.34"
+mkdocstrings = { extras = ["python"], version = "^0.26.1" }
+mkdocs-autorefs = "^1.2.0"
 
 [tool.poetry.scripts]
 pynyaa = "pynyaa.__main__:main"

@@ -117,7 +117,7 @@ def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
     )
 
 
-def parse_nyaa_rss_page(xml: str, limit: int) -> tuple[str, ...]:
+def parse_nyaa_rss_page(xml: str) -> tuple[str, ...]:
     """
     Parse the torrent links out of the RSS page
 
@@ -141,9 +141,4 @@ def parse_nyaa_rss_page(xml: str, limit: int) -> tuple[str, ...]:
     if isinstance(items, dict):  # RSS returns single results as a dict instead of a list
         items = [items]
 
-    if limit > len(items):
-        parsed = [item["guid"]["#text"] for item in items]
-    else:
-        parsed = [item["guid"]["#text"] for item in items[:limit]]
-
-    return tuple(parsed)
+    return tuple(item["guid"]["#text"] for item in items)
