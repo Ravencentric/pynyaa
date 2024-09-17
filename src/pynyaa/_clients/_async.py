@@ -9,7 +9,7 @@ from hishel import AsyncCacheClient, AsyncFileStorage
 from torf import Torrent
 from typing_extensions import AsyncGenerator
 
-from pynyaa._enums import NyaaCategory, NyaaFilter
+from pynyaa._enums import Category, Filter
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import parse_nyaa_rss_page, parse_nyaa_torrent_page
 from pynyaa._utils import get_user_cache_path
@@ -102,8 +102,8 @@ class AsyncNyaa:
         self,
         query: str,
         *,
-        category: NyaaCategory | None = None,
-        filter: NyaaFilter | None = None,
+        category: Category | None = None,
+        filter: Filter | None = None,
     ) -> AsyncGenerator[NyaaTorrentPage]:
         """
         Search for torrents on Nyaa.
@@ -112,9 +112,9 @@ class AsyncNyaa:
         ----------
         query : str
             The search query string.
-        category : NyaaCategory, optional
+        category : Category, optional
             The category to filter the search. If None, searches all categories.
-        filter : NyaaFilter, optional
+        filter : Filter, optional
             The filter to apply to the search results. If None, no filter is applied.
 
         Raises

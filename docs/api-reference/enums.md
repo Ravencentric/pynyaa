@@ -1,6 +1,6 @@
-::: pynyaa._enums.NyaaCategory
+::: pynyaa._enums.Category
     options:
         members: true
-::: pynyaa._enums.NyaaFilter
+::: pynyaa._enums.Filter
     options:
         members: true

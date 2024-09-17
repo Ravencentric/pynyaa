@@ -6,7 +6,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, HttpUrl, field_serializer, field_validator
 from torf import Torrent
 
-from ._enums import NyaaCategory
+from ._enums import Category
 from ._types import MagnetUrl
 
 
@@ -145,7 +145,7 @@ class NyaaTorrentPage(ParentModel):
     title: str
     """Title of the torrent."""
 
-    category: NyaaCategory
+    category: Category
     """Torrent category."""
 
     date: datetime

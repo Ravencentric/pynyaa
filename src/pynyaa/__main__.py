@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 def main() -> None:
     """
     Pretty simple CLI implementation.

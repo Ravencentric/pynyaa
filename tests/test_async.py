@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from platformdirs import user_cache_path
 
-from pynyaa import AsyncNyaa, NyaaCategory
+from pynyaa import AsyncNyaa, Category
 
 headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
@@ -27,7 +29,7 @@ async def test_nyaa_trusted() -> None:
     assert nyaa.submitter.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.is_trusted is True
-    assert nyaa.category == NyaaCategory.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.category == Category.ANIME_ENGLISH_TRANSLATED
 
 
 async def test_nyaa_trusted_and_remake() -> None:
@@ -50,7 +52,7 @@ async def test_nyaa_anon() -> None:
     assert nyaa.url.__str__() == "https://nyaa.si/view/1765655"
     assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
     assert nyaa.submitter.name == "Anonymous"
-    assert nyaa.category == NyaaCategory.LITERATURE_ENGLISH_TRANSLATED
+    assert nyaa.category == Category.LITERATURE_ENGLISH_TRANSLATED
 
 
 async def test_nyaa_banned() -> None:

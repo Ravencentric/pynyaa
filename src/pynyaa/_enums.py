@@ -1,8 +1,30 @@
-from ._compat import IntEnum, StrEnum
+from __future__ import annotations
+
+from typing import overload
+
+from typing_extensions import Self
+
+from pynyaa._compat import IntEnum, StrEnum
+from pynyaa._types import CategoryID, CategoryName, SortName
+from pynyaa._utils import get_category_id_from_name
 
 
-class NyaaCategory(StrEnum):
+class BaseStrEnum(StrEnum):
+    """StrEnum with case-insensitive lookup"""
+
+    @classmethod
+    def _missing_(cls, value: object) -> Self:
+        for member in cls:
+            if member.value.casefold() == str(value).casefold():
+                return member
+        message = f"'{value}' is not a valid {type(cls)}"
+        raise ValueError(message)
+
+
+class Category(BaseStrEnum):
     """Nyaa categories"""
+
+    ALL = "All"
 
     ANIME = "Anime"
     ANIME_MUSIC_VIDEO = "Anime - Anime Music Video"
@@ -34,51 +56,115 @@ class NyaaCategory(StrEnum):
     SOFTWARE_GAMES = "Software - Games"
 
     @property
-    def id(self) -> str:
+    def id(self) -> CategoryID:
         """
         Returns the ID of the category.
 
         This ID corresponds to the category as seen in the URL
         `https://nyaa.si/?f=0&c=1_2&q=`, where `c=1_2` is the ID for `Anime - English-translated`.
         """
-        mapping = {
-            # All, c=0_0
-            "All categories": "0_0",
-            # Anime, c=1_X
-            "Anime": "1_0",
-            "Anime - Anime Music Video": "1_1",
-            "Anime - English-translated": "1_2",
-            "Anime - Non-English-translated": "1_3",
-            "Anime - Raw": "1_4",
-            # Audio, c=2_X
-            "Audio": "2_0",
-            "Audio - Lossless": "2_1",
-            "Audio - Lossy": "2_2",
-            # Literature, c=3_X
-            "Literature": "3_0",
-            "Literature - English-translated": "3_1",
-            "Literature - Non-English-translated": "3_2",
-            "Literature - Raw": "3_3",
-            # Live Action, c=4_X
-            "Live Action": "4_0",
-            "Live Action - English-translated": "4_1",
-            "Live Action - Idol/Promotional Video": "4_2",
-            "Live Action - Non-English-translated": "4_3",
-            "Live Action - Raw": "4_4",
-            # Pictures, c=5_X
-            "Pictures": "5_0",
-            "Pictures - Graphics": "5_1",
-            "Pictures - Photos": "5_2",
-            # Software, c=6_X
-            "Software": "6_0",
-            "Software - Applications": "6_1",
-            "Software - Games": "6_2",
-        }
+        return get_category_id_from_name(self.value)
 
-        return mapping.get(self.value, "0_0")
+    @overload
+    @classmethod
+    def get(cls, key: CategoryName, default: CategoryName = "All") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: CategoryName, default: str = "All") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: str, default: CategoryName = "All") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: str, default: str = "All") -> Self: ...
+
+    @classmethod
+    def get(cls, key: CategoryName | str, default: CategoryName | str = "All") -> Self:
+        """
+        Get the `Category` by its name (case-insensitive).
+        Return the default if the key is missing or invalid.
+
+        Parameters
+        ----------
+        key : CategoryName | str
+            The key to retrieve.
+        default : CategoryName | str, optional
+            The default value to return if the key is missing or invalid.
+
+        Returns
+        -------
+        Category
+            The `Category` corresponding to the key.
+        """
+        match key:
+            case str():
+                for category in cls:
+                    if category.value.casefold() == key.casefold():
+                        return category
+                else:
+                    return cls(default)
+            case _:
+                return cls(default)
 
 
-class NyaaFilter(IntEnum):
+class SortBy(BaseStrEnum):
+    COMMENTS = "comments"
+    SIZE = "size"
+    DATETIME = "id"  # yea... https://nyaa.si/?s=id&o=desc
+    SEEDERS = "seeders"
+    LEECHERS = "leechers"
+    DOWNLOADS = "downloads"
+
+    @overload
+    @classmethod
+    def get(cls, key: SortName, default: SortName = "datetime") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: SortName, default: str = "datetime") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: str, default: SortName = "datetime") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: str, default: str = "datetime") -> Self: ...
+
+    @classmethod
+    def get(cls, key: SortName | str, default: SortName | str = "datetime") -> Self:
+        """
+        Get the `SortBy` by its name (case-insensitive).
+        Return the default if the key is missing or invalid.
+
+        Parameters
+        ----------
+        key : SortName | str
+            The key to retrieve.
+        default : SortName | str, optional
+            The default value to return if the key is missing or invalid.
+
+        Returns
+        -------
+        Category
+            The `SortBy` corresponding to the key.
+        """
+        default = "id" if default.casefold() == "datetime" else default.casefold()
+        key = key.casefold()
+
+        match key:
+            case "comments" | "size" | "id" | "seeders" | "leechers" | "downloads":
+                return cls(key)
+            case "datetime":
+                return cls("id")
+            case _:
+                return cls(default)
+
+
+class Filter(IntEnum):
     """Nyaa search filters"""
 
     NO_FILTER = 0
