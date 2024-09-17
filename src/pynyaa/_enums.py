@@ -5,7 +5,7 @@ from typing import overload
 from typing_extensions import Self
 
 from pynyaa._compat import IntEnum, StrEnum
-from pynyaa._types import CategoryID, CategoryName, SortName
+from pynyaa._types import CategoryID, CategoryLiteral, SortByLiteral
 from pynyaa._utils import get_category_id_from_name
 
 
@@ -67,31 +67,31 @@ class Category(BaseStrEnum):
 
     @overload
     @classmethod
-    def get(cls, key: CategoryName, default: CategoryName = "All") -> Self: ...
+    def get(cls, key: CategoryLiteral, default: CategoryLiteral = "All") -> Self: ...
 
     @overload
     @classmethod
-    def get(cls, key: CategoryName, default: str = "All") -> Self: ...
+    def get(cls, key: CategoryLiteral, default: str = "All") -> Self: ...
 
     @overload
     @classmethod
-    def get(cls, key: str, default: CategoryName = "All") -> Self: ...
+    def get(cls, key: str, default: CategoryLiteral = "All") -> Self: ...
 
     @overload
     @classmethod
     def get(cls, key: str, default: str = "All") -> Self: ...
 
     @classmethod
-    def get(cls, key: CategoryName | str, default: CategoryName | str = "All") -> Self:
+    def get(cls, key: CategoryLiteral | str, default: CategoryLiteral | str = "All") -> Self:
         """
         Get the `Category` by its name (case-insensitive).
         Return the default if the key is missing or invalid.
 
         Parameters
         ----------
-        key : CategoryName | str
+        key : CategoryLiteral | str
             The key to retrieve.
-        default : CategoryName | str, optional
+        default : CategoryLiteral | str, optional
             The default value to return if the key is missing or invalid.
 
         Returns
@@ -102,7 +102,7 @@ class Category(BaseStrEnum):
         match key:
             case str():
                 for category in cls:
-                    if category.value.casefold() == key.casefold():
+                    if (category.value.casefold() == key.casefold()) or (category.name.casefold() == key.casefold()):
                         return category
                 else:
                     return cls(default)
@@ -120,31 +120,31 @@ class SortBy(BaseStrEnum):
 
     @overload
     @classmethod
-    def get(cls, key: SortName, default: SortName = "datetime") -> Self: ...
+    def get(cls, key: SortByLiteral, default: SortByLiteral = "datetime") -> Self: ...
 
     @overload
     @classmethod
-    def get(cls, key: SortName, default: str = "datetime") -> Self: ...
+    def get(cls, key: SortByLiteral, default: str = "datetime") -> Self: ...
 
     @overload
     @classmethod
-    def get(cls, key: str, default: SortName = "datetime") -> Self: ...
+    def get(cls, key: str, default: SortByLiteral = "datetime") -> Self: ...
 
     @overload
     @classmethod
     def get(cls, key: str, default: str = "datetime") -> Self: ...
 
     @classmethod
-    def get(cls, key: SortName | str, default: SortName | str = "datetime") -> Self:
+    def get(cls, key: SortByLiteral | str, default: SortByLiteral | str = "datetime") -> Self:
         """
         Get the `SortBy` by its name (case-insensitive).
         Return the default if the key is missing or invalid.
 
         Parameters
         ----------
-        key : SortName | str
+        key : SortByLiteral | str
             The key to retrieve.
-        default : SortName | str, optional
+        default : SortByLiteral | str, optional
             The default value to return if the key is missing or invalid.
 
         Returns
@@ -152,14 +152,18 @@ class SortBy(BaseStrEnum):
         Category
             The `SortBy` corresponding to the key.
         """
+
+        # "datetime" doesn't actually exist, it's just an alias for "id"
         default = "id" if default.casefold() == "datetime" else default.casefold()
-        key = key.casefold()
+        key = "id" if key.casefold() == "datetime" else key.casefold()
 
         match key:
-            case "comments" | "size" | "id" | "seeders" | "leechers" | "downloads":
-                return cls(key)
-            case "datetime":
-                return cls("id")
+            case str():
+                for category in cls:
+                    if (category.value.casefold() == key.casefold()) or (category.name.casefold() == key.casefold()):
+                        return category
+                else:
+                    return cls(default)
             case _:
                 return cls(default)
 
