@@ -122,8 +122,8 @@ def test_sort_by_get(input_value, expected_sort_by):
     "input_value, default, expected_sort_by",
     [
         ("invalid", "comments", SortBy.COMMENTS),
-        ("invalid", "size", SortBy.SIZE),
-        ("invalid", "iD", SortBy.DATETIME),
+        (12345, "size", SortBy.SIZE),
+        (None, "iD", SortBy.DATETIME),
         ("SnEEders", "dateTIME", SortBy.DATETIME),
     ],
 )
