@@ -18,6 +18,7 @@ def test_sortby_value_error() -> None:
 @pytest.mark.parametrize(
     "category, expected_id",
     [
+        (Category.ALL, "0_0"),
         (Category.ANIME, "1_0"),
         (Category.ANIME_MUSIC_VIDEO, "1_1"),
         (Category.ANIME_ENGLISH_TRANSLATED, "1_2"),
@@ -45,6 +46,39 @@ def test_sortby_value_error() -> None:
 )
 def test_nyaa_category_id_property(category, expected_id):
     assert category.id == expected_id
+
+
+@pytest.mark.parametrize(
+    "category, expected_parent",
+    [
+        (Category.ALL, Category.ALL),
+        (Category.ANIME, Category.ANIME),
+        (Category.ANIME_MUSIC_VIDEO, Category.ANIME),
+        (Category.ANIME_ENGLISH_TRANSLATED, Category.ANIME),
+        (Category.ANIME_NON_ENGLISH_TRANSLATED, Category.ANIME),
+        (Category.ANIME_RAW, Category.ANIME),
+        (Category.AUDIO, Category.AUDIO),
+        (Category.AUDIO_LOSSLESS, Category.AUDIO),
+        (Category.AUDIO_LOSSY, Category.AUDIO),
+        (Category.LITERATURE, Category.LITERATURE),
+        (Category.LITERATURE_ENGLISH_TRANSLATED, Category.LITERATURE),
+        (Category.LITERATURE_NON_ENGLISH_TRANSLATED, Category.LITERATURE),
+        (Category.LITERATURE_RAW, Category.LITERATURE),
+        (Category.LIVE_ACTION, Category.LIVE_ACTION),
+        (Category.LIVE_ACTION_ENGLISH_TRANSLATED, Category.LIVE_ACTION),
+        (Category.LIVE_ACTION_IDOL_PROMOTIONAL_VIDEO, Category.LIVE_ACTION),
+        (Category.LIVE_ACTION_NON_ENGLISH_TRANSLATED, Category.LIVE_ACTION),
+        (Category.LIVE_ACTION_RAW, Category.LIVE_ACTION),
+        (Category.PICTURES, Category.PICTURES),
+        (Category.PICTURES_GRAPHICS, Category.PICTURES),
+        (Category.PICTURES_PHOTOS, Category.PICTURES),
+        (Category.SOFTWARE, Category.SOFTWARE),
+        (Category.SOFTWARE_APPLICATIONS, Category.SOFTWARE),
+        (Category.SOFTWARE_GAMES, Category.SOFTWARE),
+    ],
+)
+def test_nyaa_category_parent_property(category, expected_parent):
+    assert category.parent == expected_parent
 
 
 @pytest.mark.parametrize(
