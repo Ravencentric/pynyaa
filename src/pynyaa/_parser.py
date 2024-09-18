@@ -49,7 +49,7 @@ def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
     # ROW ONE
     row_one = rows[0].find_all("div", class_="col-md-5")
     category = row_one[0].get_text().strip()
-    date = row_one[1]["data-timestamp"]
+    datetime = row_one[1]["data-timestamp"]
 
     # ROW TWO
     row_two = rows[1].find_all("div", class_="col-md-5")
@@ -98,7 +98,7 @@ def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
     return dict(
         title=title,
         category=category,
-        date=date,
+        datetime=datetime,
         submitter=dict(
             name=submitter,
             url=submitter_url,
