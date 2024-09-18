@@ -9,7 +9,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from pathlib import Path
     from typing import Callable, ParamSpec, TypeVar
 
-    from pynyaa._types import CategoryID, CategoryName
+    from pynyaa._types import CategoryID
 
     P = ParamSpec("P")
     T = TypeVar("T")
@@ -23,16 +23,8 @@ def get_user_cache_path() -> Path:
     return user_cache_path(appname="pynyaa", ensure_exists=True).resolve()
 
 
-@overload
-def _get_category_id_from_name(key: CategoryName) -> CategoryID: ...
-
-
-@overload
-def _get_category_id_from_name(key: str) -> CategoryID: ...
-
-
 @cache
-def _get_category_id_from_name(key: CategoryName | str) -> CategoryID:
+def _get_category_id_from_name(key: str) -> CategoryID:
     mapping: dict[str, CategoryID] = {
         # All, c=0_0
         "All": "0_0",

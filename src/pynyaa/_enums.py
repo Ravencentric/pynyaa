@@ -154,8 +154,7 @@ class SortBy(BaseStrEnum):
         """
 
         # "datetime" doesn't actually exist, it's just an alias for "id"
-        default = "id" if default.casefold() == "datetime" else default.casefold()
-        key = "id" if key.casefold() == "datetime" else key.casefold()
+        default = "id" if str(default).casefold() == "datetime" else default
 
         match key:
             case str():
