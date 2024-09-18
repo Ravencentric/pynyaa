@@ -10,12 +10,13 @@ from pynyaa._utils import _get_category_id_from_name
 
 
 class BaseStrEnum(StrEnum):
-    """StrEnum with case-insensitive lookup"""
+    """StrEnum with case-insensitive double-sided lookup"""
 
     @classmethod
     def _missing_(cls, value: object) -> Self:
+        caseless_value = str(value).casefold()
         for member in cls:
-            if member.value.casefold() == str(value).casefold():
+            if (member.value.casefold() == caseless_value) or (member.name.casefold() == caseless_value):
                 return member
         message = f"'{value}' is not a valid {cls.__name__}"
         raise ValueError(message)
@@ -65,26 +66,42 @@ class Category(BaseStrEnum):
         """
         return _get_category_id_from_name(self.value)
 
-    @overload
-    @classmethod
-    def get(cls, key: CategoryLiteral, default: CategoryLiteral = "All") -> Self: ...
-
-    @overload
-    @classmethod
-    def get(cls, key: CategoryLiteral, default: str = "All") -> Self: ...
-
-    @overload
-    @classmethod
-    def get(cls, key: str, default: CategoryLiteral = "All") -> Self: ...
-
-    @overload
-    @classmethod
-    def get(cls, key: str, default: str = "All") -> Self: ...
-
-    @classmethod
-    def get(cls, key: CategoryLiteral | str, default: CategoryLiteral | str = "All") -> Self:
+    @property
+    def parent(self) -> Self:
         """
-        Get the `Category` by its name (case-insensitive).
+        Returns the parent category.
+
+        Examples
+        --------
+        ```py
+        >>> Category.ANIME_ENGLISH_TRANSLATED.parent is Category.ANIME
+        True
+        >>> Category.ANIME.parent is Category.ANIME
+        True
+        ```
+        """
+        return self.get(self.value.split("-")[0].strip())
+
+    @overload
+    @classmethod
+    def get(cls, key: CategoryLiteral, default: CategoryLiteral = "ALL") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: CategoryLiteral, default: str = "ALL") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: str, default: CategoryLiteral = "ALL") -> Self: ...
+
+    @overload
+    @classmethod
+    def get(cls, key: str, default: str = "ALL") -> Self: ...
+
+    @classmethod
+    def get(cls, key: CategoryLiteral | str, default: CategoryLiteral | str = "ALL") -> Self:
+        """
+        Get the `Category` by its name or value (case-insensitive).
         Return the default if the key is missing or invalid.
 
         Parameters
@@ -99,15 +116,11 @@ class Category(BaseStrEnum):
         Category
             The `Category` corresponding to the key.
         """
-        match key:
-            case str():
-                for category in cls:
-                    if (category.value.casefold() == key.casefold()) or (category.name.casefold() == key.casefold()):
-                        return category
-                else:
-                    return cls(default)
-            case _:
-                return cls(default)
+
+        try:
+            return cls(key)
+        except ValueError:
+            return cls(default)
 
 
 class SortBy(BaseStrEnum):
@@ -137,7 +150,7 @@ class SortBy(BaseStrEnum):
     @classmethod
     def get(cls, key: SortByLiteral | str, default: SortByLiteral | str = "datetime") -> Self:
         """
-        Get the `SortBy` by its name (case-insensitive).
+        Get the `SortBy` by its name or value (case-insensitive).
         Return the default if the key is missing or invalid.
 
         Parameters
@@ -152,19 +165,10 @@ class SortBy(BaseStrEnum):
         Category
             The `SortBy` corresponding to the key.
         """
-
-        # "datetime" doesn't actually exist, it's just an alias for "id"
-        default = "id" if str(default).casefold() == "datetime" else default
-
-        match key:
-            case str():
-                for category in cls:
-                    if (category.value.casefold() == key.casefold()) or (category.name.casefold() == key.casefold()):
-                        return category
-                else:
-                    return cls(default)
-            case _:
-                return cls(default)
+        try:
+            return cls(key)
+        except ValueError:
+            return cls(default)
 
 
 class Filter(IntEnum):
