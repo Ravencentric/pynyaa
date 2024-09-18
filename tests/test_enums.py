@@ -78,7 +78,7 @@ def test_nyaa_category_id_property(category, expected_id):
     ],
 )
 def test_nyaa_category_parent_property(category, expected_parent):
-    assert category.parent == expected_parent
+    assert category.parent is expected_parent
 
 
 @pytest.mark.parametrize(
