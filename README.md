@@ -87,7 +87,7 @@ $ pynyaa https://nyaa.si/view/1839609 --indent 2
   "url": "https://nyaa.si/view/1839609",
   "title": "[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv",
   "category": "Anime - English-translated",
-  "date": "2024-06-30T02:12:07Z",
+  "datetime": "2024-06-30T02:12:07Z",
   "submitter": {
     "name": "subsplease",
     "url": "https://nyaa.si/user/subsplease",

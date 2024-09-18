@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from datetime import datetime
+from os import fspath
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, HttpUrl, field_serializer, field_validator
 from torf import Torrent
 
 from ._enums import Category
-from ._types import MagnetUrl
+from ._types import MagnetUrl, UTCDateTime
 
 
 class ParentModel(BaseModel):
@@ -50,11 +50,8 @@ class Submitter(ParentModel):
     >>> a == c
     False
 
-    >>> set((a, b, c)) # dedupe
-    {
-        Submitter(name='Jane', url='https://nyaa.si/user/jane', is_trusted=False, is_banned=False),
-        Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)
-    }
+    >>> set((a, b, c)) == {a, c} == {b, c} # dedupe
+    True
     ```
     """
 
@@ -80,7 +77,7 @@ class Submitter(ParentModel):
         """
         Makes Submitter hashable.
         """
-        return self.url.__hash__()
+        return hash(self.url)
 
     def __repr__(self) -> str:
         """
@@ -119,21 +116,14 @@ class NyaaTorrentPage(ParentModel):
     >>> print(a)
     [SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv
 
-    >>> print(repr(a))
-    NyaaTorrentPage(title='[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv', url='https://nyaa.si/view/1839783', category='Anime - English-translated', date='2024-06-30T10:32:46+00:00', submitter='subsplease')
-
     >>> a == b
     True
 
     >>> a == c
     False
 
-    >>> set((a, b, c)) # dedupe
-    {
-        NyaaTorrentPage(title='[SubsPlease] Hibike! Euphonium S3 - 13 (1080p) [230618C3].mkv', url='https://nyaa.si/view/1839783', category='Anime - English-translated', date='2024-06-30T10:32:46+00:00', submitter='subsplease'),
-        NyaaTorrentPage(title='[SubsPlease] One Piece - 1110 (1080p) [B66CAB32].mkv', url='https://nyaa.si/view/1839609', category='Anime - English-translated', date='2024-06-30T02:12:07+00:00', submitter='subsplease')
-    }
-    ```
+    >>> set((a, b, c)) == {a, c} == {b, c} # dedupe
+    True
     """
 
     id: int
@@ -148,11 +138,11 @@ class NyaaTorrentPage(ParentModel):
     category: Category
     """Torrent category."""
 
-    date: datetime
-    """Date and time at which the torrent was submitted."""
-
     submitter: Submitter
     """User who submitted the torrent."""
+
+    datetime: UTCDateTime
+    """Date and time at which the torrent was submitted."""
 
     information: str | None
     """Information about the torrent."""
@@ -201,7 +191,7 @@ class NyaaTorrentPage(ParentModel):
 
     torrent: Torrent
     """
-    A [`torf.Torrent`](https://torf.readthedocs.io/en/latest/#torf.Torrent) object 
+    A [`torf.Torrent`][torf.Torrent] object 
     representing the data stored in the `.torrent` file.
     """
 
@@ -221,7 +211,7 @@ class NyaaTorrentPage(ParentModel):
         # Convert torf.Files object into a list of dictionaries
         files = []
         for file in torrent.files:
-            files.append(dict(file=file.__fspath__(), size=file.size))
+            files.append(dict(file=fspath(file), size=file.size))
 
         return dict(
             name=torrent.name,
@@ -261,14 +251,15 @@ class NyaaTorrentPage(ParentModel):
         """
         Makes NyaaTorrentPage hashable.
         """
-        return self.url.__hash__()
+        return hash(self.url)
 
     def __repr__(self) -> str:
         """
         A shorter human readable __repr__ because
         the default one is too long.
         """
-        return f"{self.__class__.__name__}(title='{self.title}', url='{self.url}', category='{self.category}', date='{self.date.isoformat()}', submitter='{self.submitter.name}')"
+        body = f"title='{self.title}', url='{self.url}', category='{self.category}', submitter='{self.submitter}', datetime='{self.datetime.isoformat()}'"
+        return f"{self.__class__.__name__}({body})"
 
     def __str__(self) -> str:
         """

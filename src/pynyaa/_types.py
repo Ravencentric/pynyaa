@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Annotated, Literal, Union
 
-from pydantic import AnyUrl, UrlConstraints
+from pydantic import AfterValidator, AnyUrl, UrlConstraints
+
+UTCDateTime = Annotated[datetime, AfterValidator(lambda dt: dt.astimezone(timezone.utc))]
+"""datetime.datetime that's always in UTC."""
 
 MagnetUrl = Annotated[AnyUrl, UrlConstraints(allowed_schemes=["magnet"])]
 """Url that only allows magnets."""
