@@ -84,10 +84,10 @@ def test_nyaa_torrent_page() -> None:
     )
 
     assert (
-        page_a.__repr__()
-        == "NyaaTorrentPage(title='title', url='https://nyaa.si/view/123456', category='Anime - English-translated', date='2024-06-30T00:00:00', submitter='John')"
+        repr(page_a)
+        == "NyaaTorrentPage(title='title', url='https://nyaa.si/view/123456', category='Anime - English-translated', submitter='John', datetime='2024-06-30T00:00:00+00:00')"
     )
-    assert page_a.__str__() == "title"
+    assert str(page_a) == "title"
 
     assert page_a == page_b
     assert page_a != page_c
