@@ -41,9 +41,6 @@ class Submitter(ParentModel):
     >>> print(a)
     John
 
-    >>> print(repr(a))
-    Submitter(name='John', url='https://nyaa.si/user/john', is_trusted=True, is_banned=False)
-
     >>> a == b
     True
 
@@ -124,6 +121,7 @@ class NyaaTorrentPage(ParentModel):
 
     >>> set((a, b, c)) == {a, c} == {b, c} # dedupe
     True
+    ```
     """
 
     id: int
