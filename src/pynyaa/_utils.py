@@ -14,6 +14,8 @@ if TYPE_CHECKING:  # pragma: no cover
     P = ParamSpec("P")
     T = TypeVar("T")
 
+    # functools.cache destroys the signature of whatever it wraps, so we use this to fix it.
+    # This is to only "fool" typecheckers and IDEs, this doesn't exist at runtime.
     def cache(user_function: Callable[P, T], /) -> Callable[P, T]: ...  # type: ignore
 
 
@@ -22,16 +24,16 @@ def get_user_cache_path() -> Path:
 
 
 @overload
-def get_category_id_from_name(key: CategoryName) -> CategoryID: ...
+def _get_category_id_from_name(key: CategoryName) -> CategoryID: ...
 
 
 @overload
-def get_category_id_from_name(key: str) -> CategoryID: ...
+def _get_category_id_from_name(key: str) -> CategoryID: ...
 
 
 @cache
-def get_category_id_from_name(key: CategoryName | str) -> str:
-    mapping = {
+def _get_category_id_from_name(key: CategoryName | str) -> CategoryID:
+    mapping: dict[str, CategoryID] = {
         # All, c=0_0
         "All": "0_0",
         # Anime, c=1_X

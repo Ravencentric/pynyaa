@@ -5,6 +5,16 @@ import pytest
 from pynyaa import Category, Filter, SortBy
 
 
+def test_category_value_error() -> None:
+    with pytest.raises(ValueError):
+        Category.get("asdadadsad", "invalid default")
+
+
+def test_sortby_value_error() -> None:
+    with pytest.raises(ValueError):
+        SortBy.get("asdadadsad", "invalid default")
+
+
 @pytest.mark.parametrize(
     "category, expected_id",
     [

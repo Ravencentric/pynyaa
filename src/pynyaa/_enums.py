@@ -6,7 +6,7 @@ from typing_extensions import Self
 
 from pynyaa._compat import IntEnum, StrEnum
 from pynyaa._types import CategoryID, CategoryLiteral, SortByLiteral
-from pynyaa._utils import get_category_id_from_name
+from pynyaa._utils import _get_category_id_from_name
 
 
 class BaseStrEnum(StrEnum):
@@ -17,7 +17,7 @@ class BaseStrEnum(StrEnum):
         for member in cls:
             if member.value.casefold() == str(value).casefold():
                 return member
-        message = f"'{value}' is not a valid {type(cls)}"
+        message = f"'{value}' is not a valid {cls.__name__}"
         raise ValueError(message)
 
 
@@ -63,7 +63,7 @@ class Category(BaseStrEnum):
         This ID corresponds to the category as seen in the URL
         `https://nyaa.si/?f=0&c=1_2&q=`, where `c=1_2` is the ID for `Anime - English-translated`.
         """
-        return get_category_id_from_name(self.value)
+        return _get_category_id_from_name(self.value)
 
     @overload
     @classmethod
