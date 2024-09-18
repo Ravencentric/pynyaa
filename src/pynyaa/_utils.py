@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from functools import cache
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING
 
 from platformdirs import user_cache_path
 
