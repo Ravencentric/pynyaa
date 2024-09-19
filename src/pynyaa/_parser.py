@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
+from typing_extensions import Generator
 from xmltodict import parse as xmltodict_parse
 
 
@@ -117,7 +119,7 @@ def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
     )
 
 
-def parse_nyaa_rss_page(xml: str) -> tuple[str, ...]:
+def parse_nyaa_rss_page(xml: str) -> Generator[str]:
     """
     Parse the torrent links out of the RSS page
 
@@ -125,20 +127,41 @@ def parse_nyaa_rss_page(xml: str) -> tuple[str, ...]:
     ----------
     xml : str
         Nyaa's RSS XML data as a string
-    limit : str
-        Maximum number of links to parse out of the RSS page
 
-    Returns
-    -------
-    tuple[str, ...]
-        A tuple of torrent links
+    Yields
+    ------
+    str
+        The full URL of torrent page, in the order they were present.
     """
     try:
         items = xmltodict_parse(xml, encoding="utf-8")["rss"]["channel"]["item"]
     except KeyError:
-        return tuple()
+        yield from ()
+        return
 
     if isinstance(items, dict):  # RSS returns single results as a dict instead of a list
         items = [items]
 
-    return tuple(item["guid"]["#text"] for item in items)
+    for item in items:
+        yield item["guid"]["#text"]
+
+
+def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> Generator[str]:
+    """
+    Parses the HTML of a Nyaa search results page to extract torrent links.
+
+    Parameters
+    ----------
+    html : str
+        The HTML content of the Nyaa search results page.
+    base_url : str, optional
+        The base URL to use for constructing full links from relative links.
+
+    Yields
+    ------
+    str
+        The full URL of torrent page, in the order they were present.
+    """
+    parsed = re.findall(r"<a href=\"(/view/\d+)\" title=\".*\">.*</a>", html)
+    for relative_link in parsed:
+        yield urljoin(base_url, relative_link)

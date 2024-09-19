@@ -9,9 +9,9 @@ from hishel import AsyncCacheClient, AsyncFileStorage
 from torf import Torrent
 from typing_extensions import AsyncGenerator
 
-from pynyaa._enums import Category, Filter
+from pynyaa._enums import Category, Filter, SortBy
 from pynyaa._models import NyaaTorrentPage
-from pynyaa._parser import parse_nyaa_rss_page, parse_nyaa_torrent_page
+from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
 from pynyaa._utils import get_user_cache_path
 
 
@@ -102,8 +102,10 @@ class AsyncNyaa:
         self,
         query: str,
         *,
-        category: Category | None = None,
-        filter: Filter | None = None,
+        category: Category = Category.ALL,
+        filter: Filter = Filter.NO_FILTER,
+        sort_by: SortBy = SortBy.DATETIME,
+        reverse: bool = False,
     ) -> AsyncGenerator[NyaaTorrentPage]:
         """
         Search for torrents on Nyaa.
@@ -111,11 +113,15 @@ class AsyncNyaa:
         Parameters
         ----------
         query : str
-            The search query string.
+            The search query.
         category : Category, optional
-            The category to filter the search. If None, searches all categories.
+            The category to narrow down the search results.
         filter : Filter, optional
-            The filter to apply to the search results. If None, no filter is applied.
+            Specifies the filter to apply to the search results.
+        sort_by : SortBy, optional
+            Defines how to sort the results.
+        reverse : bool, optional
+            Determines the order of the results: ascending if True, descending if False.
 
         Raises
         ------
@@ -128,16 +134,17 @@ class AsyncNyaa:
             A NyaaTorrentPage object representing the retrieved data.
         """
         async with AsyncCacheClient(storage=self._storage, **self._kwargs) as client:
-            params = dict(
-                page="rss",
-                f=filter if filter is not None else 0,
-                c=category.id if category is not None else "0_0",
+            params: dict[str, Any] = dict(
+                f=filter,
+                c=category.id,
                 q=query,
+                s=sort_by,
+                o="asc" if reverse else "desc",
             )
 
-            nyaa = await client.get(self._base_url, params=params, extensions=self._extensions)  # type: ignore
+            nyaa = await client.get(self._base_url, params=params, extensions=self._extensions)
             nyaa.raise_for_status()
-            results = parse_nyaa_rss_page(nyaa.text)
+            results = parse_nyaa_search_results(nyaa.text)
 
             for link in results:
                 yield await self.get(link)
