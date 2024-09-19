@@ -1,29 +1,11 @@
 from __future__ import annotations
 
-from functools import cache
 from typing import TYPE_CHECKING
 
-from platformdirs import user_cache_path
-
 if TYPE_CHECKING:  # pragma: no cover
-    from pathlib import Path
-    from typing import Callable, ParamSpec, TypeVar
-
     from pynyaa._types import CategoryID
 
-    P = ParamSpec("P")
-    T = TypeVar("T")
 
-    # functools.cache destroys the signature of whatever it wraps, so we use this to fix it.
-    # This is to only "fool" typecheckers and IDEs, this doesn't exist at runtime.
-    def cache(user_function: Callable[P, T], /) -> Callable[P, T]: ...  # type: ignore
-
-
-def get_user_cache_path() -> Path:
-    return user_cache_path(appname="pynyaa", ensure_exists=True).resolve()
-
-
-@cache
 def _get_category_id_from_name(key: str) -> CategoryID:
     mapping: dict[str, CategoryID] = {
         # All, c=0_0
