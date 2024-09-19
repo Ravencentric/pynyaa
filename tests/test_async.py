@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from platformdirs import user_cache_path
-
 from pynyaa import AsyncNyaa, Category
 
 headers = {
@@ -12,7 +10,6 @@ client = AsyncNyaa(headers=headers)
 
 async def test_properties() -> None:
     assert client.base_url == "https://nyaa.si/"
-    assert client.cache_path == user_cache_path(appname="pynyaa").resolve()
 
 
 async def test_nyaa_default() -> None:

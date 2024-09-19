@@ -1,22 +1,20 @@
 from __future__ import annotations
 
 from io import BytesIO
-from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
 
-from hishel import CacheClient, FileStorage
+from httpx import Client
 from torf import Torrent
 from typing_extensions import Generator
 
 from pynyaa._enums import Category, Filter, SortBy
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
-from pynyaa._utils import get_user_cache_path
 
 
 class Nyaa:
-    def __init__(self, base_url: str = "https://nyaa.si/", cache: bool = True, **kwargs: Any) -> None:
+    def __init__(self, base_url: str = "https://nyaa.si/", **kwargs: Any) -> None:
         """
         Nyaa client.
 
@@ -25,22 +23,12 @@ class Nyaa:
         base_url : str, optional
             The base URL of Nyaa. Default is `https://nyaa.si/`.
             This is used for constructing the full URL from relative URLs.
-        cache : bool, optional
-            Whether to enable caching. Default is `True`.
-            This will cache the page upon it's first request and then use the cached result
-            for any subsequent requests for the same page.
-            This helps in avoiding [HTTP 429 Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) but
-            do note some fields like seeders, leechers, and completed are constantly changing and thus caching would
-            mean you won't get the latest data on said fields.
         kwargs : Any, optional
             Keyword arguments to pass to the underlying [`httpx.Client`](https://www.python-httpx.org/api/#client)
             used to make the GET request.
         """
         self._base_url = base_url
-        self._cache = cache
         self._kwargs = kwargs
-        self._extensions = {"force_cache": self._cache, "cache_disabled": not self._cache}
-        self._storage = FileStorage(base_path=get_user_cache_path())
 
     @property
     def base_url(self) -> str:
@@ -48,13 +36,6 @@ class Nyaa:
         This is the base URL, used for constructing the full URL from relative URLs.
         """
         return self._base_url
-
-    @property
-    def cache_path(self) -> Path:
-        """
-        Path where cache files are stored.
-        """
-        return get_user_cache_path()
 
     def get(self, page: int | str) -> NyaaTorrentPage:
         """
@@ -85,12 +66,12 @@ class Nyaa:
             url = page
             nyaaid = page.split("/")[-1]  # type: ignore
 
-        with CacheClient(storage=self._storage, **self._kwargs) as client:
-            nyaa = client.get(url, extensions=self._extensions).raise_for_status()
+        with Client(**self._kwargs) as client:
+            nyaa = client.get(url).raise_for_status()
             parsed = parse_nyaa_torrent_page(self._base_url, nyaa.text)
 
             # Get the torrent file and convert it to a torf.Torrent object
-            torrent_file = client.get(parsed["torrent_file"], extensions=self._extensions).raise_for_status().content
+            torrent_file = client.get(parsed["torrent_file"]).raise_for_status().content
             torrent = Torrent.read_stream(BytesIO(torrent_file))
 
             return NyaaTorrentPage(id=nyaaid, url=url, torrent=torrent, **parsed)  # type: ignore
@@ -130,7 +111,7 @@ class Nyaa:
         NyaaTorrentPage
             A NyaaTorrentPage object representing the retrieved data.
         """
-        with CacheClient(storage=self._storage, **self._kwargs) as client:
+        with Client(**self._kwargs) as client:
             params: dict[str, Any] = dict(
                 f=filter,
                 c=category.id,
@@ -139,7 +120,7 @@ class Nyaa:
                 o="asc" if reverse else "desc",
             )
 
-            nyaa = client.get(self._base_url, params=params, extensions=self._extensions).raise_for_status()
+            nyaa = client.get(self._base_url, params=params).raise_for_status()
             results = parse_nyaa_search_results(nyaa.text)
 
             for link in results:
