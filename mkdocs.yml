@@ -76,6 +76,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Usage: usage.md
   - CLI Reference: cli-reference.md
   - API Reference:
       - Clients: api-reference/clients.md

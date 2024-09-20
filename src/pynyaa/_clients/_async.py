@@ -1,20 +1,22 @@
 from __future__ import annotations
 
 from io import BytesIO
+from types import TracebackType
 from typing import Any
 from urllib.parse import urljoin
 
 from httpx import AsyncClient
 from torf import Torrent
-from typing_extensions import AsyncGenerator
+from typing_extensions import AsyncGenerator, Self
 
 from pynyaa._enums import Category, Filter, SortBy
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
+from pynyaa._version import __version__
 
 
 class AsyncNyaa:
-    def __init__(self, base_url: str = "https://nyaa.si/", **kwargs: Any) -> None:
+    def __init__(self, base_url: str = "https://nyaa.si/", client: AsyncClient | None = None) -> None:
         """
         Async Nyaa client.
 
@@ -23,12 +25,11 @@ class AsyncNyaa:
         base_url : str, optional
             The base URL of Nyaa. Default is `https://nyaa.si/`.
             This is used for constructing the full URL from relative URLs.
-        kwargs : Any, optional
-            Keyword arguments to pass to the underlying [`httpx.AsyncClient`](https://www.python-httpx.org/api/#asyncclient)
-            used to make the GET request.
+        client : Client, optional
+            An [httpx.Client](https://www.python-httpx.org/api/#client) instance used to make requests to Nyaa.
         """
         self._base_url = base_url
-        self._kwargs = kwargs
+        self._client = AsyncClient(headers={"user-agent": f"pynyaa/{__version__}"}) if client is None else client
 
     @property
     def base_url(self) -> str:
@@ -36,6 +37,18 @@ class AsyncNyaa:
         This is the base URL, used for constructing the full URL from relative URLs.
         """
         return self._base_url
+
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(
+        self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
+    ) -> None:
+        await self.close()
+
+    async def close(self) -> None:
+        """Close the connection"""
+        await self._client.aclose()
 
     async def get(self, page: int | str) -> NyaaTorrentPage:
         """
@@ -59,25 +72,20 @@ class AsyncNyaa:
             A NyaaTorrentPage object representing the retrieved data.
         """
 
-        if isinstance(page, int):
-            url = urljoin(self._base_url, f"/view/{page}")
-            nyaaid = page
-        else:
-            url = page
-            nyaaid = page.split("/")[-1]  # type: ignore
+        nyaa_id = page if isinstance(page, int) else page.split("/")[-1]
+        nyaa_url = urljoin(self._base_url, f"/view/{nyaa_id}")
 
-        async with AsyncClient(**self._kwargs) as client:
-            nyaa = await client.get(url)
-            nyaa.raise_for_status()
+        nyaa = await self._client.get(nyaa_url)
+        nyaa.raise_for_status()
 
-            parsed = parse_nyaa_torrent_page(self._base_url, nyaa.text)
+        parsed = parse_nyaa_torrent_page(self._base_url, nyaa.text)
 
-            # Get the torrent file and convert it to a torf.Torrent object
-            response = await client.get(parsed["torrent_file"])
-            response.raise_for_status()
-            torrent = Torrent.read_stream(BytesIO(response.content))
+        # Get the torrent file and convert it to a torf.Torrent object
+        response = await self._client.get(parsed["torrent_file"])
+        response.raise_for_status()
+        torrent = Torrent.read_stream(BytesIO(response.content))
 
-            return NyaaTorrentPage(id=nyaaid, url=url, torrent=torrent, **parsed)  # type: ignore
+        return NyaaTorrentPage(id=nyaa_id, url=nyaa_url, torrent=torrent, **parsed)  # type: ignore
 
     async def search(
         self,
@@ -114,18 +122,17 @@ class AsyncNyaa:
         NyaaTorrentPage
             A NyaaTorrentPage object representing the retrieved data.
         """
-        async with AsyncClient(**self._kwargs) as client:
-            params: dict[str, Any] = dict(
-                f=filter,
-                c=category.id,
-                q=query,
-                s=sort_by,
-                o="asc" if reverse else "desc",
-            )
+        params: dict[str, Any] = dict(
+            f=filter,
+            c=category.id,
+            q=query,
+            s=sort_by,
+            o="asc" if reverse else "desc",
+        )
 
-            nyaa = await client.get(self._base_url, params=params)
-            nyaa.raise_for_status()
-            results = parse_nyaa_search_results(nyaa.text)
+        nyaa = await self._client.get(self._base_url, params=params)
+        nyaa.raise_for_status()
+        results = parse_nyaa_search_results(nyaa.text)
 
-            for link in results:
-                yield await self.get(link)
+        for link in results:
+            yield await self.get(link)
