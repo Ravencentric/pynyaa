@@ -12,7 +12,7 @@ from pynyaa._version import __version__, __version_tuple__
 
 def get(page: int | str) -> NyaaTorrentPage:  # pragma: no cover
     """
-    Quick access alias for `pynyaa.Nyaa.get`.
+    Shortcut for `pynyaa.Nyaa.get`.
     For more advanced or configurable usage, use the `pynyaa.Nyaa` client directly.
     """
     with Nyaa() as nyaa:
@@ -28,7 +28,7 @@ def search(
     reverse: bool = False,
 ) -> Generator[NyaaTorrentPage]:  # pragma: no cover
     """
-    Quick access alias for `pynyaa.Nyaa.search`.
+    Shortcut for `pynyaa.Nyaa.search`.
     For more advanced or configurable usage, use the `pynyaa.Nyaa` client directly.
     """
     with Nyaa() as nyaa:
