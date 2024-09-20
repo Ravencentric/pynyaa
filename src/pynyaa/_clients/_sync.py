@@ -25,9 +25,8 @@ class Nyaa:
         base_url : str, optional
             The base URL of Nyaa. Default is `https://nyaa.si/`.
             This is used for constructing the full URL from relative URLs.
-        kwargs : Any, optional
-            Keyword arguments to pass to the underlying [`httpx.Client`](https://www.python-httpx.org/api/#client)
-            used to make the GET request.
+        client : Client, optional
+            An [httpx.Client](https://www.python-httpx.org/api/#client) instance used to make requests to Nyaa.
         """
         self._base_url = base_url
         self._client = Client(headers={"user-agent": f"pynyaa/{__version__}"}) if client is None else client
