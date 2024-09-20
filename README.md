@@ -34,7 +34,6 @@
 ## About
 
 - Supports both sync and async.
-- Supports caching.
 - Provides easy access to every field except comments (comments are useless).
 - Parses both the nyaa page itself and it's accompanying `.torrent` file.
 
