@@ -17,5 +17,5 @@ def nyaa_client() -> Generator[Nyaa]:
         )
     )
 
-    yield Nyaa
+    yield nyaa
     nyaa.close()
