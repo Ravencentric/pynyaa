@@ -10,7 +10,7 @@ from pynyaa._models import NyaaTorrentPage, Submitter
 from pynyaa._version import __version__, __version_tuple__
 
 
-def get(page: int | str) -> NyaaTorrentPage:
+def get(page: int | str) -> NyaaTorrentPage:  # pragma: no cover
     """
     Quick access alias for `pynyaa.Nyaa.get`.
     For more advanced or configurable usage, use the `pynyaa.Nyaa` client directly.
@@ -26,7 +26,7 @@ def search(
     filter: Filter = Filter.NO_FILTER,
     sort_by: SortBy = SortBy.DATETIME,
     reverse: bool = False,
-) -> Generator[NyaaTorrentPage]:
+) -> Generator[NyaaTorrentPage]:  # pragma: no cover
     """
     Quick access alias for `pynyaa.Nyaa.search`.
     For more advanced or configurable usage, use the `pynyaa.Nyaa` client directly.
