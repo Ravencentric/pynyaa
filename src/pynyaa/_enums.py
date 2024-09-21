@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import overload
-
-from typing_extensions import Self
+from typing import TYPE_CHECKING, overload
 
 from pynyaa._compat import IntEnum, StrEnum
 from pynyaa._types import CategoryID, CategoryLiteral, SortByLiteral
 from pynyaa._utils import _get_category_id_from_name
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 
 class BaseStrEnum(StrEnum):
@@ -14,12 +15,14 @@ class BaseStrEnum(StrEnum):
 
     @classmethod
     def _missing_(cls, value: object) -> Self:
-        caseless_value = str(value).casefold()
-        for member in cls:
-            if (member.value.casefold() == caseless_value) or (member.name.casefold() == caseless_value):
-                return member
-        message = f"'{value}' is not a valid {cls.__name__}"
-        raise ValueError(message)
+        errmsg = f"'{value}' is not a valid {cls.__name__}"
+
+        if isinstance(value, str):
+            for member in cls:
+                if (member.value.casefold() == value.casefold()) or (member.name.casefold() == value.casefold()):
+                    return member
+            raise ValueError(errmsg)
+        raise ValueError(errmsg)
 
 
 class Category(BaseStrEnum):

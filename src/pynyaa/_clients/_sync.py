@@ -1,18 +1,19 @@
 from __future__ import annotations
 
 from io import BytesIO
-from types import TracebackType
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 from httpx import Client
 from torf import Torrent
-from typing_extensions import Generator, Self
 
 from pynyaa._enums import Category, Filter, SortBy
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
 from pynyaa._version import __version__
+
+if TYPE_CHECKING:
+    from typing_extensions import Generator, Self
 
 
 class Nyaa:
@@ -41,9 +42,7 @@ class Nyaa:
     def __enter__(self) -> Self:
         return self
 
-    def __exit__(
-        self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
-    ) -> None:
+    def __exit__(self, *args: object) -> None:
         self.close()
 
     def close(self) -> None:

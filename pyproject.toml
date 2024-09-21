@@ -26,7 +26,6 @@ pydantic = ">=2.9.1"
 beautifulsoup4 = ">=4.12.3"
 lxml = ">=5.3.0"
 torf = ">=4.2.7"
-typing-extensions = ">=4.12.2"
 strenum = { version = ">=0.4.15", python = "<3.11" }
 
 [tool.poetry.group.dev.dependencies]
@@ -37,6 +36,7 @@ pytest-asyncio = "^0.23.5.post1"
 coverage = "^7.6.1"
 types-beautifulsoup4 = "^4.12.0.20240907"
 types-xmltodict = "^0.13.0.3"
+typing-extensions = "^4.12.2"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^9.5.34"
@@ -71,6 +71,11 @@ ignore_missing_imports = true
 
 [tool.coverage.run]
 omit = ["src/pynyaa/_version.py", "src/pynyaa/_compat.py", "tests/*"]
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:", # Only used for type-hints
+]
 
 [build-system]
 requires = ["poetry-core"]

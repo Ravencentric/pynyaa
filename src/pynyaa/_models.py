@@ -6,8 +6,8 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, HttpUrl, field_serializer, field_validator
 from torf import Torrent
 
-from ._enums import Category
-from ._types import MagnetUrl, UTCDateTime
+from pynyaa._enums import Category
+from pynyaa._types import MagnetUrl, UTCDateTime
 
 
 class ParentModel(BaseModel):

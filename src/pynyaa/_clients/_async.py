@@ -1,18 +1,19 @@
 from __future__ import annotations
 
 from io import BytesIO
-from types import TracebackType
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 from httpx import AsyncClient
 from torf import Torrent
-from typing_extensions import AsyncGenerator, Self
 
 from pynyaa._enums import Category, Filter, SortBy
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
 from pynyaa._version import __version__
+
+if TYPE_CHECKING:
+    from typing_extensions import AsyncGenerator, Self
 
 
 class AsyncNyaa:
@@ -23,7 +24,7 @@ class AsyncNyaa:
         Parameters
         ----------
         base_url : str, optional
-            The base URL of Nyaa. Default is `https://nyaa.si/`.
+            The base URL of Nyaa.
             This is used for constructing the full URL from relative URLs.
         client : Client, optional
             An [httpx.Client](https://www.python-httpx.org/api/#client) instance used to make requests to Nyaa.
@@ -41,9 +42,7 @@ class AsyncNyaa:
     async def __aenter__(self) -> Self:
         return self
 
-    async def __aexit__(
-        self, type: type[BaseException] | None, value: BaseException | None, traceback: TracebackType | None
-    ) -> None:
+    async def __aexit__(self, *args: object) -> None:
         await self.close()
 
     async def close(self) -> None:

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
-from typing_extensions import Generator
+
+if TYPE_CHECKING:
+    from typing_extensions import Generator
 
 
 def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
