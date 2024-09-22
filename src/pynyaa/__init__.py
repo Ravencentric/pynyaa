@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from httpx import HTTPStatusError
-from typing_extensions import Generator
 
 from pynyaa._clients._async import AsyncNyaa
 from pynyaa._clients._sync import Nyaa
 from pynyaa._enums import Category, Filter, SortBy
 from pynyaa._models import NyaaTorrentPage, Submitter
 from pynyaa._version import __version__, __version_tuple__
+
+if TYPE_CHECKING:
+    from typing_extensions import Generator
 
 
 def get(page: int | str) -> NyaaTorrentPage:  # pragma: no cover
