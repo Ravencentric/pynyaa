@@ -65,8 +65,6 @@ CategoryValue = Literal[
     "Software - Games",
 ]
 
-CategoryLiteral = Union[CategoryName, CategoryValue]
-
 CategoryID = Literal[
     "0_0",
     "1_0",
@@ -93,5 +91,7 @@ CategoryID = Literal[
     "6_1",
     "6_2",
 ]
+
+CategoryLiteral = Union[CategoryName, CategoryValue, CategoryID]
 
 SortByLiteral = Literal["comments", "size", "id", "datetime", "seeders", "leechers", "downloads"]

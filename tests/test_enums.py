@@ -120,6 +120,42 @@ def test_nyaa_category_get(input_value, expected_category):
 
 
 @pytest.mark.parametrize(
+    "key, category",
+    [
+        ("0_0", Category.ALL),
+        ("1_0", Category.ANIME),
+        ("1_1", Category.ANIME_MUSIC_VIDEO),
+        ("1_2", Category.ANIME_ENGLISH_TRANSLATED),
+        ("1_3", Category.ANIME_NON_ENGLISH_TRANSLATED),
+        ("1_4", Category.ANIME_RAW),
+        ("2_0", Category.AUDIO),
+        ("2_1", Category.AUDIO_LOSSLESS),
+        ("2_2", Category.AUDIO_LOSSY),
+        ("3_0", Category.LITERATURE),
+        ("3_1", Category.LITERATURE_ENGLISH_TRANSLATED),
+        ("3_2", Category.LITERATURE_NON_ENGLISH_TRANSLATED),
+        ("3_3", Category.LITERATURE_RAW),
+        ("4_0", Category.LIVE_ACTION),
+        ("4_1", Category.LIVE_ACTION_ENGLISH_TRANSLATED),
+        ("4_2", Category.LIVE_ACTION_IDOL_PROMOTIONAL_VIDEO),
+        ("4_3", Category.LIVE_ACTION_NON_ENGLISH_TRANSLATED),
+        ("4_4", Category.LIVE_ACTION_RAW),
+        ("5_0", Category.PICTURES),
+        ("5_1", Category.PICTURES_GRAPHICS),
+        ("5_2", Category.PICTURES_PHOTOS),
+        ("6_0", Category.SOFTWARE),
+        ("6_1", Category.SOFTWARE_APPLICATIONS),
+        ("6_2", Category.SOFTWARE_GAMES),
+        ("6_9", Category.ALL),
+        ("9_9", Category.ALL),
+        ("-1_-1", Category.ALL),
+    ],
+)
+def test_nyaa_category_get_with_id(key, category):
+    assert Category.get(key) is category
+
+
+@pytest.mark.parametrize(
     "input_value, default, expected_category",
     [
         (12345, "Anime", Category.ANIME),
