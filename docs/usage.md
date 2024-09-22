@@ -26,7 +26,7 @@ for torrent in torrents:
 
 #### Advanced
 
-If you're doing more than quick experiments or one-off scripts, it's best to use the [`Nyaa`][pynyaa.Nyaa]/[`AsyncNyaa`][pynyaa.AsyncNyaa] client directly. They give you far more flexibility and control over the requests along with improved performance.
+If you're doing anything more than quick experiments or one-off scripts, it's best to use the [`Nyaa`][pynyaa.Nyaa]/[`AsyncNyaa`][pynyaa.AsyncNyaa] client directly. They give you far more flexibility and control over the requests along with improved performance.
 
 !!! note
     For more details, see the [HTTPX documentation](https://www.python-httpx.org/advanced/clients/#why-use-a-client) on clients.
