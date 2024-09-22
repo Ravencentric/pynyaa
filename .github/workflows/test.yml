@@ -40,8 +40,8 @@ jobs:
       - name: Install Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
-      - name: Check Python version
-        run: uv run python -c "import sys; print(sys.version)"
+      - name: Install the project
+        run: uv sync --all-extras --dev
 
       - name: Run tests and generate coverage
         run: |
