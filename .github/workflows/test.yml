@@ -53,7 +53,7 @@ jobs:
 
       - name: Get version
         id: version
-        run: echo "version=$(poetry run python -c 'import pynyaa; print(pynyaa.__version__)')" >> $GITHUB_OUTPUT
+        run: echo "version=$(uv run python -c 'import pynyaa; print(pynyaa.__version__)')" >> $GITHUB_OUTPUT
 
       - uses: actions/upload-artifact@v4
         with:
