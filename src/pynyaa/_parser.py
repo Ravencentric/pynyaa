@@ -1,13 +1,10 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Any
+from typing import Any
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
-
-if TYPE_CHECKING:
-    from typing_extensions import Generator
 
 
 def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
@@ -120,7 +117,7 @@ def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
     )
 
 
-def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> Generator[str]:
+def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> tuple[str, ...]:
     """
     Parses the HTML of a Nyaa search results page to extract torrent links.
 
@@ -137,5 +134,4 @@ def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> G
         The full URL of torrent page, in the order they were present.
     """
     parsed = re.findall(r"<a href=\"(/view/\d+)\" title=\".*\">.*</a>", html)
-    for relative_link in parsed:
-        yield urljoin(base_url, relative_link)
+    return tuple(urljoin(base_url, relative_link) for relative_link in parsed)

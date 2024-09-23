@@ -27,7 +27,7 @@ class AsyncNyaa:
             The base URL of Nyaa.
             This is used for constructing the full URL from relative URLs.
         client : Client, optional
-            An [httpx.Client](https://www.python-httpx.org/api/#client) instance used to make requests to Nyaa.
+            An [`httpx.Client`](https://www.python-httpx.org/api/#client) instance used to make requests to Nyaa.
         """
         self._base_url = base_url
         self._client = AsyncClient(headers={"user-agent": f"pynyaa/{__version__}"}) if client is None else client
@@ -109,7 +109,7 @@ class AsyncNyaa:
         sort_by : SortBy, optional
             Defines how to sort the results.
         reverse : bool, optional
-            Determines the order of the results: ascending if True, descending if False.
+            Determines the order of the results: ascending if `True`, descending if `False`.
 
         Raises
         ------
@@ -126,7 +126,7 @@ class AsyncNyaa:
             c=category.id,
             q=query,
             s=sort_by,
-            o="asc" if reverse else "desc",
+            o="asc" if reverse else "desc",  # desc is the default on nyaa
         )
 
         nyaa = await self._client.get(self._base_url, params=params)
