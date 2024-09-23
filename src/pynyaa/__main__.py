@@ -23,9 +23,9 @@ def main() -> None:
     include = args.include
     exclude = args.exclude
 
-    json = Nyaa().get(url).model_dump_json(indent=indent, include=include, exclude=exclude)
-
-    print(json)
+    with Nyaa() as client:
+        json = client.get(url).model_dump_json(indent=indent, include=include, exclude=exclude)
+        print(json)
 
 
 if __name__ == "__main__":
