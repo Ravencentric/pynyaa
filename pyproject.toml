@@ -73,7 +73,8 @@ required-imports = ["from __future__ import annotations"]
 [tool.mypy]
 strict = true
 pretty = true
-exclude = "tests/"
+files = ["src/**/*.py", "tests/**/*.py", "scripts/**/*.py"]
+# enable_error_code = ["ignore-without-code"]
 
 [[tool.mypy.overrides]]
 module = ["torf"]

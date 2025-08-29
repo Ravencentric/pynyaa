@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 from httpx import AsyncClient
 from torf import Torrent
 
-from pynyaa._enums import Category, Filter, SortBy
+from pynyaa._enums import Filter, ParentCategory, SortBy, TorrentCategory
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
 from pynyaa._version import __version__
@@ -90,7 +90,7 @@ class AsyncNyaa:
         self,
         query: str,
         *,
-        category: Category = Category.ALL,
+        category: ParentCategory | TorrentCategory = ParentCategory.ALL,
         filter: Filter = Filter.NO_FILTER,
         sort_by: SortBy = SortBy.DATETIME,
         reverse: bool = False,
@@ -102,7 +102,7 @@ class AsyncNyaa:
         ----------
         query : str
             The search query.
-        category : Category, optional
+        category : ParentCategory | TorrentCategory, optional
             The category to narrow down the search results.
         filter : Filter, optional
             Specifies the filter to apply to the search results.

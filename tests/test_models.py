@@ -5,7 +5,7 @@ from datetime import datetime
 
 from torf import Torrent
 
-from pynyaa import Category, NyaaTorrentPage, Submitter
+from pynyaa import NyaaTorrentPage, Submitter, TorrentCategory
 
 
 def test_submitter() -> None:
@@ -26,7 +26,7 @@ def test_nyaa_torrent_page() -> None:
         id=123456,
         url="https://nyaa.si/view/123456",
         title="title",
-        category=Category.ANIME_ENGLISH_TRANSLATED.value,
+        category=TorrentCategory.ANIME_ENGLISH_TRANSLATED.value,
         submitter=submitter_a,
         datetime=datetime(year=2024, month=6, day=30),
         information=None,
@@ -46,7 +46,7 @@ def test_nyaa_torrent_page() -> None:
         id=123456,
         url="https://nyaa.si/view/123456",
         title="title",
-        category=Category.ANIME_ENGLISH_TRANSLATED.value,
+        category=TorrentCategory.ANIME_ENGLISH_TRANSLATED.value,
         submitter=submitter_b,
         datetime=datetime(year=2024, month=6, day=30),
         information=None,
@@ -66,7 +66,7 @@ def test_nyaa_torrent_page() -> None:
         id=567890,
         url="https://nyaa.si/view/567890",
         title="title",
-        category=Category.ANIME_ENGLISH_TRANSLATED.value,
+        category=TorrentCategory.ANIME_ENGLISH_TRANSLATED.value,
         submitter=submitter_c,
         datetime=datetime(year=2024, month=6, day=30),
         information=None,

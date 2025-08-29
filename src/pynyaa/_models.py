@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import datetime as dt
 from os import fspath
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, HttpUrl, field_serializer, field_validator
 from torf import Torrent
 
-from pynyaa._enums import Category
-from pynyaa._types import MagnetUrl, UTCDateTime
+from pynyaa._enums import TorrentCategory
 
 
 class ParentModel(BaseModel):
@@ -133,13 +133,13 @@ class NyaaTorrentPage(ParentModel):
     title: str
     """Title of the torrent."""
 
-    category: Category
+    category: TorrentCategory
     """Torrent category."""
 
     submitter: Submitter
     """User who submitted the torrent."""
 
-    datetime: UTCDateTime
+    datetime: dt.datetime
     """Date and time at which the torrent was submitted."""
 
     information: str | None
@@ -175,7 +175,7 @@ class NyaaTorrentPage(ParentModel):
     torrent_file: HttpUrl
     """URL pointing to the `.torrent` file (`https://nyaa.si/download/123456.torrent`)"""
 
-    magnet: MagnetUrl
+    magnet: str
     """
     Magnet link of the torrent. 
     

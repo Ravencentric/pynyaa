@@ -1,4 +1,7 @@
-::: pynyaa._enums.Category
+::: pynyaa._enums.TorrentCategory
+    options:
+        members: true
+::: pynyaa._enums.ParentCategory
     options:
         members: true
 ::: pynyaa._enums.SortBy

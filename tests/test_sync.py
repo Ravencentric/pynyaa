@@ -6,7 +6,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import Category, Nyaa
+from pynyaa import Nyaa, TorrentCategory
 
 
 def test_properties(nyaa_client: Nyaa) -> None:
@@ -29,7 +29,7 @@ def test_nyaa_trusted(nyaa_client: Nyaa) -> None:
     assert nyaa.submitter.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.is_trusted is True
-    assert nyaa.category == Category.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.category == TorrentCategory.ANIME_ENGLISH_TRANSLATED
 
 
 @pytest.mark.vcr
@@ -54,7 +54,7 @@ def test_nyaa_anon(nyaa_client: Nyaa) -> None:
     assert nyaa.url.__str__() == "https://nyaa.si/view/1765655"
     assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
     assert nyaa.submitter.name == "Anonymous"
-    assert nyaa.category == Category.LITERATURE_ENGLISH_TRANSLATED
+    assert nyaa.category == TorrentCategory.LITERATURE_ENGLISH_TRANSLATED
 
 
 @pytest.mark.vcr

@@ -1,101 +1,194 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, overload
+import enum
+import sys
+from typing import TYPE_CHECKING, Literal, TypeAlias
 
-from pynyaa._compat import IntEnum, StrEnum
-from pynyaa._types import CategoryID, CategoryLiteral, SortByLiteral
+if sys.version_info > (3, 11):
+    from enum import Enum, IntEnum, StrEnum
+else:
+    import enum
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        pass
+
+    class IntEnum(enum.IntEnum):
+        def __str__(self) -> str:
+            return str(self.value)
+
 
 if TYPE_CHECKING:
     from typing_extensions import Self
 
-CATEGORY_NAME_TO_ID_MAP: dict[str, CategoryID] = {
-    # All, c=0_0
-    "All": "0_0",
-    # Anime, c=1_X
-    "Anime": "1_0",
-    "Anime - Anime Music Video": "1_1",
-    "Anime - English-translated": "1_2",
-    "Anime - Non-English-translated": "1_3",
-    "Anime - Raw": "1_4",
-    # Audio, c=2_X
-    "Audio": "2_0",
-    "Audio - Lossless": "2_1",
-    "Audio - Lossy": "2_2",
-    # Literature, c=3_X
-    "Literature": "3_0",
-    "Literature - English-translated": "3_1",
-    "Literature - Non-English-translated": "3_2",
-    "Literature - Raw": "3_3",
-    # Live Action, c=4_X
-    "Live Action": "4_0",
-    "Live Action - English-translated": "4_1",
-    "Live Action - Idol/Promotional Video": "4_2",
-    "Live Action - Non-English-translated": "4_3",
-    "Live Action - Raw": "4_4",
-    # Pictures, c=5_X
-    "Pictures": "5_0",
-    "Pictures - Graphics": "5_1",
-    "Pictures - Photos": "5_2",
-    # Software, c=6_X
-    "Software": "6_0",
-    "Software - Applications": "6_1",
-    "Software - Games": "6_2",
-}
 
-CATEGORY_ID_TO_NAME_MAP = {v: k for k, v in CATEGORY_NAME_TO_ID_MAP.items()}
+ParentCategoryValue: TypeAlias = Literal["All", "Anime", "Audio", "Literature", "Live Action", "Pictures", "Software"]
+ParentCategoryID: TypeAlias = Literal["0_0", "1_0", "2_0", "3_0", "4_0", "5_0", "6_0"]
 
 
-class BaseStrEnum(StrEnum):
-    """StrEnum with case-insensitive double-sided lookup"""
+class ParentCategory(enum.Enum):
+    """
+    Represents the top-level categories on Nyaa.
+    This enum supports case-insensitive lookup by member name, value, or ID.
+
+    Examples
+    --------
+    >>> ParentCategory("anime")
+    <ParentCategory.ANIME: 'Anime'>
+
+    >>> ParentCategory("Live_Action")
+    <ParentCategory.LIVE_ACTION: 'Live Action'>
+
+    >>> ParentCategory("3_0")
+    <ParentCategory.LITERATURE: 'Literature'>
+    """
+
+    if TYPE_CHECKING:
+
+        @property
+        def value(self) -> ParentCategoryValue: ...
+
+        def __init__(self, value: str) -> None:
+            self._id: ParentCategoryID
+    else:
+
+        def __init__(self, value: str, id: str) -> None:
+            self._value_ = value
+            self._id = id
+
+    ALL = "All", "0_0"
+    ANIME = "Anime", "1_0"
+    AUDIO = "Audio", "2_0"
+    LITERATURE = "Literature", "3_0"
+    LIVE_ACTION = "Live Action", "4_0"
+    PICTURES = "Pictures", "5_0"
+    SOFTWARE = "Software", "6_0"
+
+    @property
+    def id(self) -> ParentCategoryID:
+        """
+        Returns the ID of the category.
+
+        Examples
+        --------
+        ```py
+        >>> ParentCategory.ANIME.id == "1_0"
+        True
+        >>> ParentCategory.ALL.id == "0_0"
+        True
+        ```
+        """
+        return self._id
 
     @classmethod
     def _missing_(cls, value: object) -> Self:
-        errmsg = f"'{value}' is not a valid {cls.__name__}"
+        msg = f"'{value}' is not a valid {cls.__name__}"
 
         if isinstance(value, str):
+            value = value.casefold().strip()
             for member in cls:
-                if (member.value.casefold() == value.casefold()) or (member.name.casefold() == value.casefold()):
+                if (value == member.value.casefold()) or (value == member.name.casefold()) or (value == member.id):
                     return member
-            raise ValueError(errmsg)
-        raise ValueError(errmsg)
+            raise ValueError(msg)
+        raise ValueError(msg)
 
 
-class Category(BaseStrEnum):
-    """Nyaa categories"""
+TorrentCategoryValue: TypeAlias = Literal[
+    "Anime - Anime Music Video",
+    "Anime - English-translated",
+    "Anime - Non-English-translated",
+    "Anime - Raw",
+    "Audio - Lossless",
+    "Audio - Lossy",
+    "Literature - English-translated",
+    "Literature - Non-English-translated",
+    "Literature - Raw",
+    "Live Action - English-translated",
+    "Live Action - Idol/Promotional Video",
+    "Live Action - Non-English-translated",
+    "Live Action - Raw",
+    "Pictures - Graphics",
+    "Pictures - Photos",
+    "Software - Applications",
+    "Software - Games",
+]
 
-    ALL = "All"
+TorrentCategoryID: TypeAlias = Literal[
+    "1_1",
+    "1_2",
+    "1_3",
+    "1_4",
+    "2_1",
+    "2_2",
+    "3_1",
+    "3_2",
+    "3_3",
+    "4_1",
+    "4_2",
+    "4_3",
+    "4_4",
+    "5_1",
+    "5_2",
+    "6_1",
+    "6_2",
+]
 
-    ANIME = "Anime"
-    ANIME_MUSIC_VIDEO = "Anime - Anime Music Video"
-    ANIME_ENGLISH_TRANSLATED = "Anime - English-translated"
-    ANIME_NON_ENGLISH_TRANSLATED = "Anime - Non-English-translated"
-    ANIME_RAW = "Anime - Raw"
 
-    AUDIO = "Audio"
-    AUDIO_LOSSLESS = "Audio - Lossless"
-    AUDIO_LOSSY = "Audio - Lossy"
+class TorrentCategory(enum.Enum):
+    """
+    Represents the categories to which a torrent on Nyaa belongs.
+    This enum supports case-insensitive lookup by member name, value, or ID.
 
-    LITERATURE = "Literature"
-    LITERATURE_ENGLISH_TRANSLATED = "Literature - English-translated"
-    LITERATURE_NON_ENGLISH_TRANSLATED = "Literature - Non-English-translated"
-    LITERATURE_RAW = "Literature - Raw"
+    Examples
+    --------
+    >>> Category("ANIME_RAW")
+    <Category.ANIME_RAW: 'Anime - Raw'>
 
-    LIVE_ACTION = "Live Action"
-    LIVE_ACTION_ENGLISH_TRANSLATED = "Live Action - English-translated"
-    LIVE_ACTION_IDOL_PROMOTIONAL_VIDEO = "Live Action - Idol/Promotional Video"
-    LIVE_ACTION_NON_ENGLISH_TRANSLATED = "Live Action - Non-English-translated"
-    LIVE_ACTION_RAW = "Live Action - Raw"
+    >>> Category("Literature - English-translated")
+    <Category.LITERATURE_ENGLISH_TRANSLATED: 'Literature - English-translated'>
 
-    PICTURES = "Pictures"
-    PICTURES_GRAPHICS = "Pictures - Graphics"
-    PICTURES_PHOTOS = "Pictures - Photos"
+    >>> Category("2_1")
+    <Category.AUDIO_LOSSLESS: 'Audio - Lossless'>
+    """
 
-    SOFTWARE = "Software"
-    SOFTWARE_APPLICATIONS = "Software - Applications"
-    SOFTWARE_GAMES = "Software - Games"
+    if TYPE_CHECKING:
+
+        @property
+        def value(self) -> TorrentCategoryValue: ...
+
+        def __init__(self, value: str) -> None:
+            self._id: TorrentCategoryID
+    else:
+
+        def __init__(self, value: str, id: str) -> None:
+            self._value_ = value
+            self._id = id
+
+    ANIME_MUSIC_VIDEO = "Anime - Anime Music Video", "1_1"
+    ANIME_ENGLISH_TRANSLATED = "Anime - English-translated", "1_2"
+    ANIME_NON_ENGLISH_TRANSLATED = "Anime - Non-English-translated", "1_3"
+    ANIME_RAW = "Anime - Raw", "1_4"
+
+    AUDIO_LOSSLESS = "Audio - Lossless", "2_1"
+    AUDIO_LOSSY = "Audio - Lossy", "2_2"
+
+    LITERATURE_ENGLISH_TRANSLATED = "Literature - English-translated", "3_1"
+    LITERATURE_NON_ENGLISH_TRANSLATED = "Literature - Non-English-translated", "3_2"
+    LITERATURE_RAW = "Literature - Raw", "3_3"
+
+    LIVE_ACTION_ENGLISH_TRANSLATED = "Live Action - English-translated", "4_1"
+    LIVE_ACTION_IDOL_PROMOTIONAL_VIDEO = "Live Action - Idol/Promotional Video", "4_2"
+    LIVE_ACTION_NON_ENGLISH_TRANSLATED = "Live Action - Non-English-translated", "4_3"
+    LIVE_ACTION_RAW = "Live Action - Raw", "4_4"
+
+    PICTURES_GRAPHICS = "Pictures - Graphics", "5_1"
+    PICTURES_PHOTOS = "Pictures - Photos", "5_2"
+
+    SOFTWARE_APPLICATIONS = "Software - Applications", "6_1"
+    SOFTWARE_GAMES = "Software - Games", "6_2"
 
     @property
-    def id(self) -> CategoryID:
+    def id(self) -> TorrentCategoryID:
         """
         Returns the ID of the category.
 
@@ -104,73 +197,38 @@ class Category(BaseStrEnum):
         ```py
         >>> Category.ANIME_ENGLISH_TRANSLATED.id == "1_2"
         True
-        >>> Category.ALL.id == "0_0"
-        True
-        ```
         """
-        return CATEGORY_NAME_TO_ID_MAP[self.value]
+        return self._id
 
     @property
-    def parent(self) -> Self:
+    def parent(self) -> ParentCategory:
         """
-        Returns the parent category.
+        Returns the corresponding `ParentCategory` for this category.
 
         Examples
         --------
         ```py
-        >>> Category.ANIME_ENGLISH_TRANSLATED.parent is Category.ANIME
-        True
-        >>> Category.ANIME.parent is Category.ANIME
+        >>> Category.ANIME_ENGLISH_TRANSLATED.parent == ParentCategory.ANIME
         True
         ```
         """
-        return self.get(self.value.split("-")[0].strip())
-
-    @overload
-    @classmethod
-    def get(cls, key: CategoryLiteral, default: CategoryLiteral = "ALL") -> Self: ...
-
-    @overload
-    @classmethod
-    def get(cls, key: CategoryLiteral, default: str = "ALL") -> Self: ...
-
-    @overload
-    @classmethod
-    def get(cls, key: str, default: CategoryLiteral = "ALL") -> Self: ...
-
-    @overload
-    @classmethod
-    def get(cls, key: str, default: str = "ALL") -> Self: ...
+        parent, _ = self.value.split(" - ")
+        return ParentCategory(parent)
 
     @classmethod
-    def get(cls, key: CategoryLiteral | str, default: CategoryLiteral | str = "ALL") -> Self:
-        """
-        Get the `Category` by its name, value, or id (case-insensitive).
-        Return the default if the key is missing or invalid.
+    def _missing_(cls, value: object) -> Self:
+        msg = f"'{value}' is not a valid {cls.__name__}"
 
-        Parameters
-        ----------
-        key : CategoryLiteral | str
-            The key to retrieve.
-        default : CategoryLiteral | str, optional
-            The default value to return if the key is missing or invalid.
-
-        Returns
-        -------
-        Category
-            The `Category` corresponding to the key.
-        """
-
-        try:
-            return cls(key)
-        except ValueError:
-            try:
-                return cls(CATEGORY_ID_TO_NAME_MAP[key])  # type: ignore
-            except KeyError:
-                return cls(default)
+        if isinstance(value, str):
+            value = value.casefold().strip()
+            for member in cls:
+                if (value == member.value.casefold()) or (value == member.name.casefold()) or (value == member.id):
+                    return member
+            raise ValueError(msg)
+        raise ValueError(msg)
 
 
-class SortBy(BaseStrEnum):
+class SortBy(StrEnum):
     COMMENTS = "comments"
     SIZE = "size"
     DATETIME = "id"  # yea... https://nyaa.si/?s=id&o=desc
@@ -178,49 +236,41 @@ class SortBy(BaseStrEnum):
     LEECHERS = "leechers"
     DOWNLOADS = "downloads"
 
-    @overload
     @classmethod
-    def get(cls, key: SortByLiteral, default: SortByLiteral = "datetime") -> Self: ...
+    def _missing_(cls, value: object) -> Self:
+        msg = f"'{value}' is not a valid {cls.__name__}"
 
-    @overload
-    @classmethod
-    def get(cls, key: SortByLiteral, default: str = "datetime") -> Self: ...
-
-    @overload
-    @classmethod
-    def get(cls, key: str, default: SortByLiteral = "datetime") -> Self: ...
-
-    @overload
-    @classmethod
-    def get(cls, key: str, default: str = "datetime") -> Self: ...
-
-    @classmethod
-    def get(cls, key: SortByLiteral | str, default: SortByLiteral | str = "datetime") -> Self:
-        """
-        Get the `SortBy` by its name or value (case-insensitive).
-        Return the default if the key is missing or invalid.
-
-        Parameters
-        ----------
-        key : SortByLiteral | str
-            The key to retrieve.
-        default : SortByLiteral | str, optional
-            The default value to return if the key is missing or invalid.
-
-        Returns
-        -------
-        Category
-            The `SortBy` corresponding to the key.
-        """
-        try:
-            return cls(key)
-        except ValueError:
-            return cls(default)
+        if isinstance(value, str):
+            value = value.casefold().strip()
+            for member in cls:
+                if (value == member.value.casefold()) or (value == member.name.casefold()):
+                    return member
+            raise ValueError(msg)
+        raise ValueError(msg)
 
 
 class Filter(IntEnum):
-    """Nyaa search filters"""
+    if TYPE_CHECKING:
+
+        def __init__(self, value: str | int): ...
 
     NO_FILTER = 0
     NO_REMAKES = 1
     TRUSTED_ONLY = 2
+
+    @classmethod
+    def _missing_(cls, value: object) -> Self:
+        msg = f"'{value}' is not a valid {cls.__name__}"
+        match value:
+            case str():
+                for member in cls:
+                    if value.casefold().strip() == member.name.casefold():
+                        return member
+                raise ValueError(msg)
+            case int():
+                for member in cls:
+                    if value == member.value:
+                        return member
+                raise ValueError(msg)
+            case _:
+                raise ValueError(msg)
