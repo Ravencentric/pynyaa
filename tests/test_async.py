@@ -10,6 +10,7 @@ from pynyaa import AsyncNyaa, Category
 async def test_properties(async_nyaa_client: AsyncNyaa) -> None:
     assert async_nyaa_client.base_url == "https://nyaa.si/"
 
+
 @pytest.mark.vcr
 async def test_nyaa_default(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1755409")
@@ -17,6 +18,7 @@ async def test_nyaa_default(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter.name == "smol"
     assert nyaa.submitter.is_trusted is False
     assert nyaa.submitter.is_banned is False
+
 
 @pytest.mark.vcr
 async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
@@ -26,6 +28,7 @@ async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.is_remake is False
     assert nyaa.is_trusted is True
     assert nyaa.category == Category.ANIME_ENGLISH_TRANSLATED
+
 
 @pytest.mark.vcr
 async def test_nyaa_trusted_and_remake(async_nyaa_client: AsyncNyaa) -> None:
@@ -37,6 +40,7 @@ async def test_nyaa_trusted_and_remake(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.is_remake is True
     assert nyaa.is_trusted is False
     assert nyaa.submitter.is_trusted is True
+
 
 @pytest.mark.vcr
 async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
@@ -50,6 +54,7 @@ async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter.name == "Anonymous"
     assert nyaa.category == Category.LITERATURE_ENGLISH_TRANSLATED
 
+
 @pytest.mark.vcr
 async def test_nyaa_banned(async_nyaa_client: AsyncNyaa) -> None:
     # Thoughts and Prayers for our good friend succ_
@@ -59,6 +64,7 @@ async def test_nyaa_banned(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter.is_banned is True
     assert len(nyaa.torrent.files) == 20
 
+
 @pytest.mark.vcr
 async def test_nyaa_banned_and_trusted(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/884488")
@@ -66,6 +72,8 @@ async def test_nyaa_banned_and_trusted(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter.is_trusted is True
     assert nyaa.submitter.is_banned is True
     assert len(nyaa.torrent.files) == 51
+
+
 @pytest.mark.vcr
 async def test_nyaa_description(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1992716")
@@ -97,11 +105,13 @@ async def test_nyaa_empty_info(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.information is None
     assert nyaa.description is not None
 
+
 @pytest.mark.vcr
 async def test_nyaa_empty_desc(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/76777")
     assert nyaa.information is not None
     assert nyaa.description is None
+
 
 @pytest.mark.vcr
 async def test_nyaa_empty_desc_info(async_nyaa_client: AsyncNyaa) -> None:
@@ -109,12 +119,14 @@ async def test_nyaa_empty_desc_info(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.information is None
     assert nyaa.description is None
 
+
 @pytest.mark.vcr
-async def test_search(async_nyaa_client: AsyncNyaa) -> None:
+async def test_search_single(async_nyaa_client: AsyncNyaa) -> None:
     results = async_nyaa_client.search("smol shelter")
     async for result in results:
         assert result.title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
         break
+
 
 @pytest.mark.vcr
 async def test_nyaa_search_no_results(async_nyaa_client: AsyncNyaa) -> None:

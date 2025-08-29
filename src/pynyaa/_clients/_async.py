@@ -13,13 +13,13 @@ from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
 from pynyaa._version import __version__
 
 if TYPE_CHECKING:
-    from typing_extensions import AsyncGenerator, Self
+    from typing_extensions import AsyncIterator, Self
 
 
 class AsyncNyaa:
     def __init__(self, base_url: str = "https://nyaa.si/", client: AsyncClient | None = None) -> None:
         """
-        Async Nyaa client.
+        A client for interacting with Nyaa.
 
         Parameters
         ----------
@@ -94,7 +94,7 @@ class AsyncNyaa:
         filter: Filter = Filter.NO_FILTER,
         sort_by: SortBy = SortBy.DATETIME,
         reverse: bool = False,
-    ) -> AsyncGenerator[NyaaTorrentPage]:
+    ) -> AsyncIterator[NyaaTorrentPage]:
         """
         Search for torrents on Nyaa.
 

@@ -116,7 +116,7 @@ interactions:
       Content-Type:
       - text/html; charset=utf-8
       Date:
-      - Fri, 29 Aug 2025 16:25:09 GMT
+      - Fri, 29 Aug 2025 16:54:35 GMT
       Keep-Alive:
       - timeout=60
       Referrer-Policy:
@@ -124,14 +124,14 @@ interactions:
       Server:
       - ddos-guard
       Set-Cookie:
-      - __ddg8_=kuY5FUgpeGpW2gO2; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025
-        16:45:09 GMT
-      - __ddg10_=1756484709; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 16:45:09
+      - __ddg8_=oW6E3LvEyu6LO5JF; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025
+        17:14:35 GMT
+      - __ddg10_=1756486475; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 17:14:35
         GMT
-      - __ddg9_=146.70.67.90; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 16:45:09
+      - __ddg9_=146.70.67.90; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 17:14:35
         GMT
-      - __ddg1_=ZZseCETjSIAmTHOmKWAa; Domain=.nyaa.si; HttpOnly; Path=/; Expires=Sat,
-        29-Aug-2026 16:25:09 GMT
+      - __ddg1_=Eu6LirOBHoYj68uRRsfv; Domain=.nyaa.si; HttpOnly; Path=/; Expires=Sat,
+        29-Aug-2026 16:54:35 GMT
       Transfer-Encoding:
       - chunked
       X-Proxy-Cache:
@@ -151,7 +151,7 @@ interactions:
       connection:
       - keep-alive
       cookie:
-      - __ddg8_=kuY5FUgpeGpW2gO2; __ddg10_=1756484709; __ddg9_=146.70.67.90; __ddg1_=ZZseCETjSIAmTHOmKWAa
+      - __ddg8_=oW6E3LvEyu6LO5JF; __ddg10_=1756486475; __ddg9_=146.70.67.90; __ddg1_=Eu6LirOBHoYj68uRRsfv
       host:
       - nyaa.si
       user-agent:
@@ -269,7 +269,7 @@ interactions:
       Content-Type:
       - text/html; charset=utf-8
       Date:
-      - Fri, 29 Aug 2025 16:25:09 GMT
+      - Fri, 29 Aug 2025 16:54:36 GMT
       Keep-Alive:
       - timeout=60
       Referrer-Policy:
@@ -277,16 +277,16 @@ interactions:
       Server:
       - ddos-guard
       Set-Cookie:
-      - __ddg8_=n0w9flHTNiriqejt; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025
-        16:45:09 GMT
-      - __ddg10_=1756484709; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 16:45:09
+      - __ddg8_=hMaTIfwjBhX2scqy; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025
+        17:14:36 GMT
+      - __ddg10_=1756486476; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 17:14:36
         GMT
-      - __ddg9_=146.70.67.90; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 16:45:09
+      - __ddg9_=146.70.67.90; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 17:14:36
         GMT
       Transfer-Encoding:
       - chunked
       X-Proxy-Cache:
-      - HIT
+      - MISS
       X-Robots-Tag:
       - noarchive
     status:
@@ -302,7 +302,7 @@ interactions:
       connection:
       - keep-alive
       cookie:
-      - __ddg8_=n0w9flHTNiriqejt; __ddg10_=1756484709; __ddg9_=146.70.67.90; __ddg1_=ZZseCETjSIAmTHOmKWAa
+      - __ddg8_=hMaTIfwjBhX2scqy; __ddg10_=1756486476; __ddg9_=146.70.67.90; __ddg1_=Eu6LirOBHoYj68uRRsfv
       host:
       - nyaa.si
       user-agent:
@@ -545,17 +545,17 @@ interactions:
       Content-Type:
       - application/x-bittorrent
       Date:
-      - Fri, 29 Aug 2025 16:25:10 GMT
+      - Fri, 29 Aug 2025 16:54:36 GMT
       Keep-Alive:
       - timeout=60
       Server:
       - ddos-guard
       Set-Cookie:
-      - __ddg8_=JMpS8309FFC2s6hu; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025
-        16:45:10 GMT
-      - __ddg10_=1756484710; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 16:45:10
+      - __ddg8_=fG0ZLKhBqNG736Di; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025
+        17:14:36 GMT
+      - __ddg10_=1756486476; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 17:14:36
         GMT
-      - __ddg9_=146.70.67.90; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 16:45:10
+      - __ddg9_=146.70.67.90; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 17:14:36
         GMT
     status:
       code: 200
