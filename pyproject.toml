@@ -38,18 +38,27 @@ dev-dependencies = [
   "coverage>=7.6.1",
   "mypy>=1.11.2",
   "pytest>=8.3.3",
-  "pytest-asyncio>=0.24.0",
   "ruff>=0.6.7",
   "types-beautifulsoup4>=4.12.0.20240907",
   "typing-extensions>=4.12.2",
   "mkdocs-material>=9.5.36",
   "mkdocs-autorefs>=1.2.0",
   "mkdocstrings[python]>=0.26.1",
+  "pytest-recording>=0.13.4",
+  "pytest-asyncio>=1.1.0",
 ]
 
 [tool.pytest.ini_options]
+addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
+filterwarnings = [
+  "error", 
+  '''ignore:The 'strip_cdata' option of HTMLParser\(\) has never done anything and will eventually be removed\.:DeprecationWarning'''
+]
+log_cli_level = "INFO"
+testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+
 
 [tool.ruff]
 line-length = 120

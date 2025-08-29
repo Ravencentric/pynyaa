@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+import textwrap
+
+import pytest
+
 from pynyaa import AsyncNyaa, Category
 
 
 async def test_properties(async_nyaa_client: AsyncNyaa) -> None:
     assert async_nyaa_client.base_url == "https://nyaa.si/"
 
-
+@pytest.mark.vcr
 async def test_nyaa_default(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1755409")
     assert nyaa.title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
@@ -14,7 +18,7 @@ async def test_nyaa_default(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter.is_trusted is False
     assert nyaa.submitter.is_banned is False
 
-
+@pytest.mark.vcr
 async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1544043")
     assert nyaa.title == "[MTBB] I Want to Eat Your Pancreas (BD 1080p) | Kimi no Suizou wo Tabetai"
@@ -23,7 +27,7 @@ async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.is_trusted is True
     assert nyaa.category == Category.ANIME_ENGLISH_TRANSLATED
 
-
+@pytest.mark.vcr
 async def test_nyaa_trusted_and_remake(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1694824")
     assert (
@@ -34,7 +38,7 @@ async def test_nyaa_trusted_and_remake(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.is_trusted is False
     assert nyaa.submitter.is_trusted is True
 
-
+@pytest.mark.vcr
 async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get(1765655)
     assert (
@@ -46,7 +50,7 @@ async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter.name == "Anonymous"
     assert nyaa.category == Category.LITERATURE_ENGLISH_TRANSLATED
 
-
+@pytest.mark.vcr
 async def test_nyaa_banned(async_nyaa_client: AsyncNyaa) -> None:
     # Thoughts and Prayers for our good friend succ_
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1422797")
@@ -55,40 +59,64 @@ async def test_nyaa_banned(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter.is_banned is True
     assert len(nyaa.torrent.files) == 20
 
-
+@pytest.mark.vcr
 async def test_nyaa_banned_and_trusted(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/884488")
     assert nyaa.title == "[FMA1394] Fullmetal Alchemist (2003) [Dual Audio] [US BD] (batch)"
     assert nyaa.submitter.is_trusted is True
     assert nyaa.submitter.is_banned is True
     assert len(nyaa.torrent.files) == 51
+@pytest.mark.vcr
+async def test_nyaa_description(async_nyaa_client: AsyncNyaa) -> None:
+    nyaa = await async_nyaa_client.get("https://nyaa.si/view/1992716")
+    assert (
+        nyaa.description
+        == textwrap.dedent("""\
+    [Steins;Gate 0](https://myanimelist.net/anime/30484/Steins_Gate_0)
+
+    **Original subs**: WhyNot (23β), LostYears (01-23), GhostYears (24)  
+    **TLC (dialogue)**: GeeYu (01-23)  
+    **QC/editing**: motbob  
+    **Additional QC**: arsenyshalin  
+
+    You should probably watch "Episode 23β" (S00E01 in the Specials folder) before anything else. You should also read up on [Tanabata](https://en.wikipedia.org/wiki/Tanabata) if you're unfamiliar with its lore. Note that I omitted "probably" in that last sentence. Go do it.
+
+    There are alternate honorifics tracks in this release. Set your media player to play "enm" language tracks by default to automatically play honorifics tracks.
+
+    [Video quality comparisons](https://slow.pics/c/QtLFD8uA)  
+
+    Please leave feedback in the comments, good or bad.  
+    Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
+    All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).""")
+    )
 
 
+@pytest.mark.vcr
 async def test_nyaa_empty_info(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/5819")
     assert nyaa.information is None
     assert nyaa.description is not None
 
-
+@pytest.mark.vcr
 async def test_nyaa_empty_desc(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/76777")
     assert nyaa.information is not None
     assert nyaa.description is None
 
-
+@pytest.mark.vcr
 async def test_nyaa_empty_desc_info(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1586776")
     assert nyaa.information is None
     assert nyaa.description is None
 
-
+@pytest.mark.vcr
 async def test_search(async_nyaa_client: AsyncNyaa) -> None:
     results = async_nyaa_client.search("smol shelter")
     async for result in results:
         assert result.title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
         break
 
-
+@pytest.mark.vcr
 async def test_nyaa_search_no_results(async_nyaa_client: AsyncNyaa) -> None:
     results = async_nyaa_client.search("akldlaskdjsaljdksd")  # 0 results
     assert [i async for i in results] == []
