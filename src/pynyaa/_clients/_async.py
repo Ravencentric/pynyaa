@@ -102,7 +102,7 @@ class AsyncNyaa:
         ----------
         query : str
             The search query.
-        category : ParentCategory | TorrentCategory, optional
+        category : ParentCategory | Category, optional
             The category to narrow down the search results.
         filter : Filter, optional
             Specifies the filter to apply to the search results.

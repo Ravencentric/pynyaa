@@ -1,4 +1,4 @@
-::: pynyaa._enums.TorrentCategory
+::: pynyaa._enums.Category
     options:
         members: true
 ::: pynyaa._enums.ParentCategory
