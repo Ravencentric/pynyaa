@@ -6,7 +6,7 @@ from httpx import HTTPStatusError
 
 from pynyaa._clients._async import AsyncNyaa
 from pynyaa._clients._sync import Nyaa
-from pynyaa._enums import Filter, ParentCategory, SortBy, TorrentCategory
+from pynyaa._enums import Category, Filter, ParentCategory, SortBy
 from pynyaa._models import NyaaTorrentPage, Submitter
 from pynyaa._version import __version__, __version_tuple__
 
@@ -26,7 +26,7 @@ def get(page: int | str) -> NyaaTorrentPage:  # pragma: no cover
 def search(
     query: str,
     *,
-    category: ParentCategory | TorrentCategory = ParentCategory.ALL,
+    category: ParentCategory | Category = ParentCategory.ALL,
     filter: Filter = Filter.NO_FILTER,
     sort_by: SortBy = SortBy.DATETIME,
     reverse: bool = False,
@@ -48,7 +48,7 @@ __all__ = (
     "search",
     # Enums
     "ParentCategory",
-    "TorrentCategory",
+    "Category",
     "Filter",
     "SortBy",
     # Models

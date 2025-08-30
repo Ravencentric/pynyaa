@@ -4,7 +4,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import AsyncNyaa, TorrentCategory
+from pynyaa import AsyncNyaa, Category
 
 
 async def test_properties(async_nyaa_client: AsyncNyaa) -> None:
@@ -27,7 +27,7 @@ async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.is_trusted is True
-    assert nyaa.category == TorrentCategory.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.category == Category.ANIME_ENGLISH_TRANSLATED
 
 
 @pytest.mark.vcr
@@ -52,7 +52,7 @@ async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.url.__str__() == "https://nyaa.si/view/1765655"
     assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
     assert nyaa.submitter.name == "Anonymous"
-    assert nyaa.category == TorrentCategory.LITERATURE_ENGLISH_TRANSLATED
+    assert nyaa.category == Category.LITERATURE_ENGLISH_TRANSLATED
 
 
 @pytest.mark.vcr

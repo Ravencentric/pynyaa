@@ -135,7 +135,7 @@ TorrentCategoryID: TypeAlias = Literal[
 ]
 
 
-class TorrentCategory(enum.Enum):
+class Category(enum.Enum):
     """
     Represents the categories to which a torrent on Nyaa belongs.
     This enum supports case-insensitive lookup by member name, value, or ID.

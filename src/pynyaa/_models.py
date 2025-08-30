@@ -7,7 +7,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, HttpUrl, field_serializer, field_validator
 from torf import Torrent
 
-from pynyaa._enums import TorrentCategory
+from pynyaa._enums import Category
 
 
 class ParentModel(BaseModel):
@@ -133,7 +133,7 @@ class NyaaTorrentPage(ParentModel):
     title: str
     """Title of the torrent."""
 
-    category: TorrentCategory
+    category: Category
     """Torrent category."""
 
     submitter: Submitter

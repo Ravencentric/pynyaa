@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 from httpx import AsyncClient
 from torf import Torrent
 
-from pynyaa._enums import Filter, ParentCategory, SortBy, TorrentCategory
+from pynyaa._enums import Category, Filter, ParentCategory, SortBy
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
 from pynyaa._version import __version__
@@ -90,7 +90,7 @@ class AsyncNyaa:
         self,
         query: str,
         *,
-        category: ParentCategory | TorrentCategory = ParentCategory.ALL,
+        category: ParentCategory | Category = ParentCategory.ALL,
         filter: Filter = Filter.NO_FILTER,
         sort_by: SortBy = SortBy.DATETIME,
         reverse: bool = False,
