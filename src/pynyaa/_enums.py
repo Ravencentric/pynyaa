@@ -11,7 +11,8 @@ else:
     from enum import Enum
 
     class StrEnum(str, Enum):
-        pass
+        def __str__(self) -> str:
+            return self.value
 
     class IntEnum(enum.IntEnum):
         def __str__(self) -> str:
