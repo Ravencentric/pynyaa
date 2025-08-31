@@ -1,20 +1,31 @@
 from __future__ import annotations
 
+import datetime as dt
 import re
-from typing import Any
+from typing import Final
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+from ._enums import Category
+from ._models import NyaaTorrentPage, Submitter
 
-def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
+NO_INFORMATION: Final = "No information."
+NO_DESCRIPTION: Final = "#### No description."
+
+
+def urlfor(endpoint: str) -> str:
+    return urljoin("https://nyaa.si/", endpoint)
+
+
+def parse_nyaa_torrent_page(id: int, html: str) -> NyaaTorrentPage:
     """
     Parse the HTML page to extract relevant information
 
     Parameters
     ----------
-    base_url : str
-        Base URL used to construct the full URL from relative URLs.
+    id : int
+        ID of the torrent.
     html : str
         HTML content of the Nyaa page.
 
@@ -48,71 +59,70 @@ def parse_nyaa_torrent_page(base_url: str, html: str) -> dict[str, Any]:
 
     # ROW ONE
     row_one = rows[0].find_all("div", class_="col-md-5")
-    category = row_one[0].get_text().strip()
-    datetime = row_one[1]["data-timestamp"]
+    category = Category(row_one[0].get_text().strip())
+    datetime = dt.datetime.fromtimestamp(int(row_one[1]["data-timestamp"]), tz=dt.timezone.utc)
 
     # ROW TWO
     row_two = rows[1].find_all("div", class_="col-md-5")
-    submitter = row_two[0].get_text().strip()
-    if submitter.lower() != "anonymous":
-        submitter_url = urljoin(base_url, row_two[0].find("a").get("href", f"/user/{submitter}"))
-        submitter_status = row_two[0].find("a").get("title", None)
+    submitter_name = row_two[0].get_text().strip()
+    submitter: Submitter | None = None
 
-        if submitter_status is not None:
-            if submitter_status.lower() == "trusted":
-                submitter_trusted = True
-                submitter_banned = False
-            elif submitter_status.lower() == "banned user":
-                submitter_trusted = False
-                submitter_banned = True
-            elif submitter_status.lower() == "banned trusted":
-                submitter_trusted = True
-                submitter_banned = True
-            else:
-                submitter_trusted = False
-                submitter_banned = False
+    if submitter_name != "Anonymous":
+        submitter_url = urlfor(f"/user/{submitter_name}")
+        submitter_status: str = row_two[0].find("a").get("title", "default")
+
+        match submitter_status.lower():
+            case "trusted":
+                submitter = Submitter(name=submitter_name, url=submitter_url, is_trusted=True, is_banned=False)
+            case "banned user":
+                submitter = Submitter(name=submitter_name, url=submitter_url, is_trusted=False, is_banned=True)
+            case "banned trusted":
+                submitter = Submitter(name=submitter_name, url=submitter_url, is_trusted=True, is_banned=True)
+            case _:
+                submitter = Submitter(name=submitter_name, url=submitter_url, is_trusted=False, is_banned=False)
     else:
-        submitter_url = base_url
-        submitter_trusted = False
-        submitter_banned = False
+        submitter = None
 
-    seeders = row_two[1].get_text().strip()
+    seeders = int(row_two[1].get_text().strip())
 
     # ROW THREE
     row_three = rows[2].find_all("div", class_="col-md-5")
-    information = row_three[0].get_text().strip()
-    leechers = row_three[1].get_text().strip()
+    information: str | None = None
+    if _information := row_three[0].get_text().strip():
+        if _information != NO_INFORMATION:
+            information = _information
+    leechers = int(row_three[1].get_text().strip())
 
     # ROW FOUR
     row_four = rows[3].find_all("div", class_="col-md-5")
-    completed = row_four[1].get_text().strip()
+    completed = int(row_four[1].get_text().strip())
 
     # ROW FOOTER
     footer = body.find("div", class_="panel-footer clearfix").find_all("a")  # type: ignore
-    torrent_file = urljoin(base_url, footer[0]["href"])
+    torrent = urlfor(footer[0]["href"])
     magnet = footer[1]["href"]
 
     # DESCRIPTION
-    description = soup.find(id="torrent-description").get_text().strip()  # type: ignore
+    description: str | None = None
+    if _description := soup.find(id="torrent-description").get_text().strip():  # type: ignore
+        if _description != NO_DESCRIPTION:
+            description = _description
 
-    return dict(
+    return NyaaTorrentPage(
+        id=id,
+        url=urlfor(f"/view/{id}"),
         title=title,
         category=category,
         datetime=datetime,
-        submitter=dict(
-            name=submitter,
-            url=submitter_url,
-            is_trusted=submitter_trusted,
-            is_banned=submitter_banned,
-        ),
+        submitter=submitter,
         information=information,
         seeders=seeders,
         leechers=leechers,
         completed=completed,
         is_trusted=is_trusted,
         is_remake=is_remake,
-        description=description,
-        torrent_file=torrent_file,
+        description=description if description else None,
+        torrent=torrent,
         magnet=magnet,
     )
 

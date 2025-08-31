@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 import textwrap
 
 import pytest
@@ -14,20 +15,56 @@ async def test_properties(async_nyaa_client: AsyncNyaa) -> None:
 @pytest.mark.vcr
 async def test_nyaa_default(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1755409")
+    assert nyaa.id == 1755409
+    assert nyaa.url == "https://nyaa.si/view/1755409"
     assert nyaa.title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
+    assert nyaa.category is Category.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.submitter is not None
     assert nyaa.submitter.name == "smol"
     assert nyaa.submitter.is_trusted is False
     assert nyaa.submitter.is_banned is False
+    assert nyaa.datetime == dt.datetime(2023, 12, 14, 9, 6, 18, tzinfo=dt.timezone.utc)
+    assert nyaa.information == "https://anidb.net/anime/12482"
+    assert nyaa.seeders == 15
+    assert nyaa.leechers == 0
+    assert nyaa.completed == 640
+    assert nyaa.is_trusted is False
+    assert nyaa.is_remake is False
+    assert nyaa.description == (
+        "Video: JPBD (Sony). Encoded by smolkitten.\n"
+        "Audio: Japanese FLAC (2.0)\n"
+        "Subtitles: Full subtitles [Harunatsu]\n"
+        "[Mediainfo](https://pastebin.com/tLu6yxTZ) | [Comparisons](https://slow.pics/c/oPk6POK1) | [Discord](https://discord.gg/5QknG2PP6D)\n\n"
+        "Harunatsu's subtitles were restyled."
+    )
+    assert nyaa.torrent == "https://nyaa.si/download/1755409.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:ad596c24e64424aa6fe02c04c20eb25e57dbb042")
 
 
 @pytest.mark.vcr
 async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1544043")
+    assert nyaa.id == 1544043
+    assert nyaa.url == "https://nyaa.si/view/1544043"
     assert nyaa.title == "[MTBB] I Want to Eat Your Pancreas (BD 1080p) | Kimi no Suizou wo Tabetai"
+    assert nyaa.category is Category.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.submitter is not None
+    assert nyaa.submitter.name == "motbob"
     assert nyaa.submitter.is_trusted is True
-    assert nyaa.is_remake is False
+    assert nyaa.submitter.is_banned is False
+    assert nyaa.datetime == dt.datetime(2022, 6, 20, 0, 0, 18, tzinfo=dt.timezone.utc)
+    assert nyaa.information == "#MTBB on Rizon"
+    assert nyaa.seeders == 30
+    assert nyaa.leechers == 0
+    assert nyaa.completed == 3895
     assert nyaa.is_trusted is True
-    assert nyaa.category == Category.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.is_remake is False
+    assert (
+        nyaa.description
+        == "[I Want to Eat Your Pancreas](https://myanimelist.net/anime/36098/Kimi_no_Suizou_wo_Tabetai)\n\nPAS subs, additional TS by [nedragrevev](https://github.com/nedragrevev/custom-subs).  \nNo 5.1 audio.\n\nThis BD had a lot of noise. I nuked the crap out of it. If you want a better encode with all the grain, grab a release that uses Beatrice-Raws (*not* D-Z0N3, that one is missing some scenes). For everyone else, this release looks much better than all the existing smaller and similar-sized encodes.\n\nThere is an alternate honorifics track in this release. Set your media player to play “enm” language tracks by default to automatically play honorifics tracks.\n\nPlease leave feedback in the comments, good or bad.  \nPlease read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.\nAll components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510)."
+    )
+    assert nyaa.torrent == "https://nyaa.si/download/1544043.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:78e51b8285dd611dc1728d9b38dc1b8607cd0994")
 
 
 @pytest.mark.vcr
@@ -39,6 +76,7 @@ async def test_nyaa_trusted_and_remake(async_nyaa_client: AsyncNyaa) -> None:
     )
     assert nyaa.is_remake is True
     assert nyaa.is_trusted is False
+    assert nyaa.submitter is not None
     assert nyaa.submitter.is_trusted is True
 
 
@@ -51,7 +89,7 @@ async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
     )
     assert nyaa.url.__str__() == "https://nyaa.si/view/1765655"
     assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
-    assert nyaa.submitter.name == "Anonymous"
+    assert nyaa.submitter is None
     assert nyaa.category == Category.LITERATURE_ENGLISH_TRANSLATED
 
 
@@ -60,18 +98,18 @@ async def test_nyaa_banned(async_nyaa_client: AsyncNyaa) -> None:
     # Thoughts and Prayers for our good friend succ_
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1422797")
     assert nyaa.title == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC]"
+    assert nyaa.submitter is not None
     assert nyaa.submitter.is_trusted is False
     assert nyaa.submitter.is_banned is True
-    assert len(nyaa.torrent.files) == 20
 
 
 @pytest.mark.vcr
 async def test_nyaa_banned_and_trusted(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/884488")
     assert nyaa.title == "[FMA1394] Fullmetal Alchemist (2003) [Dual Audio] [US BD] (batch)"
+    assert nyaa.submitter is not None
     assert nyaa.submitter.is_trusted is True
     assert nyaa.submitter.is_banned is True
-    assert len(nyaa.torrent.files) == 51
 
 
 @pytest.mark.vcr

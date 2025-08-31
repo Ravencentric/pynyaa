@@ -94,7 +94,7 @@ class ParentCategory(enum.Enum):
         raise ValueError(msg)
 
 
-TorrentCategoryValue: TypeAlias = Literal[
+CategoryValue: TypeAlias = Literal[
     "Anime - Anime Music Video",
     "Anime - English-translated",
     "Anime - Non-English-translated",
@@ -114,7 +114,7 @@ TorrentCategoryValue: TypeAlias = Literal[
     "Software - Games",
 ]
 
-TorrentCategoryID: TypeAlias = Literal[
+CategoryID: TypeAlias = Literal[
     "1_1",
     "1_2",
     "1_3",
@@ -155,10 +155,10 @@ class Category(enum.Enum):
     if TYPE_CHECKING:
 
         @property
-        def value(self) -> TorrentCategoryValue: ...
+        def value(self) -> CategoryValue: ...
 
         def __init__(self, value: str) -> None:
-            self._id: TorrentCategoryID
+            self._id: CategoryID
     else:
 
         def __init__(self, value: str, id: str) -> None:
@@ -189,7 +189,7 @@ class Category(enum.Enum):
     SOFTWARE_GAMES = "Software - Games", "6_2"
 
     @property
-    def id(self) -> TorrentCategoryID:
+    def id(self) -> CategoryID:
         """
         Returns the ID of the category.
 

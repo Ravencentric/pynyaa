@@ -2,12 +2,10 @@
 # Do not edit it by hand.
 from __future__ import annotations
 
-from io import BytesIO
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 from httpx import Client
-from torf import Torrent
 
 from pynyaa._enums import Category, Filter, ParentCategory, SortBy
 from pynyaa._models import NyaaTorrentPage
@@ -73,20 +71,13 @@ class Nyaa:
             A NyaaTorrentPage object representing the retrieved data.
         """
 
-        nyaa_id = page if isinstance(page, int) else page.split("/")[-1]
+        nyaa_id = page if isinstance(page, int) else int(page.split("/")[-1])
         nyaa_url = urljoin(self._base_url, f"/view/{nyaa_id}")
 
         nyaa = self._client.get(nyaa_url)
         nyaa.raise_for_status()
 
-        parsed = parse_nyaa_torrent_page(self._base_url, nyaa.text)
-
-        # Get the torrent file and convert it to a torf.Torrent object
-        response = self._client.get(parsed["torrent_file"])
-        response.raise_for_status()
-        torrent = Torrent.read_stream(BytesIO(response.content))
-
-        return NyaaTorrentPage(id=nyaa_id, url=nyaa_url, torrent=torrent, **parsed)  # type: ignore
+        return parse_nyaa_torrent_page(nyaa_id, nyaa.text)
 
     def search(
         self,
