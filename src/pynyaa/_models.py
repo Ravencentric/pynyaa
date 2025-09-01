@@ -9,6 +9,7 @@ from pynyaa._enums import Category
 if TYPE_CHECKING:
     pass
 
+
 @dataclass(frozen=True, kw_only=True, slots=True)
 class Submitter:
     """Represents the user who submitted the torrent."""

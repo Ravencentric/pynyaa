@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import datetime as dt
-import textwrap
 
 import pytest
 
-from pynyaa import AsyncNyaa, Category
+from pynyaa import AsyncNyaa, Category, Submitter
 
 
 async def test_properties(async_nyaa_client: AsyncNyaa) -> None:
@@ -138,65 +137,142 @@ async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
 async def test_nyaa_banned(async_nyaa_client: AsyncNyaa) -> None:
     # Thoughts and Prayers for our good friend succ_
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1422797")
+    assert nyaa.id == 1422797
+    assert nyaa.url == "https://nyaa.si/view/1422797"
     assert nyaa.title == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC]"
-    assert nyaa.submitter is not None
-    assert nyaa.submitter.is_trusted is False
-    assert nyaa.submitter.is_banned is True
+    assert nyaa.category is Category.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.submitter == Submitter(
+        name="darkmodejesus", url="https://nyaa.si/user/darkmodejesus", is_trusted=False, is_banned=True
+    )
+    assert nyaa.datetime == dt.datetime(2021, 8, 19, 14, 56, 35, tzinfo=dt.timezone.utc)
+    assert nyaa.information == "@succ_#2864 on discord"
+    assert nyaa.seeders == 3
+    assert nyaa.leechers == 1
+    assert nyaa.completed == 117
+    assert nyaa.is_trusted is False
+    assert nyaa.is_remake is False
+    assert (
+        nyaa.description
+        == "#### This is not a meme release\n| Sources |            |\n| ------------- |:-------------:|\n| Video      | [Beatrice-Raws](https://nyaa.si/view/1015456) (AVC) |\n| Audio      | [Beatrice-Raws](https://nyaa.si/view/1015456) (Japanese 2.0 FLAC 24-bit) |\n| Subs | Astral|\n| Extras| [Beatrice-Raws](https://nyaa.si/view/1015456) (NC and BD Menus)|\n**mods pls don't ban me I deleted the last torrent bc I had a config issue and had to create a new one**\n\n**Notes:**\n-Slapped Astral's subs on Beatrice's video, that's it, there's no meme.\n-This is my first time doing a mux of a series so errors might have gone unnoticed, feel free to comment any of your insatisfactions with this release here or if the problem is serious message me on discord.\n-No subs added to the NCs cuz I'm afraid to fuck something up.\n\nFor playback I recommend mpv (if the lack of UI bother you get [mpv.net](https://github.com/stax76/mpv.net)) or MPC-BE\n\n### Enjoy and seed for as long as you can!\n[Ep 01 Mediainfo](https://pastebin.com/GdANdZnz)\n![alt text](https://files.catbox.moe/wwat45.png \"booba\")\n\n### Torrent died cba to reseed, get it from [animetosho](https://animetosho.org/view/succ_-tsugumomo-bdrip-1920x1080-x264-flac.n1422797) or [mega](https://mega.nz/folder/dlhEFBCR#QWJMFi2chNH8TIwHwU6UJg)"
+    )
+    assert nyaa.torrent == "https://nyaa.si/download/1422797.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:5fecba4e64910a38c05d7566131a1318133bbc45")
 
 
 @pytest.mark.vcr
 async def test_nyaa_banned_and_trusted(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/884488")
+    assert nyaa.id == 884488
+    assert nyaa.url == "https://nyaa.si/view/884488"
     assert nyaa.title == "[FMA1394] Fullmetal Alchemist (2003) [Dual Audio] [US BD] (batch)"
-    assert nyaa.submitter is not None
-    assert nyaa.submitter.is_trusted is True
-    assert nyaa.submitter.is_banned is True
+    assert nyaa.category is Category.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.submitter == Submitter(
+        name="FMA1394", url="https://nyaa.si/user/FMA1394", is_trusted=True, is_banned=True
+    )
+    assert nyaa.datetime == dt.datetime(2016, 12, 27, 1, 13, tzinfo=dt.timezone.utc)
+    assert nyaa.information is None
+    assert nyaa.seeders == 16
+    assert nyaa.leechers == 3
+    assert nyaa.completed == 5915
+    assert nyaa.is_trusted is True
+    assert nyaa.is_remake is False
+    assert (
+        nyaa.description
+        == 'Some very minor tweaks to eps 2,3 and 31. File name changes for 42 and 51.   \n  \nif you\'ve kept up with the individual small batch torrents, just copy everything to the same folder called "\\[FMA1394\\] Fullmetal Alchemist (2003)" and have it check the data you already have.  \n  \nThe smaller batch torrents now redirect to here when you try and download them.'
+    )
+    assert nyaa.torrent == "https://nyaa.si/download/884488.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:2959e97cb7796f029d2196fb63bb5c70b56d4206")
 
 
 @pytest.mark.vcr
 async def test_nyaa_description(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1992716")
+    assert nyaa.id == 1992716
+    assert nyaa.url == "https://nyaa.si/view/1992716"
+    assert nyaa.title == "[MTBB] Steins;Gate 0 (BD 1080p) | Steins;Gate Zero S1"
+    assert nyaa.category is Category.ANIME_ENGLISH_TRANSLATED
+    assert nyaa.submitter == Submitter(
+        name="motbob", url="https://nyaa.si/user/motbob", is_trusted=True, is_banned=False
+    )
+    assert nyaa.datetime == dt.datetime(2025, 7, 13, 9, 51, 18, tzinfo=dt.timezone.utc)
+    assert nyaa.information == "https://discord.gg/r9gyPwJeqW"
+    assert nyaa.seeders == 104
+    assert nyaa.leechers == 6
+    assert nyaa.completed == 1112
+    assert nyaa.is_trusted is True
+    assert nyaa.is_remake is False
     assert (
         nyaa.description
-        == textwrap.dedent("""\
-    [Steins;Gate 0](https://myanimelist.net/anime/30484/Steins_Gate_0)
-
-    **Original subs**: WhyNot (23β), LostYears (01-23), GhostYears (24)  
-    **TLC (dialogue)**: GeeYu (01-23)  
-    **QC/editing**: motbob  
-    **Additional QC**: arsenyshalin  
-
-    You should probably watch "Episode 23β" (S00E01 in the Specials folder) before anything else. You should also read up on [Tanabata](https://en.wikipedia.org/wiki/Tanabata) if you're unfamiliar with its lore. Note that I omitted "probably" in that last sentence. Go do it.
-
-    There are alternate honorifics tracks in this release. Set your media player to play "enm" language tracks by default to automatically play honorifics tracks.
-
-    [Video quality comparisons](https://slow.pics/c/QtLFD8uA)  
-
-    Please leave feedback in the comments, good or bad.  
-    Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
-    All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).""")
+        == '[Steins;Gate 0](https://myanimelist.net/anime/30484/Steins_Gate_0)\n\n**Original subs**: WhyNot (23β), LostYears (01-23), GhostYears (24)  \n**TLC (dialogue)**: GeeYu (01-23)  \n**QC/editing**: motbob  \n**Additional QC**: arsenyshalin  \n\nYou should probably watch "Episode 23β" (S00E01 in the Specials folder) before anything else. You should also read up on [Tanabata](https://en.wikipedia.org/wiki/Tanabata) if you\'re unfamiliar with its lore. Note that I omitted "probably" in that last sentence. Go do it.\n\nThere are alternate honorifics tracks in this release. Set your media player to play "enm" language tracks by default to automatically play honorifics tracks.\n\n[Video quality comparisons](https://slow.pics/c/QtLFD8uA)  \n\nPlease leave feedback in the comments, good or bad.  \nPlease read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.\nAll components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).'
     )
+    assert nyaa.torrent == "https://nyaa.si/download/1992716.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:489cb384b126a87e26afc0dfe96ef20216a2fc39")
 
 
 @pytest.mark.vcr
 async def test_nyaa_empty_info(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/5819")
+    assert nyaa.id == 5819
+    assert nyaa.url == "https://nyaa.si/view/5819"
+    assert nyaa.title == "[moyism] Myself;Yourself - 08 (RAW)"
+    assert nyaa.category is Category.ANIME_RAW
+    assert nyaa.submitter == Submitter(
+        name="NyaaTorrents", url="https://nyaa.si/user/NyaaTorrents", is_trusted=False, is_banned=False
+    )
+    assert nyaa.datetime == dt.datetime(2008, 6, 23, 3, 24, tzinfo=dt.timezone.utc)
     assert nyaa.information is None
-    assert nyaa.description is not None
+    assert nyaa.seeders == 0
+    assert nyaa.leechers == 0
+    assert nyaa.completed == 0
+    assert nyaa.is_trusted is False
+    assert nyaa.is_remake is False
+    assert nyaa.description == "Share - YS2YSUOe1cLtf - D-tvk DivX6.6 704x396"
+    assert nyaa.torrent == "https://nyaa.si/download/5819.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:ad35645d31cf4110440a79b062f775bcab717af3")
 
 
 @pytest.mark.vcr
 async def test_nyaa_empty_desc(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/76777")
-    assert nyaa.information is not None
+    assert nyaa.id == 76777
+    assert nyaa.url == "https://nyaa.si/view/76777"
+    assert nyaa.title == "[CommieRaws]GA Geijutsuka Art Design Class 03 848x480[13BADBC6].mkv"
+    assert nyaa.category is Category.ANIME_RAW
+    assert nyaa.submitter == Submitter(
+        name="NyaaTorrents", url="https://nyaa.si/user/NyaaTorrents", is_trusted=False, is_banned=False
+    )
+    assert nyaa.datetime == dt.datetime(2009, 7, 24, 23, 47, tzinfo=dt.timezone.utc)
+    assert nyaa.information == "irc://irc.rizon.net/commie"
+    assert nyaa.seeders == 0
+    assert nyaa.leechers == 0
+    assert nyaa.completed == 0
+    assert nyaa.is_trusted is True
+    assert nyaa.is_remake is False
     assert nyaa.description is None
+    assert nyaa.torrent == "https://nyaa.si/download/76777.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:88cbf145c04d79e103a4620543098848544283ad")
 
 
 @pytest.mark.vcr
 async def test_nyaa_empty_desc_info(async_nyaa_client: AsyncNyaa) -> None:
     nyaa = await async_nyaa_client.get("https://nyaa.si/view/1586776")
+    assert nyaa.id == 1586776
+    assert nyaa.url == "https://nyaa.si/view/1586776"
+    assert nyaa.title == "Hatsune Miku - Angel Call -Vocaloid-PV clips Blu-ray Edition- [kuchikirukia]"
+    assert nyaa.category is Category.ANIME_MUSIC_VIDEO
+    assert nyaa.submitter == Submitter(
+        name="kuchikirukia", url="https://nyaa.si/user/kuchikirukia", is_trusted=False, is_banned=False
+    )
+    assert nyaa.datetime == dt.datetime(2022, 10, 5, 20, 35, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information is None
+    assert nyaa.seeders == 2
+    assert nyaa.leechers == 0
+    assert nyaa.completed == 127
+    assert nyaa.is_trusted is False
+    assert nyaa.is_remake is False
     assert nyaa.description is None
+    assert nyaa.torrent == "https://nyaa.si/download/1586776.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:79f9947ec567f1d5edb6ea472818588881094b2f")
 
 
 @pytest.mark.vcr
