@@ -72,27 +72,68 @@ def test_nyaa_trusted(nyaa_client: Nyaa) -> None:
 @pytest.mark.vcr
 def test_nyaa_trusted_and_remake(nyaa_client: Nyaa) -> None:
     nyaa = nyaa_client.get("https://nyaa.si/view/1694824")
-    assert (
-        nyaa.title
-        == "[MiniMTBB] Sound! Euphonium the Movie: Our Promise: A Brand New Day (BD 1080p) | Hibike! Euphonium: Chikai no Finale"
+    assert nyaa.id == 1694824
+    assert nyaa.url == "https://nyaa.si/view/1694824"
+    assert nyaa.title == (
+        "[MiniMTBB] Sound! Euphonium the Movie: Our Promise: A Brand New Day (BD 1080p) "
+        "| Hibike! Euphonium: Chikai no Finale"
     )
-    assert nyaa.is_remake is True
-    assert nyaa.is_trusted is False
+    assert nyaa.category is Category.ANIME_ENGLISH_TRANSLATED
     assert nyaa.submitter is not None
+    assert nyaa.submitter.name == "motbob"
     assert nyaa.submitter.is_trusted is True
+    assert nyaa.submitter.is_banned is False
+    assert nyaa.datetime == dt.datetime(2023, 7, 19, 15, 18, 2, tzinfo=dt.timezone.utc)
+    assert nyaa.information == "https://discord.gg/r9gyPwJeqW"
+    assert nyaa.seeders == 10
+    assert nyaa.leechers == 0
+    assert nyaa.completed == 982
+    assert nyaa.is_trusted is False
+    assert nyaa.is_remake is True
+    assert nyaa.description == (
+        "This is a smaller and lower quality version of "
+        "[Sound! Euphonium the Movie: Our Promise: A Brand New Day (BD 1080p)](https://nyaa.si/view/1694821).\n\n"
+        "Since these videos are 10-bit AV1, you should make sure you have a fully updated version of your video player "
+        "to avoid playback issues, whether it's [MPC](https://github.com/clsid2/mpc-hc/releases/tag/2.0.0), "
+        "[mpv](https://mpv.io/), or [VLC](https://www.videolan.org/vlc/)."
+    )
+    assert nyaa.torrent == "https://nyaa.si/download/1694824.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:19606f2e09b7013d9fcefbb67955766c19c32c5a")
 
 
 @pytest.mark.vcr
 def test_nyaa_anon(nyaa_client: Nyaa) -> None:
     nyaa = nyaa_client.get(1765655)
-    assert (
-        nyaa.title
-        == "[Kinoworm] Ascendance of a Bookworm P01v01-P05v08 + Fanbook v01-v03 + Royal Academy Stories First Year v01 + Short Story Collection v01 (J-Novel Club) (Premium)"
+
+    assert nyaa.id == 1765655
+    assert nyaa.url == "https://nyaa.si/view/1765655"
+    assert nyaa.title == (
+        "[Kinoworm] Ascendance of a Bookworm P01v01-P05v08 + Fanbook v01-v03 + "
+        "Royal Academy Stories First Year v01 + Short Story Collection v01 (J-Novel Club) (Premium)"
     )
-    assert nyaa.url.__str__() == "https://nyaa.si/view/1765655"
-    assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
+    assert nyaa.category is Category.LITERATURE_ENGLISH_TRANSLATED
     assert nyaa.submitter is None
-    assert nyaa.category == Category.LITERATURE_ENGLISH_TRANSLATED
+    assert nyaa.datetime == dt.datetime(2024, 1, 13, 7, 20, 33, tzinfo=dt.timezone.utc)
+    assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
+    assert nyaa.seeders == 6
+    assert nyaa.leechers == 0
+    assert nyaa.completed == 707
+    assert nyaa.is_trusted is False
+    assert nyaa.is_remake is False
+    assert nyaa.description == (
+        "### Join [![](https://discordapp.com/api/guilds/974468300304171038/widget.png?style=banner2)](https://discord.gg/snackbox) for bookworm cult\n"
+        "---\n\n"
+        "![](https://files.catbox.moe/7dr7oc.png)"
+        "\n\nSorry about that, my house got raided because my drug dealer snitched on me."
+        "\n\n---\n\n"
+        "### Update\n- Added P5v08 Premium from AnimationBytings"
+        "\n\n---\n\n"
+        "### Bonus\nFinal volume of the Kinoworm saga\n\n![](https://files.catbox.moe/8bfabf.png)"
+        "\n\n---\n\n"
+        "### How to read this? \nGo here https://thewiki.moe/getting-started/literature"
+    )
+    assert nyaa.torrent == "https://nyaa.si/download/1765655.torrent"
+    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:8732a06d2087c71fddf5dc55d08512ebe146d445")
 
 
 @pytest.mark.vcr
