@@ -19,7 +19,7 @@ NO_DESCRIPTION: Final = "#### No description."
 def urlfor(endpoint: str) -> str:
     return urljoin("https://nyaa.si/", endpoint)
 
-class PanelExtractor:
+class PanelParser:
     __slots__ = ("_body",)
 
     def __init__(self, body: bs4.Tag):
@@ -109,7 +109,7 @@ class PanelExtractor:
         raise ParsingError("Missing magnet link.")
 
 
-class PageExtractor:
+class PageParser:
     __slots__ = ("_soup", "_body")
 
     def __init__(self, html: str) -> None:
@@ -119,8 +119,8 @@ class PageExtractor:
         else:
             raise ParsingError("Unable to parse the page: malformed structure.")
 
-    def panel(self) -> PanelExtractor:
-        return PanelExtractor(self._body)
+    def panel(self) -> PanelParser:
+        return PanelParser(self._body)
 
     def is_trusted(self) -> bool:
         return "panel-success" in self._body.attrs["class"]
@@ -154,7 +154,7 @@ def parse_nyaa_torrent_page(id: int, html: str) -> NyaaTorrentPage:
         A dictionary with the relevant information.
     """
 
-    page = PageExtractor(html)
+    page = PageParser(html)
     panel = page.panel()
 
     return NyaaTorrentPage(
