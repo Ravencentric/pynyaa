@@ -20,16 +20,18 @@ def urlfor(endpoint: str) -> str:
     return urljoin("https://nyaa.si/", endpoint)
 
 class PanelExtractor:
+    __slots__ = ("_body",)
+
     def __init__(self, body: bs4.Tag):
-        self.body = body
+        self._body = body
 
     def select_from_row(self, label: str) -> bs4.Tag:
-        if found := self.body.select_one(f'.panel-body > .row > .col-md-1:-soup-contains-own("{label}") + .col-md-5'):
+        if found := self._body.select_one(f'.panel-body > .row > .col-md-1:-soup-contains-own("{label}") + .col-md-5'):
             return found
         raise ParsingError(f"Could not find required field: {label!r}")
 
     def title(self) -> str:
-        if title := self.body.select_one(".panel-heading > .panel-title"):
+        if title := self._body.select_one(".panel-heading > .panel-title"):
             return title.get_text(strip=True)
         raise ParsingError("Missing torrent title.")
 
@@ -92,22 +94,24 @@ class PanelExtractor:
 
     def infohash(self) -> str:
         selector = '.panel-body > .row > .col-md-offset-6.col-md-1:-soup-contains-own("Info hash:") + .col-md-5'
-        if found := self.body.select_one(selector):
+        if found := self._body.select_one(selector):
             return found.get_text(strip=True)
         raise ParsingError("Missing torrent info hash.")
 
     def torrent(self) -> str:
-        if found := self.body.select_one('.panel-footer.clearfix > a[href$=".torrent"]'):
+        if found := self._body.select_one('.panel-footer.clearfix > a[href$=".torrent"]'):
             return urlfor(found.attrs["href"])
         raise ParsingError("Missing torrent download link.")
 
     def magnet(self) -> str:
-        if found := self.body.select_one('.panel-footer.clearfix > a[href^="magnet:"]'):
+        if found := self._body.select_one('.panel-footer.clearfix > a[href^="magnet:"]'):
             return found.attrs["href"]
         raise ParsingError("Missing magnet link.")
 
 
 class PageExtractor:
+    __slots__ = ("_soup", "_body")
+
     def __init__(self, html: str) -> None:
         self._soup = bs4.BeautifulSoup(html, "lxml")
         if body := self._soup.select_one("div:is(.panel.panel-default, .panel.panel-success, .panel.panel-danger)"):
