@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import datetime as dt
+import math
 import re
 from typing import Final
 from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup
+import bs4
 
 from ._enums import Category
 from ._models import NyaaTorrentPage, Submitter
@@ -17,6 +18,124 @@ NO_DESCRIPTION: Final = "#### No description."
 def urlfor(endpoint: str) -> str:
     return urljoin("https://nyaa.si/", endpoint)
 
+class PanelExtractor:
+    def __init__(self, body: bs4.Tag):
+        self.body = body
+
+    def select_from_row(self, label: str) -> bs4.Tag:
+        if found := self.body.select_one(f'.panel-body > .row > .col-md-1:-soup-contains-own("{label}") + .col-md-5'):
+            return found
+        raise ValueError
+
+    def title(self) -> str:
+        if title := self.body.select_one(".panel-heading > .panel-title"):
+            return title.get_text(strip=True)
+        raise ValueError
+
+    def category(self) -> Category:
+        category = self.select_from_row("Category:").get_text().strip()
+        try:
+            return Category(category)
+        except ValueError:
+            raise
+
+    def datetime(self) -> dt.datetime:
+        if timestamp := self.select_from_row("Date:").attrs["data-timestamp"]:
+            return dt.datetime.fromtimestamp(int(timestamp), tz=dt.timezone.utc)
+        raise ValueError
+
+    def submitter(self) -> Submitter | None:
+        submitter = self.select_from_row("Submitter:")
+        name = submitter.get_text(strip=True)
+
+        if name == "Anonymous":
+            return None
+
+        url = urlfor(f"/user/{name}")
+        title = submitter.select_one("a").attrs["title"].lower()  # type: ignore
+        is_trusted = "trusted" in title
+        is_banned = "banned" in title
+
+        return Submitter(name=name, url=url, is_trusted=is_trusted, is_banned=is_banned)
+
+    def seeders(self) -> int:
+        return int(self.select_from_row("Seeders:").get_text(strip=True))
+
+    def leechers(self) -> int:
+        return int(self.select_from_row("Leechers:").get_text(strip=True))
+
+    def completed(self) -> int:
+        return int(self.select_from_row("Completed:").get_text(strip=True))
+
+    def information(self) -> str | None:
+        placeholder: Final = "No information."
+        information = self.select_from_row("Information:").get_text(strip=True)
+        if information == placeholder:
+            return None
+        return information
+
+    def filesize(self) -> int:
+        value, unit = self.select_from_row("File size:").get_text(strip=True).split(" ", maxsplit=1)
+
+        match unit:
+            case "KiB":
+                multiplier = 1024
+            case "MiB":
+                multiplier = 1024**2
+            case "GiB":
+                multiplier = 1024**3
+            case "TiB":
+                multiplier = 1024**4
+            case "PiB":
+                multiplier = 1024**5
+            case _:
+                raise ValueError(f"Unsupported file size unit: {unit}")
+
+        return math.ceil(float(value) * multiplier)
+
+    def infohash(self) -> str:
+        if found := self.body.select_one(
+            '.panel-body > .row > .col-md-offset-6.col-md-1:-soup-contains-own("Info hash:") + .col-md-5'
+        ):
+            return found.get_text(strip=True)
+        raise ValueError
+
+    def torrent(self) -> str:
+        if found := self.body.select_one('.panel-footer.clearfix > a[href$=".torrent"]'):
+            return urlfor(found.attrs["href"])
+        raise ValueError
+
+    def magnet(self) -> str:
+        if found := self.body.select_one('.panel-footer.clearfix > a[href^="magnet:"]'):
+            return found.attrs["href"]
+        raise ValueError
+
+
+class PageExtractor:
+    def __init__(self, html: str) -> None:
+        self._soup = bs4.BeautifulSoup(html, "lxml")
+        if body := self._soup.select_one("div:is(.panel.panel-default, .panel.panel-success, .panel.panel-danger)"):
+            self._body = body
+        else:
+            raise ValueError
+
+    def panel(self) -> PanelExtractor:
+        return PanelExtractor(self._body)
+
+    def is_trusted(self) -> bool:
+        return "panel-success" in self._body.attrs["class"]
+
+    def is_remake(self) -> bool:
+        return "panel-danger" in self._body.attrs["class"]
+
+    def description(self) -> str | None:
+        placeholder: Final = "#### No description."
+        if found := self._soup.select_one("#torrent-description"):
+            description = found.get_text().strip()
+            if description == placeholder:
+                return None
+            return description
+        raise ValueError
 
 def parse_nyaa_torrent_page(id: int, html: str) -> NyaaTorrentPage:
     """
@@ -35,95 +154,25 @@ def parse_nyaa_torrent_page(id: int, html: str) -> NyaaTorrentPage:
         A dictionary with the relevant information.
     """
 
-    soup = BeautifulSoup(html, "lxml")
-
-    if success := soup.find("div", class_="panel panel-success"):
-        # Trusted uploads use `panel-success` for their green color
-        body = success
-        is_trusted = True
-        is_remake = False
-    elif remake := soup.find("div", class_="panel panel-danger"):
-        # Remake uploads use `panel-danger` for their red color
-        body = remake
-        is_trusted = False
-        is_remake = True
-    else:
-        # Default uploads use `panel-default`
-        body = soup.find("div", class_="panel panel-default")  # type: ignore
-        is_trusted = False
-        is_remake = False
-
-    title = soup.title.string.replace(":: Nyaa", "").strip()  # type: ignore
-
-    rows = body.find("div", class_="panel-body").find_all("div", class_="row")  # type: ignore
-
-    # ROW ONE
-    row_one = rows[0].find_all("div", class_="col-md-5")
-    category = Category(row_one[0].get_text().strip())
-    datetime = dt.datetime.fromtimestamp(int(row_one[1]["data-timestamp"]), tz=dt.timezone.utc)
-
-    # ROW TWO
-    row_two = rows[1].find_all("div", class_="col-md-5")
-    submitter_name = row_two[0].get_text().strip()
-    submitter: Submitter | None = None
-
-    if submitter_name != "Anonymous":
-        submitter_url = urlfor(f"/user/{submitter_name}")
-        submitter_status: str = row_two[0].find("a").get("title", "default")
-
-        match submitter_status.lower():
-            case "trusted":
-                submitter = Submitter(name=submitter_name, url=submitter_url, is_trusted=True, is_banned=False)
-            case "banned user":
-                submitter = Submitter(name=submitter_name, url=submitter_url, is_trusted=False, is_banned=True)
-            case "banned trusted":
-                submitter = Submitter(name=submitter_name, url=submitter_url, is_trusted=True, is_banned=True)
-            case _:
-                submitter = Submitter(name=submitter_name, url=submitter_url, is_trusted=False, is_banned=False)
-    else:
-        submitter = None
-
-    seeders = int(row_two[1].get_text().strip())
-
-    # ROW THREE
-    row_three = rows[2].find_all("div", class_="col-md-5")
-    information: str | None = None
-    if _information := row_three[0].get_text().strip():
-        if _information != NO_INFORMATION:
-            information = _information
-    leechers = int(row_three[1].get_text().strip())
-
-    # ROW FOUR
-    row_four = rows[3].find_all("div", class_="col-md-5")
-    completed = int(row_four[1].get_text().strip())
-
-    # ROW FOOTER
-    footer = body.find("div", class_="panel-footer clearfix").find_all("a")  # type: ignore
-    torrent = urlfor(footer[0]["href"])
-    magnet = footer[1]["href"]
-
-    # DESCRIPTION
-    description: str | None = None
-    if _description := soup.find(id="torrent-description").get_text().strip():  # type: ignore
-        if _description != NO_DESCRIPTION:
-            description = _description
+    page = PageExtractor(html)
+    panel = page.panel()
 
     return NyaaTorrentPage(
         id=id,
         url=urlfor(f"/view/{id}"),
-        title=title,
-        category=category,
-        datetime=datetime,
-        submitter=submitter,
-        information=information,
-        seeders=seeders,
-        leechers=leechers,
-        completed=completed,
-        is_trusted=is_trusted,
-        is_remake=is_remake,
-        description=description if description else None,
-        torrent=torrent,
-        magnet=magnet,
+        title=panel.title(),
+        category=panel.category(),
+        datetime=panel.datetime(),
+        submitter=panel.submitter(),
+        information=panel.information(),
+        seeders=panel.seeders(),
+        leechers=panel.leechers(),
+        completed=panel.completed(),
+        is_trusted=page.is_trusted(),
+        is_remake=page.is_remake(),
+        description=page.description(),
+        torrent=panel.torrent(),
+        magnet=panel.magnet(),
     )
 
 
