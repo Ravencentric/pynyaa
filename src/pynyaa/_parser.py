@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 import bs4
 
 from ._enums import Category
+from ._errors import ParsingError
 from ._models import NyaaTorrentPage, Submitter
 
 NO_INFORMATION: Final = "No information."
@@ -25,24 +26,20 @@ class PanelExtractor:
     def select_from_row(self, label: str) -> bs4.Tag:
         if found := self.body.select_one(f'.panel-body > .row > .col-md-1:-soup-contains-own("{label}") + .col-md-5'):
             return found
-        raise ValueError
+        raise ParsingError(f"Could not find required field: {label!r}")
 
     def title(self) -> str:
         if title := self.body.select_one(".panel-heading > .panel-title"):
             return title.get_text(strip=True)
-        raise ValueError
+        raise ParsingError("Missing torrent title.")
 
     def category(self) -> Category:
         category = self.select_from_row("Category:").get_text().strip()
-        try:
-            return Category(category)
-        except ValueError:
-            raise
+        return Category(category)
 
     def datetime(self) -> dt.datetime:
-        if timestamp := self.select_from_row("Date:").attrs["data-timestamp"]:
-            return dt.datetime.fromtimestamp(int(timestamp), tz=dt.timezone.utc)
-        raise ValueError
+        timestamp = self.select_from_row("Date:").attrs["data-timestamp"]
+        return dt.datetime.fromtimestamp(int(timestamp), tz=dt.timezone.utc)
 
     def submitter(self) -> Submitter | None:
         submitter = self.select_from_row("Submitter:")
@@ -69,7 +66,7 @@ class PanelExtractor:
 
     def information(self) -> str | None:
         placeholder: Final = "No information."
-        information = self.select_from_row("Information:").get_text(strip=True)
+        information = self.select_from_row("Information:").get_text().strip()
         if information == placeholder:
             return None
         return information
@@ -89,26 +86,25 @@ class PanelExtractor:
             case "PiB":
                 multiplier = 1024**5
             case _:
-                raise ValueError(f"Unsupported file size unit: {unit}")
+                raise ParsingError(f"Unsupported file size unit: {unit}")
 
         return math.ceil(float(value) * multiplier)
 
     def infohash(self) -> str:
-        if found := self.body.select_one(
-            '.panel-body > .row > .col-md-offset-6.col-md-1:-soup-contains-own("Info hash:") + .col-md-5'
-        ):
+        selector = '.panel-body > .row > .col-md-offset-6.col-md-1:-soup-contains-own("Info hash:") + .col-md-5'
+        if found := self.body.select_one(selector):
             return found.get_text(strip=True)
-        raise ValueError
+        raise ParsingError("Missing torrent info hash.")
 
     def torrent(self) -> str:
         if found := self.body.select_one('.panel-footer.clearfix > a[href$=".torrent"]'):
             return urlfor(found.attrs["href"])
-        raise ValueError
+        raise ParsingError("Missing torrent download link.")
 
     def magnet(self) -> str:
         if found := self.body.select_one('.panel-footer.clearfix > a[href^="magnet:"]'):
             return found.attrs["href"]
-        raise ValueError
+        raise ParsingError("Missing magnet link.")
 
 
 class PageExtractor:
@@ -117,7 +113,7 @@ class PageExtractor:
         if body := self._soup.select_one("div:is(.panel.panel-default, .panel.panel-success, .panel.panel-danger)"):
             self._body = body
         else:
-            raise ValueError
+            raise ParsingError("Unable to parse the page: malformed structure.")
 
     def panel(self) -> PanelExtractor:
         return PanelExtractor(self._body)
@@ -135,7 +131,7 @@ class PageExtractor:
             if description == placeholder:
                 return None
             return description
-        raise ValueError
+        raise ParsingError("Missing torrent description.")
 
 def parse_nyaa_torrent_page(id: int, html: str) -> NyaaTorrentPage:
     """
