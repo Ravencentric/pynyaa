@@ -10,20 +10,15 @@ import bs4
 
 from ._enums import Category
 from ._errors import ParsingError
-from ._models import NyaaTorrentPage, Submitter
+from ._models import Submitter
 
-NO_INFORMATION: Final = "No information."
-NO_DESCRIPTION: Final = "#### No description."
-
-
-def urlfor(endpoint: str) -> str:
-    return urljoin("https://nyaa.si/", endpoint)
 
 class PanelParser:
-    __slots__ = ("_body",)
+    __slots__ = ("_body", "_base_url")
 
-    def __init__(self, body: bs4.Tag):
+    def __init__(self, *, body: bs4.Tag, base_url: str):
         self._body = body
+        self._base_url = base_url
 
     def select_from_row(self, label: str) -> bs4.Tag:
         if found := self._body.select_one(f'.panel-body > .row > .col-md-1:-soup-contains-own("{label}") + .col-md-5'):
@@ -50,7 +45,7 @@ class PanelParser:
         if name == "Anonymous":
             return None
 
-        url = urlfor(f"/user/{name}")
+        url = urljoin(self._base_url, f"/user/{name}")
         title = submitter.select_one("a").attrs["title"].lower()  # type: ignore
         is_trusted = "trusted" in title
         is_banned = "banned" in title
@@ -100,7 +95,7 @@ class PanelParser:
 
     def torrent(self) -> str:
         if found := self._body.select_one('.panel-footer.clearfix > a[href$=".torrent"]'):
-            return urlfor(found.attrs["href"])
+            return urljoin(self._base_url, found.attrs["href"])
         raise ParsingError("Missing torrent download link.")
 
     def magnet(self) -> str:
@@ -110,17 +105,18 @@ class PanelParser:
 
 
 class PageParser:
-    __slots__ = ("_soup", "_body")
+    __slots__ = ("_soup", "_body", "_base_url")
 
-    def __init__(self, html: str) -> None:
+    def __init__(self, *, html: str, base_url: str) -> None:
         self._soup = bs4.BeautifulSoup(html, "lxml")
+        self._base_url = base_url
         if body := self._soup.select_one("div:is(.panel.panel-default, .panel.panel-success, .panel.panel-danger)"):
             self._body = body
         else:
             raise ParsingError("Unable to parse the page: malformed structure.")
 
     def panel(self) -> PanelParser:
-        return PanelParser(self._body)
+        return PanelParser(body=self._body, base_url=self._base_url)
 
     def is_trusted(self) -> bool:
         return "panel-success" in self._body.attrs["class"]
@@ -136,44 +132,6 @@ class PageParser:
                 return None
             return description
         raise ParsingError("Missing torrent description.")
-
-def parse_nyaa_torrent_page(id: int, html: str) -> NyaaTorrentPage:
-    """
-    Parse the HTML page to extract relevant information
-
-    Parameters
-    ----------
-    id : int
-        ID of the torrent.
-    html : str
-        HTML content of the Nyaa page.
-
-    Returns
-    -------
-    dict[str, Any]
-        A dictionary with the relevant information.
-    """
-
-    page = PageParser(html)
-    panel = page.panel()
-
-    return NyaaTorrentPage(
-        id=id,
-        url=urlfor(f"/view/{id}"),
-        title=panel.title(),
-        category=panel.category(),
-        datetime=panel.datetime(),
-        submitter=panel.submitter(),
-        information=panel.information(),
-        seeders=panel.seeders(),
-        leechers=panel.leechers(),
-        completed=panel.completed(),
-        is_trusted=page.is_trusted(),
-        is_remake=page.is_remake(),
-        description=page.description(),
-        torrent=panel.torrent(),
-        magnet=panel.magnet(),
-    )
 
 
 def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> tuple[str, ...]:

@@ -61,6 +61,12 @@ class NyaaTorrentPage:
     completed: int
     """Number of completed downloads."""
 
+    size: int
+    """Size of the torrent."""
+
+    infohash: str
+    """Info hash of the torrent."""
+
     is_trusted: bool
     """
     Indicates whether the upload is trusted (green) or not.

@@ -7,7 +7,7 @@ from httpx import AsyncClient
 
 from pynyaa._enums import Category, Filter, ParentCategory, SortBy
 from pynyaa._models import NyaaTorrentPage
-from pynyaa._parser import parse_nyaa_search_results, parse_nyaa_torrent_page
+from pynyaa._parser import PageParser, parse_nyaa_search_results
 from pynyaa._version import __version__
 
 if TYPE_CHECKING:
@@ -47,7 +47,7 @@ class AsyncNyaa:
         """Close the connection"""
         await self._client.aclose()
 
-    async def get(self, page: int | str) -> NyaaTorrentPage:
+    async def get(self, page: int | str, /) -> NyaaTorrentPage:
         """
         Retrieve information from a Nyaa torrent page.
 
@@ -62,6 +62,8 @@ class AsyncNyaa:
         ------
         HTTPStatusError
             Nyaa returned a non 2xx response.
+        TypeError
+            If the 'page' parameter is not an int or str.
 
         Returns
         -------
@@ -69,13 +71,42 @@ class AsyncNyaa:
             A NyaaTorrentPage object representing the retrieved data.
         """
 
-        nyaa_id = page if isinstance(page, int) else int(page.split("/")[-1])
-        nyaa_url = urljoin(self._base_url, f"/view/{nyaa_id}")
+        match page:
+            case int():
+                id = page
+            case str():
+                try:
+                    id = int(page.rstrip("/").split("/")[-1])
+                except ValueError:
+                    raise ValueError(f"Invalid format. Expected a valid URL or numeric ID, got {page!r}.")
+            case _:
+                raise TypeError(f"Invalid type. Expected 'int' or 'str', got {type(page).__name__!r}.")
 
-        nyaa = await self._client.get(nyaa_url)
+        url = urljoin(self._base_url, f"/view/{id}")
+        nyaa = await self._client.get(url)
         nyaa.raise_for_status()
+        parsed = PageParser(html=nyaa.text, base_url=self.base_url)
+        panel = parsed.panel()
 
-        return parse_nyaa_torrent_page(nyaa_id, nyaa.text)
+        return NyaaTorrentPage(
+            id=id,
+            url=url,
+            title=panel.title(),
+            category=panel.category(),
+            datetime=panel.datetime(),
+            submitter=panel.submitter(),
+            information=panel.information(),
+            seeders=panel.seeders(),
+            leechers=panel.leechers(),
+            completed=panel.completed(),
+            size=panel.filesize(),
+            infohash=panel.infohash(),
+            is_trusted=parsed.is_trusted(),
+            is_remake=parsed.is_remake(),
+            description=parsed.description(),
+            torrent=panel.torrent(),
+            magnet=panel.magnet(),
+        )
 
     async def search(
         self,

@@ -46,6 +46,8 @@ def test_nyaa_default(nyaa_client: Nyaa) -> None:
 
     Harunatsu's subtitles were restyled.
     """)
+    assert nyaa.size == 619603559
+    assert nyaa.infohash == "ad596c24e64424aa6fe02c04c20eb25e57dbb042"
     assert nyaa.torrent == "https://nyaa.si/download/1755409.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:ad596c24e64424aa6fe02c04c20eb25e57dbb042")
 
@@ -84,6 +86,8 @@ def test_nyaa_trusted(nyaa_client: Nyaa) -> None:
     Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
     All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).
     """)
+    assert nyaa.size == 2040109466
+    assert nyaa.infohash == "78e51b8285dd611dc1728d9b38dc1b8607cd0994"
     assert nyaa.torrent == "https://nyaa.si/download/1544043.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:78e51b8285dd611dc1728d9b38dc1b8607cd0994")
 
@@ -115,6 +119,8 @@ def test_nyaa_trusted_and_remake(nyaa_client: Nyaa) -> None:
 
     Since these videos are 10-bit AV1, you should make sure you have a fully updated version of your video player to avoid playback issues, whether it's [MPC](https://github.com/clsid2/mpc-hc/releases/tag/2.0.0), [mpv](https://mpv.io/), or [VLC](https://www.videolan.org/vlc/).
     """)
+    assert nyaa.size == 1288490189
+    assert nyaa.infohash == "19606f2e09b7013d9fcefbb67955766c19c32c5a"
     assert nyaa.torrent == "https://nyaa.si/download/1694824.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:19606f2e09b7013d9fcefbb67955766c19c32c5a")
 
@@ -162,6 +168,8 @@ def test_nyaa_anon(nyaa_client: Nyaa) -> None:
     ### How to read this? 
     Go here https://thewiki.moe/getting-started/literature
     """)
+    assert nyaa.size == 1288490189
+    assert nyaa.infohash == "8732a06d2087c71fddf5dc55d08512ebe146d445"
     assert nyaa.torrent == "https://nyaa.si/download/1765655.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:8732a06d2087c71fddf5dc55d08512ebe146d445")
 
@@ -210,6 +218,8 @@ def test_nyaa_banned(nyaa_client: Nyaa) -> None:
 
     ### Torrent died cba to reseed, get it from [animetosho](https://animetosho.org/view/succ_-tsugumomo-bdrip-1920x1080-x264-flac.n1422797) or [mega](https://mega.nz/folder/dlhEFBCR#QWJMFi2chNH8TIwHwU6UJg)
     """)
+    assert nyaa.size == 18360985191
+    assert nyaa.infohash == "5fecba4e64910a38c05d7566131a1318133bbc45"
     assert nyaa.torrent == "https://nyaa.si/download/1422797.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:5fecba4e64910a38c05d7566131a1318133bbc45")
 
@@ -235,6 +245,8 @@ def test_nyaa_banned_and_trusted(nyaa_client: Nyaa) -> None:
     assert nyaa.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.description
+    assert nyaa.size == 20293720474
+    assert nyaa.infohash == "2959e97cb7796f029d2196fb63bb5c70b56d4206"
     assert nyaa.torrent == "https://nyaa.si/download/884488.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:2959e97cb7796f029d2196fb63bb5c70b56d4206")
 
@@ -277,6 +289,8 @@ def test_nyaa_description(nyaa_client: Nyaa) -> None:
     Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
     All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).    
     """)
+    assert nyaa.size == 44667659879
+    assert nyaa.infohash == "489cb384b126a87e26afc0dfe96ef20216a2fc39"
     assert nyaa.torrent == "https://nyaa.si/download/1992716.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:489cb384b126a87e26afc0dfe96ef20216a2fc39")
 
@@ -299,6 +313,8 @@ def test_nyaa_empty_info(nyaa_client: Nyaa) -> None:
     assert nyaa.is_trusted is False
     assert nyaa.is_remake is False
     assert nyaa.description == "Share - YS2YSUOe1cLtf - D-tvk DivX6.6 704x396"
+    assert nyaa.size == 192728269
+    assert nyaa.infohash == "ad35645d31cf4110440a79b062f775bcab717af3"
     assert nyaa.torrent == "https://nyaa.si/download/5819.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:ad35645d31cf4110440a79b062f775bcab717af3")
 
@@ -321,6 +337,8 @@ def test_nyaa_empty_desc(nyaa_client: Nyaa) -> None:
     assert nyaa.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.description is None
+    assert nyaa.size == 178887066
+    assert nyaa.infohash == "88cbf145c04d79e103a4620543098848544283ad"
     assert nyaa.torrent == "https://nyaa.si/download/76777.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:88cbf145c04d79e103a4620543098848544283ad")
 
@@ -343,6 +361,8 @@ def test_nyaa_empty_desc_info(nyaa_client: Nyaa) -> None:
     assert nyaa.is_trusted is False
     assert nyaa.is_remake is False
     assert nyaa.description is None
+    assert nyaa.size == 2576980378
+    assert nyaa.infohash == "79f9947ec567f1d5edb6ea472818588881094b2f"
     assert nyaa.torrent == "https://nyaa.si/download/1586776.torrent"
     assert nyaa.magnet.startswith("magnet:?xt=urn:btih:79f9947ec567f1d5edb6ea472818588881094b2f")
 
