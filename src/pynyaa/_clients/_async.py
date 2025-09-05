@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
+import bs4
 from httpx import AsyncClient
 
 from pynyaa._enums import Category, Filter, ParentCategory, SortBy
@@ -151,9 +152,15 @@ class AsyncNyaa:
             o="asc" if reverse else "desc",  # desc is the default on nyaa
         )
 
-        nyaa = await self._client.get(self._base_url, params=params)
-        nyaa.raise_for_status()
-        results = parse_nyaa_search_results(nyaa.text)
-
-        for link in results:
+        first = await self._client.get(self._base_url, params=params)
+        first.raise_for_status()
+        for link in parse_nyaa_search_results(first.text):
             yield await self.get(link)
+
+        pages = bs4.BeautifulSoup(first.text, "lxml").select("ul.pagination > li:not(.next) > a[href]")
+        for page in pages:
+            params["p"] = page.get_text()
+            other = await self._client.get(self._base_url, params=params)
+            other.raise_for_status()
+            for link in parse_nyaa_search_results(other.text):
+                yield await self.get(link)

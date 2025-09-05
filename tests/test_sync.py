@@ -7,7 +7,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import Category, Nyaa, Submitter
+from pynyaa import Category, Filter, Nyaa, Submitter
 
 
 def dedent(s: str) -> str:
@@ -368,11 +368,85 @@ def test_nyaa_empty_desc_info(nyaa_client: Nyaa) -> None:
 
 
 @pytest.mark.vcr
-def test_search_single(nyaa_client: Nyaa) -> None:
-    results = nyaa_client.search("smol shelter")
-    for result in results:
-        assert result.title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
-        break
+def test_search(nyaa_client: Nyaa) -> None:
+    results = nyaa_client.search("MTBB", reverse=True)
+    titles = [torrent.title for torrent in results]
+    assert len(titles) > 150
+    assert titles[:10] == [
+        "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",
+        "[MTBB] Your Name. (1080p BD) | Kimi no Na wa.",
+        "[MTBB] Mobile Suit Gundam 0080: War in the Pocket (720p BD)",
+        "[MTBB] Classroom of the Elite S1 (WEB 720p) | Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e",
+        "[MTBB] Yahari Ore no Seishun Love Comedy wa Machigatteiru. Zoku - OVA (720p BD)",
+        "[MTBB] In This Corner of the World (1080p BD) | Kono Sekai no Katasumi ni",
+        "[MTBB] Inuyashiki (WEB 810p)",
+        "[MTBB] Mind Game (810p BD)",
+        "[MTBB] One Stormy Night (WEB 1080p) | Arashi no Yoru ni",
+        "[MTBB] Hakumei to Mikochi - OVA (BD 720p)",
+    ]  # Page 1
+    assert "[MTBB] Hyouka (BD 1080p)" in titles  # Page 2
+    assert "[MTBB] Katanagatari S1 (BD 1080p)"  # Page 3
+
+    assert "[MTBB] Sword Art Online - Alicization (Unofficial Batch)" in titles  # Uploaded by someone else
+    assert (
+        "[MTBB] Sound! Euphonium the Movie: Our Promise: A Brand New Day (BD 1080p) | Hibike! Euphonium: Chikai no Finale"
+        in titles  # Uploaded by MTBB but not marked Trusted
+    )
+    assert "[MTBB-Minis] Monogatari Series (BD 1080p AV1)" in titles  # REMAKE
+
+
+@pytest.mark.vcr
+def test_search_trusted_only(nyaa_client: Nyaa) -> None:
+    results = nyaa_client.search("MTBB", filter=Filter.TRUSTED_ONLY, reverse=True)
+    titles = [torrent.title for torrent in results]
+    assert titles[:10] == [
+        "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",
+        "[MTBB] Your Name. (1080p BD) | Kimi no Na wa.",
+        "[MTBB] Mobile Suit Gundam 0080: War in the Pocket (720p BD)",
+        "[MTBB] Classroom of the Elite S1 (WEB 720p) | Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e",
+        "[MTBB] Yahari Ore no Seishun Love Comedy wa Machigatteiru. Zoku - OVA (720p BD)",
+        "[MTBB] In This Corner of the World (1080p BD) | Kono Sekai no Katasumi ni",
+        "[MTBB] Inuyashiki (WEB 810p)",
+        "[MTBB] Mind Game (810p BD)",
+        "[MTBB] One Stormy Night (WEB 1080p) | Arashi no Yoru ni",
+        "[MTBB] Hakumei to Mikochi - OVA (BD 720p)",
+    ]  # Page 1
+    assert "[MTBB] Hyouka (BD 1080p)" in titles  # Page 2
+    assert "[MTBB] Katanagatari S1 (BD 1080p)"  # Page 3
+
+    assert "[MTBB] Sword Art Online - Alicization (Unofficial Batch)" not in titles  # Uploaded by someone else
+    assert (
+        "[MTBB] Sound! Euphonium the Movie: Our Promise: A Brand New Day (BD 1080p) | Hibike! Euphonium: Chikai no Finale"
+        not in titles  # Uploaded by MTBB but not marked Trusted
+    )
+    assert "[MTBB-Minis] Monogatari Series (BD 1080p AV1)" in titles  # REMAKE
+
+
+@pytest.mark.vcr
+def test_search_no_remakes(nyaa_client: Nyaa) -> None:
+    results = nyaa_client.search("MTBB", filter=Filter.NO_REMAKES, reverse=True)
+    titles = [torrent.title for torrent in results]
+    assert titles[:10] == [
+        "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",
+        "[MTBB] Your Name. (1080p BD) | Kimi no Na wa.",
+        "[MTBB] Mobile Suit Gundam 0080: War in the Pocket (720p BD)",
+        "[MTBB] Classroom of the Elite S1 (WEB 720p) | Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e",
+        "[MTBB] Yahari Ore no Seishun Love Comedy wa Machigatteiru. Zoku - OVA (720p BD)",
+        "[MTBB] In This Corner of the World (1080p BD) | Kono Sekai no Katasumi ni",
+        "[MTBB] Inuyashiki (WEB 810p)",
+        "[MTBB] Mind Game (810p BD)",
+        "[MTBB] One Stormy Night (WEB 1080p) | Arashi no Yoru ni",
+        "[MTBB] Hakumei to Mikochi - OVA (BD 720p)",
+    ]  # Page 1
+    assert "[MTBB] Hyouka (BD 1080p)" in titles  # Page 2
+    assert "[MTBB] Katanagatari S1 (BD 1080p)"  # Page 3
+
+    assert "[MTBB] Sword Art Online - Alicization (Unofficial Batch)" in titles  # Uploaded by someone else
+    assert (
+        "[MTBB] Sound! Euphonium the Movie: Our Promise: A Brand New Day (BD 1080p) | Hibike! Euphonium: Chikai no Finale"
+        in titles  # Uploaded by MTBB but not marked Trusted
+    )
+    assert "[MTBB-Minis] Monogatari Series (BD 1080p AV1)" not in titles  # REMAKE
 
 
 @pytest.mark.vcr

@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import math
 import re
+from collections.abc import Iterator
 from typing import Final
 from urllib.parse import urljoin
 
@@ -134,7 +135,7 @@ class PageParser:
         raise ParsingError("Missing torrent description.")
 
 
-def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> tuple[str, ...]:
+def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> Iterator[str]:
     """
     Parses the HTML of a Nyaa search results page to extract torrent links.
 
@@ -150,5 +151,6 @@ def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> t
     str
         The full URL of torrent page, in the order they were present.
     """
-    parsed = re.findall(r"<a href=\"(/view/\d+)\" title=\".*\">.*</a>", html)
-    return tuple(urljoin(base_url, relative_link) for relative_link in parsed)
+    links = re.findall(r"<a href=\"(/view/\d+)\" title=\".*\">.*</a>", html)
+    for link in links:
+        yield urljoin(base_url, link)
