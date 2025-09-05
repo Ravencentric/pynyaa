@@ -30,9 +30,6 @@ Homepage = "https://pynyaa.ravencentric.cc"
 Documentation = "https://pynyaa.ravencentric.cc"
 Repository = "https://github.com/Ravencentric/pynyaa"
 
-[project.scripts]
-pynyaa = "pynyaa.__main__:main"
-
 [tool.uv]
 dev-dependencies = [
   "coverage>=7.6.1",
