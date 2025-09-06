@@ -101,26 +101,25 @@ class AsyncNyaa:
         nyaa.raise_for_status()
 
         parsed = PageParser(html=nyaa.text, base_url=self.base_url)
-        panel = parsed.panel()
 
         return NyaaTorrentPage(
             id=id,
             url=url,
-            title=panel.title(),
-            category=panel.category(),
-            datetime=panel.datetime(),
-            submitter=panel.submitter(),
-            information=panel.information(),
-            seeders=panel.seeders(),
-            leechers=panel.leechers(),
-            completed=panel.completed(),
-            size=panel.filesize(),
-            infohash=panel.infohash(),
+            title=parsed.panel.title(),
+            category=parsed.panel.category(),
+            datetime=parsed.panel.datetime(),
+            submitter=parsed.panel.submitter(),
+            information=parsed.panel.information(),
+            seeders=parsed.panel.seeders(),
+            leechers=parsed.panel.leechers(),
+            completed=parsed.panel.completed(),
+            size=parsed.panel.size(),
+            infohash=parsed.panel.infohash(),
             is_trusted=parsed.is_trusted(),
             is_remake=parsed.is_remake(),
             description=parsed.description(),
-            torrent=panel.torrent(),
-            magnet=panel.magnet(),
+            torrent=parsed.panel.torrent(),
+            magnet=parsed.panel.magnet(),
         )
 
     async def search(

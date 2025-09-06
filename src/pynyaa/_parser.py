@@ -69,7 +69,7 @@ class PanelParser:
             return None
         return information
 
-    def filesize(self) -> int:
+    def size(self) -> int:
         value, unit = self.select_from_row("File size:").get_text(strip=True).split(" ", maxsplit=1)
 
         match unit:
@@ -118,6 +118,7 @@ class PageParser:
         else:
             raise ParsingError("Unable to parse the page: malformed structure.")
 
+    @property
     def panel(self) -> PanelParser:
         return PanelParser(body=self._body, base_url=self._base_url)
 
