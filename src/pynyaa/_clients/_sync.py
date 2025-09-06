@@ -6,11 +6,13 @@ from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
 import bs4
-from httpx import Client
+import httpx
 
 from pynyaa._enums import Category, Filter, ParentCategory, SortBy
+from pynyaa._errors import TorrentNotFoundError
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import PageParser, parse_nyaa_search_results
+from pynyaa._utils import assert_type
 from pynyaa._version import __version__
 
 if TYPE_CHECKING:
@@ -18,7 +20,7 @@ if TYPE_CHECKING:
 
 
 class Nyaa:
-    def __init__(self, base_url: str = "https://nyaa.si/", client: Client | None = None) -> None:
+    def __init__(self, base_url: str = "https://nyaa.si/", client: httpx.Client | None = None) -> None:
         """
         A client for interacting with Nyaa.
 
@@ -31,7 +33,7 @@ class Nyaa:
             An [`httpx.Client`](https://www.python-httpx.org/api/#client) instance used to make requests to Nyaa.
         """
         self._base_url = base_url
-        self._client = Client(headers={"user-agent": f"pynyaa/{__version__}"}) if client is None else client
+        self._client = httpx.Client(headers={"user-agent": f"pynyaa/{__version__}"}) if client is None else client
 
     @property
     def base_url(self) -> str:
@@ -63,7 +65,7 @@ class Nyaa:
 
         Raises
         ------
-        HTTPStatusError
+        TorrentNotFoundError
             Nyaa returned a non 2xx response.
         TypeError
             If the 'page' parameter is not an int or str.
@@ -83,11 +85,16 @@ class Nyaa:
                 except ValueError:
                     raise ValueError(f"Invalid format. Expected a valid URL or numeric ID, got {page!r}.")
             case _:
-                raise TypeError(f"Invalid type. Expected 'int' or 'str', got {type(page).__name__!r}.")
+                raise TypeError(f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}.")
 
         url = urljoin(self._base_url, f"/view/{id}")
         nyaa = self._client.get(url)
-        nyaa.raise_for_status()
+
+        if nyaa.status_code == httpx.codes.NOT_FOUND:
+            raise TorrentNotFoundError(url)
+        else:
+            nyaa.raise_for_status()
+
         parsed = PageParser(html=nyaa.text, base_url=self.base_url)
         panel = parsed.panel()
 
@@ -146,6 +153,12 @@ class Nyaa:
         NyaaTorrentPage
             A NyaaTorrentPage object representing the retrieved data.
         """
+        assert_type(query, str, "query")
+        assert_type(category, (ParentCategory, Category), "category")
+        assert_type(filter, Filter, "filter")
+        assert_type(sort_by, SortBy, "sort_by")
+        assert_type(reverse, bool, "reverse")
+
         params: dict[str, Any] = dict(
             f=filter,
             c=category.id,
@@ -156,13 +169,16 @@ class Nyaa:
 
         first = self._client.get(self._base_url, params=params)
         first.raise_for_status()
-        for link in parse_nyaa_search_results(first.text):
+        html = first.text
+        for link in parse_nyaa_search_results(html):
             yield self.get(link)
 
-        pages = bs4.BeautifulSoup(first.text, "lxml").select("ul.pagination > li:not(.next) > a[href]")
+        # This selector does NOT return page 1, starts with 2 and that's exactly what we want.
+        pages = bs4.BeautifulSoup(html, "lxml").select("ul.pagination > li:not(.next) > a[href]")
         for page in pages:
-            params["p"] = page.get_text()
+            params["p"] = page.get_text()  # 2, 3, ...
             other = self._client.get(self._base_url, params=params)
             other.raise_for_status()
-            for link in parse_nyaa_search_results(other.text):
+            html = other.text
+            for link in parse_nyaa_search_results(html):
                 yield self.get(link)
