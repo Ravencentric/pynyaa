@@ -33,7 +33,11 @@ class Nyaa:
             Custom [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
         """
         self._base_url = base_url
-        self._client = httpx.Client(headers={"user-agent": f"pynyaa/{__version__}"}) if client is None else client
+        self._client = (
+            httpx.Client(headers={"User-Agent": f"pynyaa/{__version__} (https://pypi.org/project/pynyaa/)"})
+            if client is None
+            else client
+        )
 
     @property
     def base_url(self) -> str:
