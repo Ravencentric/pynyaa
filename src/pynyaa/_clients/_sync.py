@@ -136,15 +136,15 @@ class Nyaa:
         Parameters
         ----------
         query : str
-            The search query.
+            Search query string.
         category : ParentCategory | Category, optional
-            The category to narrow down the search results.
+            Category or subcategory used to filter results.
         filter : Filter, optional
-            Specifies the filter to apply to the search results.
+            Filter applied to the search results.
         sort_by : SortBy, optional
-            Defines how to sort the results.
+            Field used to sort the results.
         reverse : bool, optional
-            Determines the order of the results: ascending if `True`, descending if `False`.
+            Sort order: ascending if `True`, descending if `False`.
 
         Yields
         ------
