@@ -73,6 +73,8 @@ class PanelParser:
         value, unit = self.select_from_row("File size:").get_text(strip=True).split(" ", maxsplit=1)
 
         match unit:
+            case "Bytes":
+                multiplier = 1
             case "KiB":
                 multiplier = 1024
             case "MiB":
