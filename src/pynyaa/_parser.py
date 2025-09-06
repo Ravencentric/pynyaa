@@ -135,22 +135,18 @@ class PageParser:
         raise ParsingError("Missing torrent description.")
 
 
-def parse_nyaa_search_results(html: str, base_url: str = "https://nyaa.si") -> Iterator[str]:
+def parse_nyaa_search_results(html: str) -> Iterator[int]:
     """
-    Parses the HTML of a Nyaa search results page to extract torrent links.
+    Parse the HTML of a Nyaa search results page to extract torrent IDs.
 
     Parameters
     ----------
     html : str
         The HTML content of the Nyaa search results page.
-    base_url : str, optional
-        The base URL to use for constructing full links from relative links.
 
     Yields
     ------
     str
-        The full URL of torrent page, in the order they were present.
+        The torrent IDs in the order they were present.
     """
-    links = re.findall(r"<a href=\"(/view/\d+)\" title=\".*\">.*</a>", html)
-    for link in links:
-        yield urljoin(base_url, link)
+    return (int(id) for id in re.findall(r"<a href=\"(?:/view/(\d+))\" title=\".*\">.*</a>", html))
