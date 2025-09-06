@@ -7,7 +7,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import Category, Filter, Nyaa, Submitter
+from pynyaa import Category, Filter, Nyaa, Order, Submitter
 
 
 def dedent(s: str) -> str:
@@ -369,7 +369,7 @@ def test_nyaa_empty_desc_info(nyaa_client: Nyaa) -> None:
 
 @pytest.mark.vcr
 def test_search(nyaa_client: Nyaa) -> None:
-    results = nyaa_client.search("MTBB", reverse=True)
+    results = nyaa_client.search("MTBB", order=Order.ASCENDING)
     titles = [torrent.title for torrent in results]
     assert len(titles) > 150
     assert titles[:10] == [
@@ -397,7 +397,7 @@ def test_search(nyaa_client: Nyaa) -> None:
 
 @pytest.mark.vcr
 def test_search_trusted_only(nyaa_client: Nyaa) -> None:
-    results = nyaa_client.search("MTBB", filter=Filter.TRUSTED_ONLY, reverse=True)
+    results = nyaa_client.search("MTBB", filter=Filter.TRUSTED_ONLY, order=Order.ASCENDING)
     titles = [torrent.title for torrent in results]
     assert titles[:10] == [
         "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",
@@ -424,7 +424,7 @@ def test_search_trusted_only(nyaa_client: Nyaa) -> None:
 
 @pytest.mark.vcr
 def test_search_no_remakes(nyaa_client: Nyaa) -> None:
-    results = nyaa_client.search("MTBB", filter=Filter.NO_REMAKES, reverse=True)
+    results = nyaa_client.search("MTBB", filter=Filter.NO_REMAKES, order=Order.ASCENDING)
     titles = [torrent.title for torrent in results]
     assert titles[:10] == [
         "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",

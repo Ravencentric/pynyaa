@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 import bs4
 import httpx
 
-from pynyaa._enums import Category, Filter, ParentCategory, SortBy
+from pynyaa._enums import Category, Filter, Order, ParentCategory, SortBy
 from pynyaa._errors import TorrentNotFoundError
 from pynyaa._models import NyaaTorrentPage
 from pynyaa._parser import PageParser, parse_nyaa_search_results
@@ -126,11 +126,12 @@ class AsyncNyaa:
     async def search(
         self,
         query: str,
+        /,
         *,
         category: ParentCategory | Category = ParentCategory.ALL,
         filter: Filter = Filter.NO_FILTER,
         sort_by: SortBy = SortBy.DATETIME,
-        reverse: bool = False,
+        order: Order = Order.DESCENDING,
     ) -> AsyncIterator[NyaaTorrentPage]:
         """
         Search for torrents on Nyaa.
@@ -145,8 +146,8 @@ class AsyncNyaa:
             Filter applied to the search results.
         sort_by : SortBy, optional
             Field used to sort the results.
-        reverse : bool, optional
-            Sort order: ascending if `True`, descending if `False`.
+        order : Order, optional
+            Order of the results.
 
         Yields
         ------
@@ -157,14 +158,14 @@ class AsyncNyaa:
         assert_type(category, (ParentCategory, Category), "category")
         assert_type(filter, Filter, "filter")
         assert_type(sort_by, SortBy, "sort_by")
-        assert_type(reverse, bool, "reverse")
+        assert_type(order, Order, "order")
 
         params: dict[str, Any] = dict(
             f=filter,
             c=category.id,
             q=query,
             s=sort_by,
-            o="asc" if reverse else "desc",  # Nyaa defaults to descending order
+            o=order,
         )
 
         # Fetch the first page of results

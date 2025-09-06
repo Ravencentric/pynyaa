@@ -6,12 +6,12 @@ from httpx import HTTPStatusError
 
 from pynyaa._clients._async import AsyncNyaa
 from pynyaa._clients._sync import Nyaa
-from pynyaa._enums import Category, Filter, ParentCategory, SortBy
+from pynyaa._enums import Category, Filter, Order, ParentCategory, SortBy
 from pynyaa._models import NyaaTorrentPage, Submitter
 from pynyaa._version import __version__, __version_tuple__
 
 if TYPE_CHECKING:
-    from typing_extensions import Generator
+    from collections.abc import Iterator
 
 
 def get(page: int | str) -> NyaaTorrentPage:  # pragma: no cover
@@ -29,14 +29,14 @@ def search(
     category: ParentCategory | Category = ParentCategory.ALL,
     filter: Filter = Filter.NO_FILTER,
     sort_by: SortBy = SortBy.DATETIME,
-    reverse: bool = False,
-) -> Generator[NyaaTorrentPage]:  # pragma: no cover
+    order: Order = Order.DESCENDING,
+) -> Iterator[NyaaTorrentPage]:  # pragma: no cover
     """
     Shortcut for `pynyaa.Nyaa.search`.
     For more advanced or configurable usage, use the `pynyaa.Nyaa` client directly.
     """
     with Nyaa() as nyaa:
-        yield from nyaa.search(query, category=category, filter=filter, sort_by=sort_by, reverse=reverse)
+        yield from nyaa.search(query, category=category, filter=filter, sort_by=sort_by, order=order)
 
 
 __all__ = (
@@ -51,6 +51,7 @@ __all__ = (
     "Category",
     "Filter",
     "SortBy",
+    "Order",
     # Models
     "NyaaTorrentPage",
     "Submitter",

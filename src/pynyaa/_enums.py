@@ -23,6 +23,22 @@ if TYPE_CHECKING:
     from typing_extensions import Self
 
 
+class DoubleSidedStrEnum(StrEnum):
+    """StrEnum with case-insensitive lookup by name and value."""
+
+    @classmethod
+    def _missing_(cls, value: object) -> Self:
+        msg = f"'{value}' is not a valid {cls.__name__}"
+
+        if isinstance(value, str):
+            value = value.casefold().strip()
+            for member in cls:
+                if (value == member.value.casefold()) or (value == member.name.casefold()):
+                    return member
+            raise ValueError(msg)
+        raise ValueError(msg)
+
+
 ParentCategoryValue: TypeAlias = Literal["All", "Anime", "Audio", "Literature", "Live Action", "Pictures", "Software"]
 ParentCategoryID: TypeAlias = Literal["0_0", "1_0", "2_0", "3_0", "4_0", "5_0", "6_0"]
 
@@ -229,7 +245,7 @@ class Category(enum.Enum):
         raise ValueError(msg)
 
 
-class SortBy(StrEnum):
+class SortBy(DoubleSidedStrEnum):
     COMMENTS = "comments"
     SIZE = "size"
     DATETIME = "id"  # yea... https://nyaa.si/?s=id&o=desc
@@ -237,17 +253,10 @@ class SortBy(StrEnum):
     LEECHERS = "leechers"
     DOWNLOADS = "downloads"
 
-    @classmethod
-    def _missing_(cls, value: object) -> Self:
-        msg = f"'{value}' is not a valid {cls.__name__}"
 
-        if isinstance(value, str):
-            value = value.casefold().strip()
-            for member in cls:
-                if (value == member.value.casefold()) or (value == member.name.casefold()):
-                    return member
-            raise ValueError(msg)
-        raise ValueError(msg)
+class Order(DoubleSidedStrEnum):
+    ASCENDING = "asc"
+    DESCENDING = "desc"
 
 
 class Filter(IntEnum):

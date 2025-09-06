@@ -5,7 +5,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import AsyncNyaa, Category, Filter, Submitter
+from pynyaa import AsyncNyaa, Category, Filter, Order, Submitter
 
 
 def dedent(s: str) -> str:
@@ -367,7 +367,7 @@ async def test_nyaa_empty_desc_info(async_nyaa_client: AsyncNyaa) -> None:
 
 @pytest.mark.vcr
 async def test_search(async_nyaa_client: AsyncNyaa) -> None:
-    results = async_nyaa_client.search("MTBB", reverse=True)
+    results = async_nyaa_client.search("MTBB", order=Order.ASCENDING)
     titles = [torrent.title async for torrent in results]
     assert len(titles) > 150
     assert titles[:10] == [
@@ -395,7 +395,7 @@ async def test_search(async_nyaa_client: AsyncNyaa) -> None:
 
 @pytest.mark.vcr
 async def test_search_trusted_only(async_nyaa_client: AsyncNyaa) -> None:
-    results = async_nyaa_client.search("MTBB", filter=Filter.TRUSTED_ONLY, reverse=True)
+    results = async_nyaa_client.search("MTBB", filter=Filter.TRUSTED_ONLY, order=Order.ASCENDING)
     titles = [torrent.title async for torrent in results]
     assert titles[:10] == [
         "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",
@@ -422,7 +422,7 @@ async def test_search_trusted_only(async_nyaa_client: AsyncNyaa) -> None:
 
 @pytest.mark.vcr
 async def test_search_no_remakes(async_nyaa_client: AsyncNyaa) -> None:
-    results = async_nyaa_client.search("MTBB", filter=Filter.NO_REMAKES, reverse=True)
+    results = async_nyaa_client.search("MTBB", filter=Filter.NO_REMAKES, order=Order.ASCENDING)
     titles = [torrent.title async for torrent in results]
     assert titles[:10] == [
         "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",

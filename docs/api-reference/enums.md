@@ -1,12 +1,15 @@
-::: pynyaa._enums.Category
+::: pynyaa.Category
     options:
         members: true
-::: pynyaa._enums.ParentCategory
+::: pynyaa.ParentCategory
     options:
         members: true
-::: pynyaa._enums.SortBy
+::: pynyaa.SortBy
     options:
         members: true
-::: pynyaa._enums.Filter
+::: pynyaa.Order
+    options:
+        members: true
+::: pynyaa.Filter
     options:
         members: true
