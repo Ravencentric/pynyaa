@@ -25,10 +25,10 @@ class AsyncNyaa:
         Parameters
         ----------
         base_url : str, optional
-            The base URL of Nyaa.
-            This is used for constructing the full URL from relative URLs.
-        client : AsyncClient, optional
-            An [`httpx.AsyncClient`](https://www.python-httpx.org/api/#asyncclient) instance used to make requests to Nyaa.
+            Base URL of Nyaa.
+            Used to construct full URLs from relative paths.
+        client : httpx.AsyncClient, optional
+            Custom [`httpx.AsyncClient`](https://www.python-httpx.org/api/#asyncclient) instance.
         """
         self._base_url = base_url
         self._client = httpx.AsyncClient(headers={"user-agent": f"pynyaa/{__version__}"}) if client is None else client
@@ -36,7 +36,8 @@ class AsyncNyaa:
     @property
     def base_url(self) -> str:
         """
-        This is the base URL, used for constructing the full URL from relative URLs.
+        Base URL of Nyaa.
+        Used to construct full URLs from relative paths.
         """
         return self._base_url
 
@@ -47,33 +48,34 @@ class AsyncNyaa:
         await self.close()
 
     async def close(self) -> None:
-        """Close the connection"""
+        """
+        Close the underlying HTTP client session.
+        """
         await self._client.aclose()
 
     async def get(self, page: int | str, /) -> NyaaTorrentPage:
         """
-        Retrieve information from a Nyaa torrent page.
+        Fetch metadata for a specific torrent page.
 
         Parameters
         ----------
         page : int or str
-            The torrent page.
-            This can either be a URL like `https://nyaa.si/view/123456`
-            or just the ID like `123456`
+            Torrent ID or full URL (e.g., `123456` or `https://nyaa.si/view/123456`).
 
         Raises
         ------
         TorrentNotFoundError
-            Nyaa returned a non 2xx response.
+            If the torrent does not exist (HTTP 404).
         TypeError
-            If the 'page' parameter is not an int or str.
+            If `page` is not an `int` or `str`.
+        ValueError
+            If `page` is a string but not a valid torrent URL.
 
         Returns
         -------
         NyaaTorrentPage
-            A NyaaTorrentPage object representing the retrieved data.
+            Parsed torrent metadata as a `NyaaTorrentPage` object.
         """
-
         match page:
             case int():
                 id = page
@@ -92,8 +94,7 @@ class AsyncNyaa:
 
         if nyaa.status_code == httpx.codes.NOT_FOUND:
             raise TorrentNotFoundError(url)
-        else:
-            nyaa.raise_for_status()
+        nyaa.raise_for_status()
 
         parsed = PageParser(html=nyaa.text, base_url=self.base_url)
         panel = parsed.panel()
@@ -143,15 +144,10 @@ class AsyncNyaa:
         reverse : bool, optional
             Determines the order of the results: ascending if `True`, descending if `False`.
 
-        Raises
-        ------
-        HTTPStatusError
-            Nyaa returned a non 2xx response.
-
         Yields
-        -------
+        ------
         NyaaTorrentPage
-            A NyaaTorrentPage object representing the retrieved data.
+            Parsed torrent metadata for each result.
         """
         assert_type(query, str, "query")
         assert_type(category, (ParentCategory, Category), "category")
@@ -164,19 +160,20 @@ class AsyncNyaa:
             c=category.id,
             q=query,
             s=sort_by,
-            o="asc" if reverse else "desc",  # desc is the default on nyaa
+            o="asc" if reverse else "desc",  # Nyaa defaults to descending order
         )
 
+        # Fetch the first page of results
         first = await self._client.get(self._base_url, params=params)
         first.raise_for_status()
         html = first.text
         for link in parse_nyaa_search_results(html):
             yield await self.get(link)
 
-        # This selector does NOT return page 1, starts with 2 and that's exactly what we want.
+        # Pagination links start at page 2 (page 1 is already handled)
         pages = bs4.BeautifulSoup(html, "lxml").select("ul.pagination > li:not(.next) > a[href]")
         for page in pages:
-            params["p"] = page.get_text()  # 2, 3, ...
+            params["p"] = page.get_text()
             other = await self._client.get(self._base_url, params=params)
             other.raise_for_status()
             html = other.text
