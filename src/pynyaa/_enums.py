@@ -58,6 +58,7 @@ class ParentCategory(enum.Enum):
 
     >>> ParentCategory("3_0")
     <ParentCategory.LITERATURE: 'Literature'>
+
     """
 
     if TYPE_CHECKING:
@@ -94,6 +95,7 @@ class ParentCategory(enum.Enum):
         >>> ParentCategory.ALL.id == "0_0"
         True
         ```
+
         """
         return self._id
 
@@ -166,6 +168,7 @@ class Category(enum.Enum):
 
     >>> Category("2_1")
     <Category.AUDIO_LOSSLESS: 'Audio - Lossless'>
+
     """
 
     if TYPE_CHECKING:
@@ -214,6 +217,7 @@ class Category(enum.Enum):
         ```py
         >>> Category.ANIME_ENGLISH_TRANSLATED.id == "1_2"
         True
+
         """
         return self._id
 
@@ -228,6 +232,7 @@ class Category(enum.Enum):
         >>> Category.ANIME_ENGLISH_TRANSLATED.parent == ParentCategory.ANIME
         True
         ```
+
         """
         parent, _ = self.value.split(" - ")
         return ParentCategory(parent)

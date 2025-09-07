@@ -13,13 +13,15 @@ from pynyaa._utils import assert_type
 from pynyaa._version import __version__
 
 if TYPE_CHECKING:
-    from typing_extensions import AsyncIterator, Self
+    from collections.abc import AsyncIterator
+
+    from typing_extensions import Self
 
 
 class AsyncNyaa:
     def __init__(self, base_url: str = "https://nyaa.si/", client: httpx.AsyncClient | None = None) -> None:
         """
-        A client for interacting with Nyaa.
+        Client for interacting with Nyaa.
 
         Parameters
         ----------
@@ -28,6 +30,7 @@ class AsyncNyaa:
             Used to construct full URLs from relative paths.
         client : httpx.AsyncClient, optional
             Custom [`httpx.AsyncClient`](https://www.python-httpx.org/api/#asyncclient) instance.
+
         """
         self._base_url = base_url
         self._client = (
@@ -78,6 +81,7 @@ class AsyncNyaa:
         -------
         NyaaTorrentPage
             Parsed torrent metadata as a `NyaaTorrentPage` object.
+
         """
         match page:
             case int():
@@ -86,11 +90,11 @@ class AsyncNyaa:
                 try:
                     id = int(page.rstrip("/").split("/")[-1])
                 except ValueError:
-                    raise ValueError(
-                        f"Invalid format for 'page'. Expected a valid URL or numeric ID, but got {page!r}."
-                    )
+                    msg = f"Invalid format for 'page'. Expected a valid URL or numeric ID, but got {page!r}."
+                    raise ValueError(msg) from None
             case _:
-                raise TypeError(f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}.")
+                msg = f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}."
+                raise TypeError(msg)
 
         url = urljoin(self._base_url, f"/view/{id}")
         nyaa = await self._client.get(url)
@@ -151,6 +155,7 @@ class AsyncNyaa:
         ------
         NyaaTorrentPage
             Parsed torrent metadata for each result.
+
         """
         assert_type(query, str, "query")
         assert_type(category, (ParentCategory, Category), "category")
@@ -158,13 +163,13 @@ class AsyncNyaa:
         assert_type(sort_by, SortBy, "sort_by")
         assert_type(order, Order, "order")
 
-        params: dict[str, Any] = dict(
-            f=filter,
-            c=category.id,
-            q=query,
-            s=sort_by,
-            o=order,
-        )
+        params: dict[str, Any] = {
+            "f": filter,
+            "c": category.id,
+            "q": query,
+            "s": sort_by,
+            "o": order,
+        }
 
         # First page
         first = await self._client.get(self._base_url, params=params)

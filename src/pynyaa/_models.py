@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import datetime as dt
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from pynyaa._enums import Category
-
 if TYPE_CHECKING:
-    pass
+    import datetime as dt
+
+    from pynyaa._enums import Category
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
@@ -70,7 +69,7 @@ class NyaaTorrentPage:
     is_trusted: bool
     """
     Indicates whether the upload is trusted (green) or not.
-    
+
     Note
     ----
     An upload can be both trusted and a remake, in which case,
@@ -81,7 +80,7 @@ class NyaaTorrentPage:
     is_remake: bool
     """
     Indicates whether the upload is a remake (red) or not.
-    
+
     Note
     ----
     An upload can be both trusted and a remake, in which case,
@@ -97,12 +96,12 @@ class NyaaTorrentPage:
 
     magnet: str
     """
-    Magnet link of the torrent. 
-    
+    Magnet link of the torrent.
+
     Note
     ----
-    The magnet link provided by Nyaa is different from the one 
+    The magnet link provided by Nyaa is different from the one
     you'll get if you simply generated it from the `.torrent` file itself
-    because Nyaa strips away all trackers except it's own 
+    because Nyaa strips away all trackers except it's own
     and the ones listed [here](https://github.com/nyaadevs/nyaa/blob/master/trackers.txt).
     """

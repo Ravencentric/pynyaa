@@ -15,13 +15,15 @@ from pynyaa._utils import assert_type
 from pynyaa._version import __version__
 
 if TYPE_CHECKING:
-    from typing_extensions import Iterator, Self
+    from collections.abc import Iterator
+
+    from typing_extensions import Self
 
 
 class Nyaa:
     def __init__(self, base_url: str = "https://nyaa.si/", client: httpx.Client | None = None) -> None:
         """
-        A client for interacting with Nyaa.
+        Client for interacting with Nyaa.
 
         Parameters
         ----------
@@ -30,6 +32,7 @@ class Nyaa:
             Used to construct full URLs from relative paths.
         client : httpx.Client, optional
             Custom [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
+
         """
         self._base_url = base_url
         self._client = (
@@ -80,6 +83,7 @@ class Nyaa:
         -------
         NyaaTorrentPage
             Parsed torrent metadata as a `NyaaTorrentPage` object.
+
         """
         match page:
             case int():
@@ -88,11 +92,11 @@ class Nyaa:
                 try:
                     id = int(page.rstrip("/").split("/")[-1])
                 except ValueError:
-                    raise ValueError(
-                        f"Invalid format for 'page'. Expected a valid URL or numeric ID, but got {page!r}."
-                    )
+                    msg = f"Invalid format for 'page'. Expected a valid URL or numeric ID, but got {page!r}."
+                    raise ValueError(msg) from None
             case _:
-                raise TypeError(f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}.")
+                msg = f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}."
+                raise TypeError(msg)
 
         url = urljoin(self._base_url, f"/view/{id}")
         nyaa = self._client.get(url)
@@ -153,6 +157,7 @@ class Nyaa:
         ------
         NyaaTorrentPage
             Parsed torrent metadata for each result.
+
         """
         assert_type(query, str, "query")
         assert_type(category, (ParentCategory, Category), "category")
@@ -160,13 +165,13 @@ class Nyaa:
         assert_type(sort_by, SortBy, "sort_by")
         assert_type(order, Order, "order")
 
-        params: dict[str, Any] = dict(
-            f=filter,
-            c=category.id,
-            q=query,
-            s=sort_by,
-            o=order,
-        )
+        params: dict[str, Any] = {
+            "f": filter,
+            "c": category.id,
+            "q": query,
+            "s": sort_by,
+            "o": order,
+        }
 
         # First page
         first = self._client.get(self._base_url, params=params)

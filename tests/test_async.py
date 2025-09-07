@@ -383,7 +383,7 @@ async def test_search(async_nyaa_client: AsyncNyaa) -> None:
         "[MTBB] Hakumei to Mikochi - OVA (BD 720p)",
     ]  # Page 1
     assert "[MTBB] Hyouka (BD 1080p)" in titles  # Page 2
-    assert "[MTBB] Katanagatari S1 (BD 1080p)"  # Page 3
+    assert "[MTBB] Katanagatari S1 (BD 1080p)" in titles  # Page 3
 
     assert "[MTBB] Sword Art Online - Alicization (Unofficial Batch)" in titles  # Uploaded by someone else
     assert (
@@ -410,7 +410,7 @@ async def test_search_trusted_only(async_nyaa_client: AsyncNyaa) -> None:
         "[MTBB] Hakumei to Mikochi - OVA (BD 720p)",
     ]  # Page 1
     assert "[MTBB] Hyouka (BD 1080p)" in titles  # Page 2
-    assert "[MTBB] Katanagatari S1 (BD 1080p)"  # Page 3
+    assert "[MTBB] Katanagatari S1 (BD 1080p)" in titles  # Page 3
 
     assert "[MTBB] Sword Art Online - Alicization (Unofficial Batch)" not in titles  # Uploaded by someone else
     assert (
@@ -437,7 +437,7 @@ async def test_search_no_remakes(async_nyaa_client: AsyncNyaa) -> None:
         "[MTBB] Hakumei to Mikochi - OVA (BD 720p)",
     ]  # Page 1
     assert "[MTBB] Hyouka (BD 1080p)" in titles  # Page 2
-    assert "[MTBB] Katanagatari S1 (BD 1080p)"  # Page 3
+    assert "[MTBB] Katanagatari S1 (BD 1080p)" in titles  # Page 3
 
     assert "[MTBB] Sword Art Online - Alicization (Unofficial Batch)" in titles  # Uploaded by someone else
     assert (

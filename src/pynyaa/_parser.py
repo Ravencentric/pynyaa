@@ -3,8 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import math
 import re
-from collections.abc import Iterator
-from typing import Final, NewType
+from typing import TYPE_CHECKING, Final, NewType
 from urllib.parse import urljoin
 
 import bs4
@@ -13,12 +12,15 @@ from ._enums import Category
 from ._errors import ParsingError
 from ._models import Submitter
 
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
 TorrentID = NewType("TorrentID", int)
 PageNumber = NewType("PageNumber", int)
 
 
 class TorrentPanelParser:
-    __slots__ = ("_body", "_base_url")
+    __slots__ = ("_base_url", "_body")
 
     def __init__(self, *, body: bs4.Tag, base_url: str):
         self._body = body
@@ -27,12 +29,14 @@ class TorrentPanelParser:
     def select_from_row(self, label: str) -> bs4.Tag:
         if found := self._body.select_one(f'.panel-body > .row > .col-md-1:-soup-contains-own("{label}") + .col-md-5'):
             return found
-        raise ParsingError(f"Could not find required field: {label!r}")
+        msg = f"Could not find required field: {label!r}"
+        raise ParsingError(msg)
 
     def title(self) -> str:
         if title := self._body.select_one(".panel-heading > .panel-title"):
             return title.get_text(strip=True)
-        raise ParsingError("Missing torrent title.")
+        msg = "Missing torrent title."
+        raise ParsingError(msg)
 
     def category(self) -> Category:
         category = self.select_from_row("Category:").get_text().strip()
@@ -89,7 +93,8 @@ class TorrentPanelParser:
             case "PiB":
                 multiplier = 1024**5
             case _:
-                raise ParsingError(f"Unsupported file size unit: {unit}")
+                msg = f"Unsupported file size unit: {unit}"
+                raise ParsingError(msg)
 
         return math.ceil(float(value) * multiplier)
 
@@ -97,21 +102,24 @@ class TorrentPanelParser:
         selector = '.panel-body > .row > .col-md-offset-6.col-md-1:-soup-contains-own("Info hash:") + .col-md-5'
         if found := self._body.select_one(selector):
             return found.get_text(strip=True)
-        raise ParsingError("Missing torrent info hash.")
+        msg = "Missing torrent info hash."
+        raise ParsingError(msg)
 
     def torrent(self) -> str:
         if found := self._body.select_one('.panel-footer.clearfix > a[href$=".torrent"]'):
             return urljoin(self._base_url, found.attrs["href"])  # type: ignore[no-any-return]
-        raise ParsingError("Missing torrent download link.")
+        msg = "Missing torrent download link."
+        raise ParsingError(msg)
 
     def magnet(self) -> str:
         if found := self._body.select_one('.panel-footer.clearfix > a[href^="magnet:"]'):
             return found.attrs["href"]
-        raise ParsingError("Missing magnet link.")
+        msg = "Missing magnet link."
+        raise ParsingError(msg)
 
 
 class TorrentPageParser:
-    __slots__ = ("_soup", "_body", "_base_url")
+    __slots__ = ("_base_url", "_body", "_soup")
 
     def __init__(self, *, html: str, base_url: str) -> None:
         self._soup = bs4.BeautifulSoup(html, "html.parser")
@@ -119,7 +127,8 @@ class TorrentPageParser:
         if body := self._soup.select_one("div:is(.panel.panel-default, .panel.panel-success, .panel.panel-danger)"):
             self._body = body
         else:
-            raise ParsingError("Unable to parse the page: malformed structure.")
+            msg = "Unable to parse the page: malformed structure."
+            raise ParsingError(msg)
 
     @property
     def panel(self) -> TorrentPanelParser:
@@ -138,7 +147,8 @@ class TorrentPageParser:
             if description == placeholder:
                 return None
             return description
-        raise ParsingError("Missing torrent description.")
+        msg = "Missing torrent description."
+        raise ParsingError(msg)
 
 
 class SearchPageParser:

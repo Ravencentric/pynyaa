@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from pynyaa._clients._async import AsyncNyaa
 from pynyaa._clients._sync import Nyaa
@@ -40,26 +40,20 @@ def search(
         yield from nyaa.search(query, category=category, filter=filter, sort_by=sort_by, order=order)
 
 
-__all__ = (
-    # Clients
+__all__: Final = (
     "AsyncNyaa",
-    "Nyaa",
-    # Top level API,
-    "get",
-    "search",
-    # Enums
-    "ParentCategory",
     "Category",
     "Filter",
-    "SortBy",
-    "Order",
-    # Models
+    "Nyaa",
     "NyaaTorrentPage",
-    "Submitter",
-    # Exceptions
-    "PyNyaaError",
+    "Order",
+    "ParentCategory",
     "ParsingError",
+    "PyNyaaError",
+    "SortBy",
+    "Submitter",
     "TorrentNotFoundError",
-    # Version
     "__version__",
+    "get",
+    "search",
 )
