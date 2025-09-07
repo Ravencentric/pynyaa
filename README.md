@@ -47,7 +47,7 @@ pip install pynyaa
 
 # Docs
 
-Checkout the complete documentation [here](https://pynyaa.ravencentric.cc/).
+Checkout the complete documentation [here](https://ravencentric.cc/pynyaa/).
 
 ## License
 

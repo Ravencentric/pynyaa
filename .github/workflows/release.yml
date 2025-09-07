@@ -28,7 +28,7 @@ jobs:
     name: Release
     environment:
       name: release
-      url: https://pypi.org/project/nzb
+      url: https://pypi.org/project/pynyaa
     permissions:
       id-token: write
       contents: write

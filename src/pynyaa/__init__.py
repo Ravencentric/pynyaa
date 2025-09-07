@@ -1,14 +1,15 @@
+"""Turn nyaa.si torrent pages into neat Python objects."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from httpx import HTTPStatusError
-
 from pynyaa._clients._async import AsyncNyaa
 from pynyaa._clients._sync import Nyaa
 from pynyaa._enums import Category, Filter, Order, ParentCategory, SortBy
+from pynyaa._errors import ParsingError, PyNyaaError, TorrentNotFoundError
 from pynyaa._models import NyaaTorrentPage, Submitter
-from pynyaa._version import __version__, __version_tuple__
+from pynyaa._version import __version__
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -56,8 +57,9 @@ __all__ = (
     "NyaaTorrentPage",
     "Submitter",
     # Exceptions
-    "HTTPStatusError",
+    "PyNyaaError",
+    "ParsingError",
+    "TorrentNotFoundError",
     # Version
     "__version__",
-    "__version_tuple__",
 )

@@ -1,14 +1,5 @@
 from __future__ import annotations
 
-from importlib import metadata
-from typing import NamedTuple
+from typing import Final
 
-
-class Version(NamedTuple):
-    major: int
-    minor: int
-    micro: int
-
-
-__version__ = metadata.version("pynyaa")
-__version_tuple__ = Version(*[int(i) for i in __version__.split(".")])
+__version__: Final = "2.0.0"

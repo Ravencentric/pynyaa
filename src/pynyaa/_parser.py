@@ -50,7 +50,7 @@ class TorrentPanelParser:
             return None
 
         url = urljoin(self._base_url, f"/user/{name}")
-        title = submitter.select_one("a").attrs["title"].lower()  # type: ignore
+        title = submitter.select_one("a").attrs["title"].lower()  # type: ignore[union-attr]
         is_trusted = "trusted" in title
         is_banned = "banned" in title
 
@@ -101,7 +101,7 @@ class TorrentPanelParser:
 
     def torrent(self) -> str:
         if found := self._body.select_one('.panel-footer.clearfix > a[href$=".torrent"]'):
-            return urljoin(self._base_url, found.attrs["href"])
+            return urljoin(self._base_url, found.attrs["href"])  # type: ignore[no-any-return]
         raise ParsingError("Missing torrent download link.")
 
     def magnet(self) -> str:
