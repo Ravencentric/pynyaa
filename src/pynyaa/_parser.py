@@ -4,7 +4,7 @@ import datetime as dt
 import math
 import re
 from collections.abc import Iterator
-from typing import Final
+from typing import Final, NewType
 from urllib.parse import urljoin
 
 import bs4
@@ -12,6 +12,9 @@ import bs4
 from ._enums import Category
 from ._errors import ParsingError
 from ._models import Submitter
+
+TorrentID = NewType("TorrentID", int)
+PageNumber = NewType("PageNumber", int)
 
 
 class TorrentPanelParser:
@@ -145,11 +148,11 @@ class SearchPageParser:
         self._html = html
         self._soup = bs4.BeautifulSoup(html, "html.parser")
 
-    def pages(self) -> Iterator[int]:
+    def pages(self) -> Iterator[PageNumber]:
         pages = self._soup.select("ul.pagination > li:not(.next) > a[href]")
         for page in pages:
-            yield int(page.get_text(strip=True))
+            yield PageNumber(int(page.get_text(strip=True)))
 
-    def results(self) -> Iterator[int]:
+    def results(self) -> Iterator[TorrentID]:
         for id in re.findall(r"<a href=\"(?:/view/(\d+))\" title=\".*\">.*</a>", self._html):
-            yield int(id)
+            yield TorrentID(int(id))

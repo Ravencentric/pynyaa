@@ -166,7 +166,7 @@ class AsyncNyaa:
             o=order,
         )
 
-        # Fetch the first page of results
+        # First page
         first = await self._client.get(self._base_url, params=params)
         first.raise_for_status()
         html = first.text
@@ -174,7 +174,7 @@ class AsyncNyaa:
         for id in parsed.results():
             yield await self.get(id)
 
-        for page in parsed.pages():
+        for page in parsed.pages():  # Second page onwards
             params["p"] = page
             other = await self._client.get(self._base_url, params=params)
             other.raise_for_status()
