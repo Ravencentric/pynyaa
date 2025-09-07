@@ -3,56 +3,68 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FORCE_COLOR: 1
+  UV_LOCKED: 1
 
 jobs:
+  tests:
+    name: Tests
+    uses: ./.github/workflows/tests.yml
+  lint:
+    name: Lint
+    uses: ./.github/workflows/lint-and-type-check.yml
   release:
+    needs: [tests, lint]
     name: Release
     environment:
       name: release
-      url: https://pypi.org/p/pynyaa
+      url: https://pypi.org/project/nzb
     permissions:
       id-token: write
       contents: write
-      attestations: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
+          persist-credentials: false
           fetch-depth: 0 # Important for changelog
 
       - name: Install uv
-        id: setup-uv
-        uses: astral-sh/setup-uv@v3
-
-      - name: Install Python 3.12
-        run: uv python install 3.12
+        uses: astral-sh/setup-uv@4959332f0f014c5280e7eac8b70c90cb574c9f9b # v6.6.0
+        with:
+          enable-cache: false
+          python-version: "3.14"
 
       - name: Build
         run: uv build
 
-      - uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: "dist/*"
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
 
-      - name: Generate changelog with git-cliff
-        uses: tj-actions/git-cliff@v1
-        with:
-          args: --latest --strip all
-          template-config: .github/cliff-template.toml
-          output: "CHANGELOG.md"
+      - name: Generate a changelog
+        run: >-
+          uvx git-cliff --config .github/cliff-template.toml
+          --github-repo "${GH_REPO}"
+          --github-token "${GH_TOKEN}"
+          --latest --strip header
+          --output "CHANGELOG.md"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
 
       - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "dist/*"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          bodyFile: "CHANGELOG.md"
-          draft: false
-          prerelease: false
-
-      - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          attestations: true
+        run: gh release create "${GH_REF_NAME}" -F "CHANGELOG.md" --fail-on-no-commits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REF_NAME: ${{ github.ref_name }}

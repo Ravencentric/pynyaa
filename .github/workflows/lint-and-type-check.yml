@@ -8,6 +8,8 @@ on:
       - 'src/**'
       - 'tests/**'
       - '.github/workflows/lint-and-type-check.yml'
+    tags-ignore:
+      - '*'
   pull_request:
     branches:
       - main
@@ -16,6 +18,14 @@ on:
       - 'tests/**'
       - '.github/workflows/lint-and-type-check.yml'
   workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_COLOR: 1
+  UV_LOCKED: 1
 
 defaults:
   run:
@@ -26,19 +36,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
 
       - name: Install uv
-        id: setup-uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@4959332f0f014c5280e7eac8b70c90cb574c9f9b # v6.6.0
         with:
-          enable-cache: true
-
-      - name: Install Python 3.12
-        run: uv python install 3.12
+          enable-cache: false
+          python-version: "3.14"
 
       - name: Install the project
-        run: uv sync --all-extras --python 3.12
+        run: uv sync --all-extras
 
       - name: Run mypy
         run: uv run mypy .
