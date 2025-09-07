@@ -3,13 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
-import bs4
 import httpx
 
 from pynyaa._enums import Category, Filter, Order, ParentCategory, SortBy
 from pynyaa._errors import TorrentNotFoundError
 from pynyaa._models import NyaaTorrentPage
-from pynyaa._parser import PageParser, parse_nyaa_search_results
+from pynyaa._parser import SearchPageParser, TorrentPageParser
 from pynyaa._utils import assert_type
 from pynyaa._version import __version__
 
@@ -100,7 +99,7 @@ class AsyncNyaa:
             raise TorrentNotFoundError(url)
         nyaa.raise_for_status()
 
-        parsed = PageParser(html=nyaa.text, base_url=self.base_url)
+        parsed = TorrentPageParser(html=nyaa.text, base_url=self.base_url)
 
         return NyaaTorrentPage(
             id=id,
@@ -171,15 +170,15 @@ class AsyncNyaa:
         first = await self._client.get(self._base_url, params=params)
         first.raise_for_status()
         html = first.text
-        for link in parse_nyaa_search_results(html):
-            yield await self.get(link)
+        parsed = SearchPageParser(html)
+        for id in parsed.results():
+            yield await self.get(id)
 
-        # Pagination links start at page 2 (page 1 is already handled)
-        pages = bs4.BeautifulSoup(html, "lxml").select("ul.pagination > li:not(.next) > a[href]")
-        for page in pages:
-            params["p"] = page.get_text()
+        for page in parsed.pages():
+            params["p"] = page
             other = await self._client.get(self._base_url, params=params)
             other.raise_for_status()
             html = other.text
-            for link in parse_nyaa_search_results(html):
-                yield await self.get(link)
+            parsed = SearchPageParser(html)
+            for id in parsed.results():
+                yield await self.get(id)

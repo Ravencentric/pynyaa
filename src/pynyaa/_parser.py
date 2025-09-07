@@ -14,7 +14,7 @@ from ._errors import ParsingError
 from ._models import Submitter
 
 
-class PanelParser:
+class TorrentPanelParser:
     __slots__ = ("_body", "_base_url")
 
     def __init__(self, *, body: bs4.Tag, base_url: str):
@@ -107,11 +107,11 @@ class PanelParser:
         raise ParsingError("Missing magnet link.")
 
 
-class PageParser:
+class TorrentPageParser:
     __slots__ = ("_soup", "_body", "_base_url")
 
     def __init__(self, *, html: str, base_url: str) -> None:
-        self._soup = bs4.BeautifulSoup(html, "lxml")
+        self._soup = bs4.BeautifulSoup(html, "html.parser")
         self._base_url = base_url
         if body := self._soup.select_one("div:is(.panel.panel-default, .panel.panel-success, .panel.panel-danger)"):
             self._body = body
@@ -119,8 +119,8 @@ class PageParser:
             raise ParsingError("Unable to parse the page: malformed structure.")
 
     @property
-    def panel(self) -> PanelParser:
-        return PanelParser(body=self._body, base_url=self._base_url)
+    def panel(self) -> TorrentPanelParser:
+        return TorrentPanelParser(body=self._body, base_url=self._base_url)
 
     def is_trusted(self) -> bool:
         return "panel-success" in self._body.attrs["class"]
@@ -138,18 +138,18 @@ class PageParser:
         raise ParsingError("Missing torrent description.")
 
 
-def parse_nyaa_search_results(html: str) -> Iterator[int]:
-    """
-    Parse the HTML of a Nyaa search results page to extract torrent IDs.
+class SearchPageParser:
+    __slots__ = ("_html", "_soup")
 
-    Parameters
-    ----------
-    html : str
-        The HTML content of the Nyaa search results page.
+    def __init__(self, html: str) -> None:
+        self._html = html
+        self._soup = bs4.BeautifulSoup(html, "html.parser")
 
-    Yields
-    ------
-    str
-        The torrent IDs in the order they were present.
-    """
-    return (int(id) for id in re.findall(r"<a href=\"(?:/view/(\d+))\" title=\".*\">.*</a>", html))
+    def pages(self) -> Iterator[int]:
+        pages = self._soup.select("ul.pagination > li:not(.next) > a[href]")
+        for page in pages:
+            yield int(page.get_text(strip=True))
+
+    def results(self) -> Iterator[int]:
+        for id in re.findall(r"<a href=\"(?:/view/(\d+))\" title=\".*\">.*</a>", self._html):
+            yield int(id)
