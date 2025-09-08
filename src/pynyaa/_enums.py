@@ -276,16 +276,8 @@ class Filter(IntEnum):
     @classmethod
     def _missing_(cls, value: object) -> Self:
         msg = f"'{value}' is not a valid {cls.__name__}"
-        match value:
-            case str():
-                for member in cls:
-                    if value.casefold().strip() == member.name.casefold():
-                        return member
-                raise ValueError(msg)
-            case int():
-                for member in cls:
-                    if value == member.value:
-                        return member
-                raise ValueError(msg)
-            case _:
-                raise ValueError(msg)
+        if isinstance(value, str):
+            for member in cls:
+                if value.casefold().strip() == member.name.casefold():
+                    return member
+        raise ValueError(msg)

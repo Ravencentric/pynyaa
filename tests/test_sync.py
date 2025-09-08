@@ -7,7 +7,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import Category, Filter, Nyaa, Order, Submitter
+from pynyaa import Category, Filter, Nyaa, Order, Submitter, TorrentNotFoundError
 
 
 def dedent(s: str) -> str:
@@ -16,6 +16,26 @@ def dedent(s: str) -> str:
 
 def test_properties(nyaa_client: Nyaa) -> None:
     assert nyaa_client.base_url == "https://nyaa.si/"
+
+
+@pytest.mark.vcr
+def test_get_errors(nyaa_client: Nyaa) -> None:
+    with pytest.raises(
+        ValueError, match="Invalid format for 'page'. Expected a valid URL or numeric ID, but got 'None'."
+    ):
+        nyaa_client.get("None")
+
+    with pytest.raises(TypeError, match="Parameter 'page' expected 'int' or 'str', but got 'NoneType'."):
+        nyaa_client.get(None)  # type: ignore[arg-type]
+
+    with pytest.raises(
+        TorrentNotFoundError,
+        match=(
+            "Torrent not found at 'https://nyaa.si/view/9999999999999999999'"
+            "\nIt may have been removed, never existed, or the ID/URL is incorrect."
+        ),
+    ):
+        nyaa_client.get(9999999999999999999)
 
 
 @pytest.mark.vcr

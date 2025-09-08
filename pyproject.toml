@@ -105,7 +105,12 @@ enable_error_code = ["ignore-without-code"]
 
 [tool.coverage.report]
 exclude_also = [
-  "if TYPE_CHECKING:", # Only used for type-hints
+  # Only used for type-hints
+  "if TYPE_CHECKING:",
+  # Only meant as a safe-guard to provide helpful errors, should essentially be unreachable in reality                 
+  'msg = .*\n\s+?raise ParsingError\(msg\)',
+  # Unreachable cases
+  "case _ as unreachable:",
 ]
 
 [build-system]

@@ -79,7 +79,7 @@ class TorrentPanelParser:
     def size(self) -> int:
         value, unit = self.select_from_row("File size:").get_text(strip=True).split(" ", maxsplit=1)
 
-        match unit:
+        match unit:  # pragma: no cover
             case "Bytes":
                 multiplier = 1
             case "KiB":
@@ -92,8 +92,8 @@ class TorrentPanelParser:
                 multiplier = 1024**4
             case "PiB":
                 multiplier = 1024**5
-            case _:
-                msg = f"Unsupported file size unit: {unit}"
+            case _ as unreachable:
+                msg = f"Unsupported file size unit: {unreachable!r}"
                 raise ParsingError(msg)
 
         return math.ceil(float(value) * multiplier)

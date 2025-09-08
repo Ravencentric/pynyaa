@@ -5,7 +5,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import AsyncNyaa, Category, Filter, Order, Submitter
+from pynyaa import AsyncNyaa, Category, Filter, Order, Submitter, TorrentNotFoundError
 
 
 def dedent(s: str) -> str:
@@ -14,6 +14,26 @@ def dedent(s: str) -> str:
 
 async def test_properties(async_nyaa_client: AsyncNyaa) -> None:
     assert async_nyaa_client.base_url == "https://nyaa.si/"
+
+
+@pytest.mark.vcr
+async def test_get_errors(async_nyaa_client: AsyncNyaa) -> None:
+    with pytest.raises(
+        ValueError, match="Invalid format for 'page'. Expected a valid URL or numeric ID, but got 'None'."
+    ):
+        await async_nyaa_client.get("None")
+
+    with pytest.raises(TypeError, match="Parameter 'page' expected 'int' or 'str', but got 'NoneType'."):
+        await async_nyaa_client.get(None)  # type: ignore[arg-type]
+
+    with pytest.raises(
+        TorrentNotFoundError,
+        match=(
+            "Torrent not found at 'https://nyaa.si/view/9999999999999999999'"
+            "\nIt may have been removed, never existed, or the ID/URL is incorrect."
+        ),
+    ):
+        await async_nyaa_client.get(9999999999999999999)
 
 
 @pytest.mark.vcr

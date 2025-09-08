@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-def assert_type(obj: object, typ: type[object] | tuple[type[object], ...], param: str, /) -> None:
+def assert_type(obj: object, typ: type[object] | tuple[type[object], ...], param: str, /) -> None:  # pragma: no cover
     """Shortcut for `isinstance(obj, type)` with a nice error message."""
     if not isinstance(obj, typ):
         if isinstance(typ, tuple):
