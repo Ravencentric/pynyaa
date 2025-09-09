@@ -3,16 +3,14 @@
 ```py
 import pynyaa
 
-nyaa = pynyaa.get("https://nyaa.si/view/1693817")  # Full URL
-nyaa = pynyaa.get(1693817)  # Only the ID also works
+torrent = pynyaa.get("https://nyaa.si/view/1693817")  # Full URL
+torrent = pynyaa.get(1693817)  # Only the ID also works
 
-print(nyaa.title)
+print(torrent.title)
 #> [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
-print(nyaa.submitter)
+print(torrent.submitter)
 #> pog42
-print(nyaa.torrent.files)
-#> [File('Fate.stay.night.Heavens.Feel.I.Presage.Flower.2017.1080p.BluRay.Opus5.1.H.265-LYS1TH3A.mkv', size=12263052206)]
-print(nyaa.torrent.infohash)
+print(torrent.infohash)
 #> 6fdc0395a7fdde6ce3fb7f144b31f3cabdcbf537
 
 torrents = pynyaa.search("LYS1TH3A")
@@ -60,8 +58,9 @@ from pynyaa import Nyaa
 
 storage = InMemoryStorage(capacity=256)
 controller = Controller(force_cache=True)
+client = CacheClient(storage=storage, controller=controller)
 
-with Nyaa(client=CacheClient(storage=storage, controller=controller)) as client:
+with Nyaa(client=client) as client:
     nyaa1 = client.get("https://nyaa.si/view/1693817")  # First request
     nyaa2 = client.get("https://nyaa.si/view/1693817")  # Returns the cached result
 ```

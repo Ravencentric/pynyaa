@@ -43,7 +43,7 @@ def test_nyaa_default(nyaa_client: Nyaa) -> None:
     nyaa = nyaa_client.get("https://nyaa.si/view/1755409")
     assert nyaa.id == 1755409
     assert nyaa.url == "https://nyaa.si/view/1755409"
-    assert nyaa.title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
+    assert str(nyaa) == nyaa.title == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) | Porter Robinson & Madeon - Shelter"
     assert nyaa.category is Category.ANIME_ENGLISH_TRANSLATED
     assert nyaa.submitter == Submitter(
         name="smol",
@@ -51,6 +51,7 @@ def test_nyaa_default(nyaa_client: Nyaa) -> None:
         is_trusted=False,
         is_banned=False,
     )
+    assert str(nyaa.submitter) == "smol"
     assert nyaa.datetime == dt.datetime(2023, 12, 14, 9, 6, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://anidb.net/anime/12482"
     assert nyaa.seeders == 15
@@ -77,7 +78,7 @@ def test_nyaa_trusted(nyaa_client: Nyaa) -> None:
     nyaa = nyaa_client.get("https://nyaa.si/view/1544043")
     assert nyaa.id == 1544043
     assert nyaa.url == "https://nyaa.si/view/1544043"
-    assert nyaa.title == "[MTBB] I Want to Eat Your Pancreas (BD 1080p) | Kimi no Suizou wo Tabetai"
+    assert str(nyaa) == nyaa.title == "[MTBB] I Want to Eat Your Pancreas (BD 1080p) | Kimi no Suizou wo Tabetai"
     assert nyaa.category is Category.ANIME_ENGLISH_TRANSLATED
     assert nyaa.submitter == Submitter(
         name="motbob",
@@ -85,6 +86,7 @@ def test_nyaa_trusted(nyaa_client: Nyaa) -> None:
         is_trusted=True,
         is_banned=False,
     )
+    assert str(nyaa.submitter) == "motbob"
     assert nyaa.datetime == dt.datetime(2022, 6, 20, 0, 0, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information == "#MTBB on Rizon"
     assert nyaa.seeders == 30

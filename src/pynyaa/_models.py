@@ -22,6 +22,9 @@ class Submitter:
     is_banned: bool
     """Indicates whether the user is banned or not."""
 
+    def __str__(self) -> str:
+        return self.name
+
 
 @dataclass(frozen=True, kw_only=True, slots=True)
 class NyaaTorrentPage:
@@ -105,3 +108,6 @@ class NyaaTorrentPage:
     because Nyaa strips away all trackers except it's own
     and the ones listed [here](https://github.com/nyaadevs/nyaa/blob/master/trackers.txt).
     """
+
+    def __str__(self) -> str:
+        return self.title

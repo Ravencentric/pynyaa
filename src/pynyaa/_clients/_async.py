@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class AsyncNyaa:
-    def __init__(self, base_url: str = "https://nyaa.si/", client: httpx.AsyncClient | None = None) -> None:
+    def __init__(self, *, base_url: str = "https://nyaa.si/", client: httpx.AsyncClient | None = None) -> None:
         """
         Client for interacting with Nyaa.
 

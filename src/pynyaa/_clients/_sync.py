@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 
 class Nyaa:
-    def __init__(self, base_url: str = "https://nyaa.si/", client: httpx.Client | None = None) -> None:
+    def __init__(self, *, base_url: str = "https://nyaa.si/", client: httpx.Client | None = None) -> None:
         """
         Client for interacting with Nyaa.
 
