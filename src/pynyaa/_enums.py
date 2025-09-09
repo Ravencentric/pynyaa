@@ -111,6 +111,9 @@ class ParentCategory(enum.Enum):
             raise ValueError(msg)
         raise ValueError(msg)
 
+    def __str__(self) -> str:
+        return self.value
+
 
 CategoryValue: TypeAlias = Literal[
     "Anime - Anime Music Video",
@@ -217,6 +220,7 @@ class Category(enum.Enum):
         ```py
         >>> Category.ANIME_ENGLISH_TRANSLATED.id == "1_2"
         True
+        ```
 
         """
         return self._id
@@ -236,6 +240,9 @@ class Category(enum.Enum):
         """
         parent, _ = self.value.split(" - ")
         return ParentCategory(parent)
+
+    def __str__(self) -> str:
+        return self.value
 
     @classmethod
     def _missing_(cls, value: object) -> Self:

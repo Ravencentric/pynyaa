@@ -1,15 +1,25 @@
 ::: pynyaa.Category
     options:
-        members: true
+        show_signature: false
+        show_if_no_docstring: true
+        filters: ["!^_", "!^value"]
 ::: pynyaa.ParentCategory
     options:
-        members: true
+        show_signature: false
+        show_if_no_docstring: true
+        filters: ["!^_", "!^value"]
 ::: pynyaa.SortBy
     options:
-        members: true
+        show_signature: false
+        show_if_no_docstring: true
+        filters: ["!^_", "!^value"]
 ::: pynyaa.Order
     options:
-        members: true
+        show_signature: false
+        show_if_no_docstring: true
+        filters: ["!^_", "!^value"]
 ::: pynyaa.Filter
     options:
-        members: true
+        show_signature: false
+        show_if_no_docstring: true
+        filters: ["!^_", "!^value"]

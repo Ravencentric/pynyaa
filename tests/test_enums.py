@@ -35,40 +35,42 @@ def test_enum_errors() -> None:
 
 
 @pytest.mark.parametrize(
-    "category, expected_id",
+    ("category", "expected_id", "expected_value"),
     [
-        (ParentCategory.ALL, "0_0"),
-        (ParentCategory.ANIME, "1_0"),
-        (Category.ANIME_MUSIC_VIDEO, "1_1"),
-        (Category.ANIME_ENGLISH_TRANSLATED, "1_2"),
-        (Category.ANIME_NON_ENGLISH_TRANSLATED, "1_3"),
-        (Category.ANIME_RAW, "1_4"),
-        (ParentCategory.AUDIO, "2_0"),
-        (Category.AUDIO_LOSSLESS, "2_1"),
-        (Category.AUDIO_LOSSY, "2_2"),
-        (ParentCategory.LITERATURE, "3_0"),
-        (Category.LITERATURE_ENGLISH_TRANSLATED, "3_1"),
-        (Category.LITERATURE_NON_ENGLISH_TRANSLATED, "3_2"),
-        (Category.LITERATURE_RAW, "3_3"),
-        (ParentCategory.LIVE_ACTION, "4_0"),
-        (Category.LIVE_ACTION_ENGLISH_TRANSLATED, "4_1"),
-        (Category.LIVE_ACTION_IDOL_PROMOTIONAL_VIDEO, "4_2"),
-        (Category.LIVE_ACTION_NON_ENGLISH_TRANSLATED, "4_3"),
-        (Category.LIVE_ACTION_RAW, "4_4"),
-        (ParentCategory.PICTURES, "5_0"),
-        (Category.PICTURES_GRAPHICS, "5_1"),
-        (Category.PICTURES_PHOTOS, "5_2"),
-        (ParentCategory.SOFTWARE, "6_0"),
-        (Category.SOFTWARE_APPLICATIONS, "6_1"),
-        (Category.SOFTWARE_GAMES, "6_2"),
+        (ParentCategory.ALL, "0_0", "All"),
+        (ParentCategory.ANIME, "1_0", "Anime"),
+        (Category.ANIME_MUSIC_VIDEO, "1_1", "Anime - Anime Music Video"),
+        (Category.ANIME_ENGLISH_TRANSLATED, "1_2", "Anime - English-translated"),
+        (Category.ANIME_NON_ENGLISH_TRANSLATED, "1_3", "Anime - Non-English-translated"),
+        (Category.ANIME_RAW, "1_4", "Anime - Raw"),
+        (ParentCategory.AUDIO, "2_0", "Audio"),
+        (Category.AUDIO_LOSSLESS, "2_1", "Audio - Lossless"),
+        (Category.AUDIO_LOSSY, "2_2", "Audio - Lossy"),
+        (ParentCategory.LITERATURE, "3_0", "Literature"),
+        (Category.LITERATURE_ENGLISH_TRANSLATED, "3_1", "Literature - English-translated"),
+        (Category.LITERATURE_NON_ENGLISH_TRANSLATED, "3_2", "Literature - Non-English-translated"),
+        (Category.LITERATURE_RAW, "3_3", "Literature - Raw"),
+        (ParentCategory.LIVE_ACTION, "4_0", "Live Action"),
+        (Category.LIVE_ACTION_ENGLISH_TRANSLATED, "4_1", "Live Action - English-translated"),
+        (Category.LIVE_ACTION_IDOL_PROMOTIONAL_VIDEO, "4_2", "Live Action - Idol/Promotional Video"),
+        (Category.LIVE_ACTION_NON_ENGLISH_TRANSLATED, "4_3", "Live Action - Non-English-translated"),
+        (Category.LIVE_ACTION_RAW, "4_4", "Live Action - Raw"),
+        (ParentCategory.PICTURES, "5_0", "Pictures"),
+        (Category.PICTURES_GRAPHICS, "5_1", "Pictures - Graphics"),
+        (Category.PICTURES_PHOTOS, "5_2", "Pictures - Photos"),
+        (ParentCategory.SOFTWARE, "6_0", "Software"),
+        (Category.SOFTWARE_APPLICATIONS, "6_1", "Software - Applications"),
+        (Category.SOFTWARE_GAMES, "6_2", "Software - Games"),
     ],
 )
-def test_nyaa_category_id_property(category: ParentCategory | Category, expected_id: str) -> None:
+def test_nyaa_category(category: ParentCategory | Category, expected_id: str, expected_value: str) -> None:
     assert category.id == expected_id
+    assert category.value == expected_value
+    assert category.value == str(category)
 
 
 @pytest.mark.parametrize(
-    "category, expected_parent",
+    ("category", "expected_parent"),
     [
         (Category.ANIME_MUSIC_VIDEO, ParentCategory.ANIME),
         (Category.ANIME_ENGLISH_TRANSLATED, ParentCategory.ANIME),
@@ -94,7 +96,7 @@ def test_nyaa_category_parent_property(category: Category, expected_parent: Pare
 
 
 @pytest.mark.parametrize(
-    "input_value, expected_category",
+    ("input_value", "expected_category"),
     [
         ("All", ParentCategory.ALL),
         ("all", ParentCategory.ALL),
@@ -111,7 +113,7 @@ def test_parent_category(input_value: str, expected_category: ParentCategory) ->
 
 
 @pytest.mark.parametrize(
-    "input_value, expected_category",
+    ("input_value", "expected_category"),
     [
         ("Anime - Anime Music Video", Category.ANIME_MUSIC_VIDEO),
         ("Anime - English-translated", Category.ANIME_ENGLISH_TRANSLATED),
@@ -140,7 +142,7 @@ def test_torrent_category(input_value: str, expected_category: Category) -> None
 
 
 @pytest.mark.parametrize(
-    "key, category",
+    ("key", "category"),
     [
         ("0_0", ParentCategory.ALL),
         ("1_0", ParentCategory.ANIME),
@@ -156,7 +158,7 @@ def test_parent_category_with_id(key: str, category: ParentCategory) -> None:
 
 
 @pytest.mark.parametrize(
-    "key, category",
+    ("key", "category"),
     [
         ("1_1", Category.ANIME_MUSIC_VIDEO),
         ("1_2", Category.ANIME_ENGLISH_TRANSLATED),
@@ -182,7 +184,7 @@ def test_nyaa_category_get_with_id(key: str, category: Category) -> None:
 
 
 @pytest.mark.parametrize(
-    "input_value, expected_sort_by",
+    ("input_value", "expected_sort_by"),
     [
         ("comments", SortBy.COMMENTS),
         ("size", SortBy.SIZE),
@@ -200,7 +202,7 @@ def test_sort_by(input_value: str, expected_sort_by: SortBy) -> None:
 
 
 @pytest.mark.parametrize(
-    "input_value, expected_filter",
+    ("input_value", "expected_filter"),
     [
         ("NO_filter", Filter.NO_FILTER),
         (0, Filter.NO_FILTER),

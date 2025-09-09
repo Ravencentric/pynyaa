@@ -34,13 +34,13 @@ Using the same example as above but with the `Nyaa` client:
 ```py
 from pynyaa import Nyaa
 
-with Nyaa() as client:
-    nyaa = client.get("https://nyaa.si/view/1693817")
+with Nyaa() as nyaa:
+    torrent = nyaa.get("https://nyaa.si/view/1693817")
 
-    print(nyaa.title)
+    print(torrent.title)
     #> [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
 
-    torrents = client.search("LYS1TH3A")
+    torrents = nyaa.search("LYS1TH3A")
 
     for torrent in torrents:
         print(torrent)
