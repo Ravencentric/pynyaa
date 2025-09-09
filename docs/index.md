@@ -4,7 +4,7 @@
     <img src="https://raw.githubusercontent.com/Ravencentric/pynyaa/main/docs/assets/logo.png" alt="Logo" width="400">
   </a>
   <p align="center">
-    Turn nyaa.si torrent pages into neat Python objects
+    Turn nyaa.si torrent pages into neat Python objects.
     <br/>
     <br/>
   </p>
@@ -22,17 +22,6 @@
 <a href="https://codecov.io/gh/Ravencentric/pynyaa"><img src="https://codecov.io/gh/Ravencentric/pynyaa/graph/badge.svg?token=9LZ2I4LDYT" alt="Codecov Status"></a>
 
 </div>
-
-## Table Of Contents
-
-* [About](#about)
-* [Installation](#installation)
-* [License](#license)
-
-## About
-
-- Supports both sync and async.
-- Provides easy access to every field except comments (comments are useless).
 
 ## Installation
 
