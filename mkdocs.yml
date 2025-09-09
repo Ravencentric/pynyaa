@@ -82,3 +82,4 @@ nav:
       - Clients: api-reference/clients.md
       - Models: api-reference/models.md
       - Enums: api-reference/enums.md
+      - Errors: api-reference/errors.md
