@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     import datetime as dt
 
-    from pynyaa._enums import Category
+    from ._enums import Category
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)

@@ -7,12 +7,12 @@ from urllib.parse import urljoin
 
 import httpx
 
-from pynyaa._enums import Category, Filter, Order, ParentCategory, SortBy
-from pynyaa._errors import TorrentNotFoundError
-from pynyaa._models import NyaaTorrentPage
-from pynyaa._parser import SearchPageParser, TorrentPageParser
-from pynyaa._utils import assert_type
-from pynyaa._version import __version__
+from .._enums import Category, Filter, Order, ParentCategory, SortBy
+from .._errors import TorrentNotFoundError
+from .._models import NyaaTorrentPage
+from .._parser import SearchPageParser, TorrentPageParser
+from .._utils import assert_type
+from .._version import __version__
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

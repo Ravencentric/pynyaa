@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import tomli
 
-from pynyaa._version import __version__
+from pynyaa import __version__
 
 
 def test_versions_match() -> None:

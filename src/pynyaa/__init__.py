@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final
 
-from pynyaa._clients._async import AsyncNyaa
-from pynyaa._clients._sync import Nyaa
-from pynyaa._enums import Category, Filter, Order, ParentCategory, SortBy
-from pynyaa._errors import ParsingError, PyNyaaError, TorrentNotFoundError
-from pynyaa._models import NyaaTorrentPage, Submitter
-from pynyaa._version import __version__
+from ._clients._async import AsyncNyaa
+from ._clients._sync import Nyaa
+from ._enums import Category, Filter, Order, ParentCategory, SortBy
+from ._errors import ParsingError, PyNyaaError, TorrentNotFoundError
+from ._models import NyaaTorrentPage, Submitter
+from ._version import __version__
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
