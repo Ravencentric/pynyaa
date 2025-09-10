@@ -5,12 +5,12 @@ from urllib.parse import urljoin
 
 import httpx
 
-from .._enums import Category, Filter, Order, ParentCategory, SortBy
-from .._errors import TorrentNotFoundError
-from .._models import NyaaTorrentPage
-from .._parser import SearchPageParser, TorrentPageParser
-from .._utils import assert_type
-from .._version import __version__
+from ._enums import Category, Filter, Order, ParentCategory, SortBy
+from ._errors import TorrentNotFoundError
+from ._models import NyaaTorrentPage
+from ._parser import SearchPageParser, TorrentPageParser
+from ._utils import assert_type
+from ._version import __version__
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator
