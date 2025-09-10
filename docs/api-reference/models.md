@@ -1,2 +1,2 @@
-::: pynyaa._models.Submitter
-::: pynyaa._models.NyaaTorrentPage
+::: pynyaa.Submitter
+::: pynyaa.NyaaTorrentPage
