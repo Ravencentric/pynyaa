@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -54,13 +54,13 @@ class NyaaTorrentPage:
     information: str | None
     """Information about the torrent."""
 
-    seeders: int
+    seeders: int = field(compare=False)
     """Number of seeders."""
 
-    leechers: int
+    leechers: int = field(compare=False)
     """Number of leechers."""
 
-    completed: int
+    completed: int = field(compare=False)
     """Number of completed downloads."""
 
     size: int
