@@ -47,6 +47,7 @@ plugins:
             - https://torf.readthedocs.io/en/latest/objects.inv
           paths: [src]
           options:
+            members_order: source
             allow_inspection: false
             docstring_style: numpy
             show_root_heading: true
