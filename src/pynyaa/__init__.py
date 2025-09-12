@@ -8,7 +8,7 @@ from ._aclient import AsyncNyaa
 from ._client import Nyaa
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
 from ._errors import ParsingError, PyNyaaError, TorrentNotFoundError
-from ._models import NyaaTorrentPage, Submitter
+from ._models import NyaaTorrentPage, Submitter, TorrentFile
 from ._version import __version__
 
 if TYPE_CHECKING:
@@ -52,6 +52,7 @@ __all__: Final = (
     "PyNyaaError",
     "SortBy",
     "Submitter",
+    "TorrentFile",
     "TorrentNotFoundError",
     "__version__",
     "get",

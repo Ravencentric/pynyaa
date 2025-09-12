@@ -10,6 +10,23 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
+class Submitter:
+    """Represents the user who submitted the torrent."""
+
+    name: str
+    """The username of the submitter."""
+    url: str
+    """The profile URL of the submitter."""
+    is_trusted: bool
+    """Indicates whether the user is trusted (green) or not."""
+    is_banned: bool
+    """Indicates whether the user is banned or not."""
+
+    def __str__(self) -> str:
+        return self.name
+
+
+@dataclass(frozen=True, kw_only=True, slots=True)
 class TorrentFile:
     """Represents a torrent file, including its associated data and metadata."""
 
@@ -25,23 +42,6 @@ class TorrentFile:
     """The URL to the torrent file."""
     magnet: str
     """The magnet link for the torrent."""
-
-    def __str__(self) -> str:
-        return self.name
-
-
-@dataclass(frozen=True, kw_only=True, slots=True)
-class Submitter:
-    """Represents the user who submitted the torrent."""
-
-    name: str
-    """The username of the submitter."""
-    url: str
-    """The profile URL of the submitter."""
-    is_trusted: bool
-    """Indicates whether the user is trusted (green) or not."""
-    is_banned: bool
-    """Indicates whether the user is banned or not."""
 
     def __str__(self) -> str:
         return self.name
