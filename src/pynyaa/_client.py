@@ -9,8 +9,8 @@ import httpx
 
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
 from ._errors import TorrentNotFoundError
-from ._models import NyaaTorrentPage
-from ._parser import SearchPageParser, TorrentPageParser
+from ._models import NyaaTorrentPage, TorrentFile
+from ._parser import SearchPageParser, TorrentPageParser, parse_torrent_filename
 from ._utils import assert_type
 from ._version import __version__
 
@@ -98,18 +98,24 @@ class Nyaa:
                 msg = f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}."
                 raise TypeError(msg)
 
-        url = urljoin(self._base_url, f"/view/{id}")
-        nyaa = self._client.get(url)
+        torrent_page_url = urljoin(self._base_url, f"/view/{id}")
+        torrent_file_url = urljoin(self._base_url, f"/download/{id}.torrent")
 
-        if nyaa.status_code == httpx.codes.NOT_FOUND:
-            raise TorrentNotFoundError(url)
-        nyaa.raise_for_status()
+        torrent_page, torrent_file = (
+            self._client.get(torrent_page_url),
+            self._client.get(torrent_file_url),
+        )
 
-        parsed = TorrentPageParser(html=nyaa.text, base_url=self.base_url)
+        if httpx.codes.NOT_FOUND in (torrent_page.status_code, torrent_file.status_code):
+            raise TorrentNotFoundError(torrent_page_url)
+        torrent_page.raise_for_status()
+        torrent_file.raise_for_status()
+
+        parsed = TorrentPageParser(html=torrent_page.text, base_url=self.base_url)
 
         return NyaaTorrentPage(
             id=id,
-            url=url,
+            url=torrent_page_url,
             title=parsed.panel.title(),
             category=parsed.panel.category(),
             datetime=parsed.panel.datetime(),
@@ -118,13 +124,17 @@ class Nyaa:
             seeders=parsed.panel.seeders(),
             leechers=parsed.panel.leechers(),
             completed=parsed.panel.completed(),
-            size=parsed.panel.size(),
-            infohash=parsed.panel.infohash(),
             is_trusted=parsed.is_trusted(),
             is_remake=parsed.is_remake(),
+            torrent=TorrentFile(
+                name=parse_torrent_filename(torrent_file.headers["Content-Disposition"]),
+                data=torrent_file.content,
+                size=parsed.panel.size(),
+                infohash=parsed.panel.infohash(),
+                url=torrent_file_url,
+                magnet=parsed.panel.magnet(),
+            ),
             description=parsed.description(),
-            torrent=parsed.panel.torrent(),
-            magnet=parsed.panel.magnet(),
         )
 
     def search(

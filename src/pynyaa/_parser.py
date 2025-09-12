@@ -4,7 +4,7 @@ import datetime as dt
 import math
 import re
 from typing import TYPE_CHECKING, NewType
-from urllib.parse import urljoin
+from urllib.parse import unquote, urljoin
 
 import bs4
 
@@ -140,10 +140,6 @@ class TorrentPanelParser:
         selector = '.panel-body > .row > .col-md-offset-6.col-md-1:-soup-contains-own("Info hash:") + .col-md-5'
         return self._body.select_one(selector).get_text()
 
-    def torrent(self) -> str:
-        id = self._body.select_one('.panel-footer.clearfix > a[href$=".torrent"]').attrs["href"]
-        return urljoin(self._base_url, id)
-
     def magnet(self) -> str:
         return self._body.select_one('.panel-footer.clearfix > a[href^="magnet:"]').attrs["href"]
 
@@ -192,3 +188,15 @@ class SearchPageParser:
     def results(self) -> Iterator[TorrentID]:
         for id in re.findall(r"<a href=\"(?:/view/(\d+))\" title=\".*\">.*</a>", self._html):
             yield TorrentID(int(id))
+
+
+def parse_torrent_filename(content_disposition: str) -> str:
+    """
+    Return the decoded filename from a [`Content-Disposition`][0] header
+    as used by [`Nyaa`][1].
+
+    [0]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
+    [1]: https://github.com/nyaadevs/nyaa/blob/4fe0ff5b1aa7ec7c9bb2667d97e10ce2a318c676/nyaa/views/torrents.py#L316-L335
+    """
+    _, filename = content_disposition.split("filename*=UTF-8''")
+    return unquote(filename)

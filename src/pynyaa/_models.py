@@ -10,13 +10,34 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
+class TorrentFile:
+    """Represents a torrent file, including its associated data and metadata."""
+
+    name: str
+    """The name of the torrent."""
+    data: bytes
+    """The raw data of the torrent file."""
+    size: int
+    """The size of the torrent in bytes."""
+    infohash: str
+    """The infohash of the torrent."""
+    url: str
+    """The URL to the torrent file."""
+    magnet: str
+    """The magnet link for the torrent."""
+
+    def __str__(self) -> str:
+        return self.name
+
+
+@dataclass(frozen=True, kw_only=True, slots=True)
 class Submitter:
     """Represents the user who submitted the torrent."""
 
     name: str
-    """Username of the submitter."""
+    """The username of the submitter."""
     url: str
-    """Profile URL of the submitter."""
+    """The profile URL of the submitter."""
     is_trusted: bool
     """Indicates whether the user is trusted (green) or not."""
     is_banned: bool
@@ -28,46 +49,40 @@ class Submitter:
 
 @dataclass(frozen=True, kw_only=True, slots=True)
 class NyaaTorrentPage:
-    """Represents Nyaa's torrent page."""
+    """Represents a specific torrent's page on Nyaa."""
 
     id: int
-    """Nyaa ID of the torrent (`https://nyaa.si/view/{id}`)."""
+    """The Nyaa ID of the torrent (e.g., `https://nyaa.si/view/{id}`)."""
 
     url: str
-    """URL to the Nyaa torrent page (`https://nyaa.si/view/123456`)."""
+    """The URL to the Nyaa torrent page (e.g., `https://nyaa.si/view/123456`)."""
 
     title: str
-    """Title of the torrent."""
+    """The title of the torrent."""
 
     category: Category
-    """Torrent category."""
+    """The torrent's category."""
 
     submitter: Submitter | None
     """
-    User who submitted the torrent.
-    This will be `None` if the submitter is anonymous.
+    The user who submitted the torrent.
+    This is `None` if the submitter is anonymous.
     """
 
     datetime: dt.datetime
-    """Date and time at which the torrent was submitted."""
+    """The date and time at which the torrent was submitted."""
 
     information: str | None
-    """Information about the torrent."""
+    """Additional information about the torrent."""
 
     seeders: int = field(compare=False)
-    """Number of seeders."""
+    """The number of seeders."""
 
     leechers: int = field(compare=False)
-    """Number of leechers."""
+    """The number of leechers."""
 
     completed: int = field(compare=False)
-    """Number of completed downloads."""
-
-    size: int
-    """Size of the torrent."""
-
-    infohash: str
-    """Info hash of the torrent."""
+    """The number of completed downloads."""
 
     is_trusted: bool
     """
@@ -75,9 +90,8 @@ class NyaaTorrentPage:
 
     Note
     ----
-    An upload can be both trusted and a remake, in which case,
-    the remake takes priority, that is, `is_remake` will be `True`
-    and `is_trusted` will be `False`.
+    An upload can be both trusted and a remake. In this case, the remake
+    status takes priority, so `is_remake` will be `True` and `is_trusted` will be `False`.
     """
 
     is_remake: bool
@@ -86,28 +100,15 @@ class NyaaTorrentPage:
 
     Note
     ----
-    An upload can be both trusted and a remake, in which case,
-    the remake takes priority, that is, `is_remake` will be `True`
-    and `is_trusted` will be `False`.
+    An upload can be both trusted and a remake. In this case, the remake
+    status takes priority, so `is_remake` will be `True` and `is_trusted` will be `False`.
     """
+
+    torrent: TorrentFile
+    """The `.torrent` file associated with this page."""
 
     description: str | None
-    """Torrent description."""
-
-    torrent: str
-    """URL pointing to the `.torrent` file (`https://nyaa.si/download/123456.torrent`)"""
-
-    magnet: str
-    """
-    Magnet link of the torrent.
-
-    Note
-    ----
-    The magnet link provided by Nyaa is different from the one
-    you'll get if you simply generated it from the `.torrent` file itself
-    because Nyaa strips away all trackers except it's own
-    and the ones listed [here](https://github.com/nyaadevs/nyaa/blob/master/trackers.txt).
-    """
+    """The torrent's description."""
 
     def __str__(self) -> str:
         return self.title

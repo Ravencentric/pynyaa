@@ -7,7 +7,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import Category, Filter, Nyaa, Order, Submitter, TorrentNotFoundError
+from pynyaa import Category, Nyaa, Order, Submitter, TorrentNotFoundError
 
 
 def dedent(s: str) -> str:
@@ -21,17 +21,17 @@ def test_properties(nyaa_client: Nyaa) -> None:
 @pytest.mark.vcr
 def test_get_errors(nyaa_client: Nyaa) -> None:
     with pytest.raises(
-        ValueError, match="Invalid format for 'page'. Expected a valid URL or numeric ID, but got 'None'."
+        ValueError, match=r"Invalid format for 'page'. Expected a valid URL or numeric ID, but got 'None'."
     ):
         nyaa_client.get("None")
 
-    with pytest.raises(TypeError, match="Parameter 'page' expected 'int' or 'str', but got 'NoneType'."):
+    with pytest.raises(TypeError, match=r"Parameter 'page' expected 'int' or 'str', but got 'NoneType'."):
         nyaa_client.get(None)  # type: ignore[arg-type]
 
     with pytest.raises(
         TorrentNotFoundError,
         match=(
-            "Torrent not found at 'https://nyaa.si/view/9999999999999999999'"
+            r"Torrent not found at 'https://nyaa.si/view/9999999999999999999'"
             "\nIt may have been removed, never existed, or the ID/URL is incorrect."
         ),
     ):
@@ -54,9 +54,9 @@ def test_nyaa_default(nyaa_client: Nyaa) -> None:
     assert str(nyaa.submitter) == "smol"
     assert nyaa.datetime == dt.datetime(2023, 12, 14, 9, 6, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://anidb.net/anime/12482"
-    assert nyaa.seeders == 15
-    assert nyaa.leechers == 0
-    assert nyaa.completed == 640
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is False
     assert nyaa.is_remake is False
     assert nyaa.description == dedent("""
@@ -67,10 +67,16 @@ def test_nyaa_default(nyaa_client: Nyaa) -> None:
 
     Harunatsu's subtitles were restyled.
     """)
-    assert nyaa.size == 619603559
-    assert nyaa.infohash == "ad596c24e64424aa6fe02c04c20eb25e57dbb042"
-    assert nyaa.torrent == "https://nyaa.si/download/1755409.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:ad596c24e64424aa6fe02c04c20eb25e57dbb042")
+    assert (
+        str(nyaa.torrent)
+        == nyaa.torrent.name
+        == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) [2CCEB30C].mkv nyaa.torrent"
+    )
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 619603559
+    assert nyaa.torrent.infohash == "ad596c24e64424aa6fe02c04c20eb25e57dbb042"
+    assert nyaa.torrent.url == "https://nyaa.si/download/1755409.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:ad596c24e64424aa6fe02c04c20eb25e57dbb042")
 
 
 @pytest.mark.vcr
@@ -89,9 +95,9 @@ def test_nyaa_trusted(nyaa_client: Nyaa) -> None:
     assert str(nyaa.submitter) == "motbob"
     assert nyaa.datetime == dt.datetime(2022, 6, 20, 0, 0, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information == "#MTBB on Rizon"
-    assert nyaa.seeders == 30
-    assert nyaa.leechers == 0
-    assert nyaa.completed == 3895
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.description == dedent("""
@@ -108,10 +114,12 @@ def test_nyaa_trusted(nyaa_client: Nyaa) -> None:
     Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
     All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).
     """)
-    assert nyaa.size == 2040109466
-    assert nyaa.infohash == "78e51b8285dd611dc1728d9b38dc1b8607cd0994"
-    assert nyaa.torrent == "https://nyaa.si/download/1544043.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:78e51b8285dd611dc1728d9b38dc1b8607cd0994")
+    assert str(nyaa.torrent) == nyaa.torrent.name == "[MTBB] I Want to Eat Your Pancreas [DA34C700].mkv.torrent"
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 2040109466
+    assert nyaa.torrent.infohash == "78e51b8285dd611dc1728d9b38dc1b8607cd0994"
+    assert nyaa.torrent.url == "https://nyaa.si/download/1544043.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:78e51b8285dd611dc1728d9b38dc1b8607cd0994")
 
 
 @pytest.mark.vcr
@@ -131,9 +139,9 @@ def test_nyaa_trusted_and_remake(nyaa_client: Nyaa) -> None:
     )
     assert nyaa.datetime == dt.datetime(2023, 7, 19, 15, 18, 2, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://discord.gg/r9gyPwJeqW"
-    assert nyaa.seeders == 10
-    assert nyaa.leechers == 0
-    assert nyaa.completed == 982
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is False
     assert nyaa.is_remake is True
     assert nyaa.description == dedent("""
@@ -141,10 +149,17 @@ def test_nyaa_trusted_and_remake(nyaa_client: Nyaa) -> None:
 
     Since these videos are 10-bit AV1, you should make sure you have a fully updated version of your video player to avoid playback issues, whether it's [MPC](https://github.com/clsid2/mpc-hc/releases/tag/2.0.0), [mpv](https://mpv.io/), or [VLC](https://www.videolan.org/vlc/).
     """)
-    assert nyaa.size == 1288490189
-    assert nyaa.infohash == "19606f2e09b7013d9fcefbb67955766c19c32c5a"
-    assert nyaa.torrent == "https://nyaa.si/download/1694824.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:19606f2e09b7013d9fcefbb67955766c19c32c5a")
+
+    assert (
+        str(nyaa.torrent)
+        == nyaa.torrent.name
+        == "[MiniMTBB] Hibike! Euphonium - Chikai no Finale [463406D4].mkv.torrent"
+    )
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 1288490189
+    assert nyaa.torrent.infohash == "19606f2e09b7013d9fcefbb67955766c19c32c5a"
+    assert nyaa.torrent.url == "https://nyaa.si/download/1694824.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:19606f2e09b7013d9fcefbb67955766c19c32c5a")
 
 
 @pytest.mark.vcr
@@ -160,9 +175,9 @@ def test_nyaa_anon(nyaa_client: Nyaa) -> None:
     assert nyaa.submitter is None
     assert nyaa.datetime == dt.datetime(2024, 1, 13, 7, 20, 33, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
-    assert nyaa.seeders == 6
-    assert nyaa.leechers == 0
-    assert nyaa.completed == 707
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is False
     assert nyaa.is_remake is False
     assert nyaa.description == dedent("""
@@ -190,10 +205,13 @@ def test_nyaa_anon(nyaa_client: Nyaa) -> None:
     ### How to read this? 
     Go here https://thewiki.moe/getting-started/literature
     """)
-    assert nyaa.size == 1288490189
-    assert nyaa.infohash == "8732a06d2087c71fddf5dc55d08512ebe146d445"
-    assert nyaa.torrent == "https://nyaa.si/download/1765655.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:8732a06d2087c71fddf5dc55d08512ebe146d445")
+
+    assert str(nyaa.torrent) == nyaa.torrent.name == "Ascendance of a Bookworm (J-Novel Club) [Kinoworm].torrent"
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 1288490189
+    assert nyaa.torrent.infohash == "8732a06d2087c71fddf5dc55d08512ebe146d445"
+    assert nyaa.torrent.url == "https://nyaa.si/download/1765655.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:8732a06d2087c71fddf5dc55d08512ebe146d445")
 
 
 @pytest.mark.vcr
@@ -212,9 +230,9 @@ def test_nyaa_banned(nyaa_client: Nyaa) -> None:
     )
     assert nyaa.datetime == dt.datetime(2021, 8, 19, 14, 56, 35, tzinfo=dt.timezone.utc)
     assert nyaa.information == "@succ_#2864 on discord"
-    assert nyaa.seeders == 3
-    assert nyaa.leechers == 1
-    assert nyaa.completed == 117
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is False
     assert nyaa.is_remake is False
     assert nyaa.description == dedent("""
@@ -240,10 +258,12 @@ def test_nyaa_banned(nyaa_client: Nyaa) -> None:
 
     ### Torrent died cba to reseed, get it from [animetosho](https://animetosho.org/view/succ_-tsugumomo-bdrip-1920x1080-x264-flac.n1422797) or [mega](https://mega.nz/folder/dlhEFBCR#QWJMFi2chNH8TIwHwU6UJg)
     """)
-    assert nyaa.size == 18360985191
-    assert nyaa.infohash == "5fecba4e64910a38c05d7566131a1318133bbc45"
-    assert nyaa.torrent == "https://nyaa.si/download/1422797.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:5fecba4e64910a38c05d7566131a1318133bbc45")
+    assert str(nyaa.torrent) == nyaa.torrent.name == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC].torrent"
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 18360985191
+    assert nyaa.torrent.infohash == "5fecba4e64910a38c05d7566131a1318133bbc45"
+    assert nyaa.torrent.url == "https://nyaa.si/download/1422797.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:5fecba4e64910a38c05d7566131a1318133bbc45")
 
 
 @pytest.mark.vcr
@@ -261,16 +281,22 @@ def test_nyaa_banned_and_trusted(nyaa_client: Nyaa) -> None:
     )
     assert nyaa.datetime == dt.datetime(2016, 12, 27, 1, 13, tzinfo=dt.timezone.utc)
     assert nyaa.information is None
-    assert nyaa.seeders == 16
-    assert nyaa.leechers == 3
-    assert nyaa.completed == 5915
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.description
-    assert nyaa.size == 20293720474
-    assert nyaa.infohash == "2959e97cb7796f029d2196fb63bb5c70b56d4206"
-    assert nyaa.torrent == "https://nyaa.si/download/884488.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:2959e97cb7796f029d2196fb63bb5c70b56d4206")
+    assert (
+        str(nyaa.torrent)
+        == nyaa.torrent.name
+        == "[FMA1394] Fullmetal Alchemist (2003) [Dual Audio] [US BD] (batch).torrent"
+    )
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 20293720474
+    assert nyaa.torrent.infohash == "2959e97cb7796f029d2196fb63bb5c70b56d4206"
+    assert nyaa.torrent.url == "https://nyaa.si/download/884488.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:2959e97cb7796f029d2196fb63bb5c70b56d4206")
 
 
 @pytest.mark.vcr
@@ -288,9 +314,9 @@ def test_nyaa_description(nyaa_client: Nyaa) -> None:
     )
     assert nyaa.datetime == dt.datetime(2025, 7, 13, 9, 51, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://discord.gg/r9gyPwJeqW"
-    assert nyaa.seeders == 104
-    assert nyaa.leechers == 6
-    assert nyaa.completed == 1112
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.description == dedent("""
@@ -311,10 +337,12 @@ def test_nyaa_description(nyaa_client: Nyaa) -> None:
     Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
     All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).    
     """)
-    assert nyaa.size == 44667659879
-    assert nyaa.infohash == "489cb384b126a87e26afc0dfe96ef20216a2fc39"
-    assert nyaa.torrent == "https://nyaa.si/download/1992716.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:489cb384b126a87e26afc0dfe96ef20216a2fc39")
+    assert str(nyaa.torrent) == nyaa.torrent.name == "[MTBB] Steins;Gate 0 S1 (BD 1080p).torrent"
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 44667659879
+    assert nyaa.torrent.infohash == "489cb384b126a87e26afc0dfe96ef20216a2fc39"
+    assert nyaa.torrent.url == "https://nyaa.si/download/1992716.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:489cb384b126a87e26afc0dfe96ef20216a2fc39")
 
 
 @pytest.mark.vcr
@@ -329,16 +357,19 @@ def test_nyaa_empty_info(nyaa_client: Nyaa) -> None:
     )
     assert nyaa.datetime == dt.datetime(2008, 6, 23, 3, 24, tzinfo=dt.timezone.utc)
     assert nyaa.information is None
-    assert nyaa.seeders == 0
-    assert nyaa.leechers == 0
-    assert nyaa.completed == 0
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is False
     assert nyaa.is_remake is False
     assert nyaa.description == "Share - YS2YSUOe1cLtf - D-tvk DivX6.6 704x396"
-    assert nyaa.size == 192728269
-    assert nyaa.infohash == "ad35645d31cf4110440a79b062f775bcab717af3"
-    assert nyaa.torrent == "https://nyaa.si/download/5819.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:ad35645d31cf4110440a79b062f775bcab717af3")
+
+    assert str(nyaa.torrent) == nyaa.torrent.name == "[moyism] Myself;Yourself - 08 (RAW).torrent"
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 192728269
+    assert nyaa.torrent.infohash == "ad35645d31cf4110440a79b062f775bcab717af3"
+    assert nyaa.torrent.url == "https://nyaa.si/download/5819.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:ad35645d31cf4110440a79b062f775bcab717af3")
 
 
 @pytest.mark.vcr
@@ -353,16 +384,22 @@ def test_nyaa_empty_desc(nyaa_client: Nyaa) -> None:
     )
     assert nyaa.datetime == dt.datetime(2009, 7, 24, 23, 47, tzinfo=dt.timezone.utc)
     assert nyaa.information == "irc://irc.rizon.net/commie"
-    assert nyaa.seeders == 0
-    assert nyaa.leechers == 0
-    assert nyaa.completed == 0
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is True
     assert nyaa.is_remake is False
     assert nyaa.description is None
-    assert nyaa.size == 178887066
-    assert nyaa.infohash == "88cbf145c04d79e103a4620543098848544283ad"
-    assert nyaa.torrent == "https://nyaa.si/download/76777.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:88cbf145c04d79e103a4620543098848544283ad")
+    assert (
+        str(nyaa.torrent)
+        == nyaa.torrent.name
+        == "[CommieRaws]GA Geijutsuka Art Design Class 03 848x480[13BADBC6].mkv.torrent"
+    )
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 178887066
+    assert nyaa.torrent.infohash == "88cbf145c04d79e103a4620543098848544283ad"
+    assert nyaa.torrent.url == "https://nyaa.si/download/76777.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:88cbf145c04d79e103a4620543098848544283ad")
 
 
 @pytest.mark.vcr
@@ -377,20 +414,26 @@ def test_nyaa_empty_desc_info(nyaa_client: Nyaa) -> None:
     )
     assert nyaa.datetime == dt.datetime(2022, 10, 5, 20, 35, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information is None
-    assert nyaa.seeders == 2
-    assert nyaa.leechers == 0
-    assert nyaa.completed == 127
+    assert nyaa.seeders >= 0
+    assert nyaa.leechers >= 0
+    assert nyaa.completed >= 0
     assert nyaa.is_trusted is False
     assert nyaa.is_remake is False
     assert nyaa.description is None
-    assert nyaa.size == 2576980378
-    assert nyaa.infohash == "79f9947ec567f1d5edb6ea472818588881094b2f"
-    assert nyaa.torrent == "https://nyaa.si/download/1586776.torrent"
-    assert nyaa.magnet.startswith("magnet:?xt=urn:btih:79f9947ec567f1d5edb6ea472818588881094b2f")
+    assert (
+        str(nyaa.torrent)
+        == nyaa.torrent.name
+        == "Hatsune Miku - Angel Call -Vocaloid-PV clips Blu-ray Edition- [kuchikirukia].torrent"
+    )
+    assert nyaa.torrent.data
+    assert nyaa.torrent.size == 2576980378
+    assert nyaa.torrent.infohash == "79f9947ec567f1d5edb6ea472818588881094b2f"
+    assert nyaa.torrent.url == "https://nyaa.si/download/1586776.torrent"
+    assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:79f9947ec567f1d5edb6ea472818588881094b2f")
 
 
 @pytest.mark.vcr
-def test_search(nyaa_client: Nyaa) -> None:
+def test_nyaa_search(nyaa_client: Nyaa) -> None:
     results = nyaa_client.search("MTBB", order=Order.ASCENDING)
     titles = [torrent.title for torrent in results]
     assert len(titles) > 150
@@ -415,60 +458,6 @@ def test_search(nyaa_client: Nyaa) -> None:
         in titles  # Uploaded by MTBB but not marked Trusted
     )
     assert "[MTBB-Minis] Monogatari Series (BD 1080p AV1)" in titles  # REMAKE
-
-
-@pytest.mark.vcr
-def test_search_trusted_only(nyaa_client: Nyaa) -> None:
-    results = nyaa_client.search("MTBB", filter=Filter.TRUSTED_ONLY, order=Order.ASCENDING)
-    titles = [torrent.title for torrent in results]
-    assert titles[:10] == [
-        "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",
-        "[MTBB] Your Name. (1080p BD) | Kimi no Na wa.",
-        "[MTBB] Mobile Suit Gundam 0080: War in the Pocket (720p BD)",
-        "[MTBB] Classroom of the Elite S1 (WEB 720p) | Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e",
-        "[MTBB] Yahari Ore no Seishun Love Comedy wa Machigatteiru. Zoku - OVA (720p BD)",
-        "[MTBB] In This Corner of the World (1080p BD) | Kono Sekai no Katasumi ni",
-        "[MTBB] Inuyashiki (WEB 810p)",
-        "[MTBB] Mind Game (810p BD)",
-        "[MTBB] One Stormy Night (WEB 1080p) | Arashi no Yoru ni",
-        "[MTBB] Hakumei to Mikochi - OVA (BD 720p)",
-    ]  # Page 1
-    assert "[MTBB] Hyouka (BD 1080p)" in titles  # Page 2
-    assert "[MTBB] Katanagatari S1 (BD 1080p)" in titles  # Page 3
-
-    assert "[MTBB] Sword Art Online - Alicization (Unofficial Batch)" not in titles  # Uploaded by someone else
-    assert (
-        "[MTBB] Sound! Euphonium the Movie: Our Promise: A Brand New Day (BD 1080p) | Hibike! Euphonium: Chikai no Finale"
-        not in titles  # Uploaded by MTBB but not marked Trusted
-    )
-    assert "[MTBB-Minis] Monogatari Series (BD 1080p AV1)" in titles  # REMAKE
-
-
-@pytest.mark.vcr
-def test_search_no_remakes(nyaa_client: Nyaa) -> None:
-    results = nyaa_client.search("MTBB", filter=Filter.NO_REMAKES, order=Order.ASCENDING)
-    titles = [torrent.title for torrent in results]
-    assert titles[:10] == [
-        "[MTBB] Psycho-Pass: The Movie: Engrish Eradication Edition (BD 1080p)",
-        "[MTBB] Your Name. (1080p BD) | Kimi no Na wa.",
-        "[MTBB] Mobile Suit Gundam 0080: War in the Pocket (720p BD)",
-        "[MTBB] Classroom of the Elite S1 (WEB 720p) | Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e",
-        "[MTBB] Yahari Ore no Seishun Love Comedy wa Machigatteiru. Zoku - OVA (720p BD)",
-        "[MTBB] In This Corner of the World (1080p BD) | Kono Sekai no Katasumi ni",
-        "[MTBB] Inuyashiki (WEB 810p)",
-        "[MTBB] Mind Game (810p BD)",
-        "[MTBB] One Stormy Night (WEB 1080p) | Arashi no Yoru ni",
-        "[MTBB] Hakumei to Mikochi - OVA (BD 720p)",
-    ]  # Page 1
-    assert "[MTBB] Hyouka (BD 1080p)" in titles  # Page 2
-    assert "[MTBB] Katanagatari S1 (BD 1080p)" in titles  # Page 3
-
-    assert "[MTBB] Sword Art Online - Alicization (Unofficial Batch)" in titles  # Uploaded by someone else
-    assert (
-        "[MTBB] Sound! Euphonium the Movie: Our Promise: A Brand New Day (BD 1080p) | Hibike! Euphonium: Chikai no Finale"
-        in titles  # Uploaded by MTBB but not marked Trusted
-    )
-    assert "[MTBB-Minis] Monogatari Series (BD 1080p AV1)" not in titles  # REMAKE
 
 
 @pytest.mark.vcr

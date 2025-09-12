@@ -120,4 +120,119 @@ interactions:
     status:
       code: 404
       message: NOT FOUND
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      cookie:
+      - __ddg1_=jwVtVDhmLJbpDUr6wmWo
+      host:
+      - nyaa.si
+      user-agent:
+      - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
+        Gecko) Chrome/128.0.0.0 Safari/537.36
+    method: GET
+    uri: https://nyaa.si/download/9999999999999999999.torrent
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Security-Policy:
+      - upgrade-insecure-requests;
+      Content-Type:
+      - text/html; charset=utf-8
+      Date:
+      - Fri, 12 Sep 2025 19:12:57 GMT
+      Keep-Alive:
+      - timeout=60
+      Server:
+      - ddos-guard
+      Set-Cookie:
+      - __ddg8_=miGKgRId0DEKwSlK; Domain=.nyaa.si; Path=/; Expires=Fri, 12-Sep-2025
+        19:32:57 GMT
+      - __ddg10_=1757704377; Domain=.nyaa.si; Path=/; Expires=Fri, 12-Sep-2025 19:32:57
+        GMT
+      - __ddg9_=213.152.161.121; Domain=.nyaa.si; Path=/; Expires=Fri, 12-Sep-2025
+        19:32:57 GMT
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 404
+      message: NOT FOUND
 version: 1
