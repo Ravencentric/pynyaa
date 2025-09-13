@@ -1,6 +1,6 @@
 [project]
 name = "pynyaa"
-version = "2.0.0"
+version = "3.0.0"
 description = "Turn nyaa.si releases into neat Python objects."
 authors = [{ name = "Ravencentric", email = "me@ravencentric.cc" }]
 readme = "README.md"
