@@ -892,8 +892,13 @@ docs = [
     { name = "mkdocstrings", extra = ["python"] },
 ]
 lint = [
+    { name = "coverage", extra = ["toml"] },
     { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-recording" },
     { name = "ruff" },
+    { name = "tomli" },
     { name = "types-beautifulsoup4" },
     { name = "typing-extensions" },
 ]
@@ -903,6 +908,7 @@ test = [
     { name = "pytest-asyncio" },
     { name = "pytest-recording" },
     { name = "tomli" },
+    { name = "typing-extensions" },
 ]
 
 [package.metadata]
@@ -932,8 +938,13 @@ docs = [
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.27.0" },
 ]
 lint = [
+    { name = "coverage", extras = ["toml"], specifier = ">=7.6.10" },
     { name = "mypy", specifier = ">=1.16.0" },
+    { name = "pytest", specifier = ">=8.3.4" },
+    { name = "pytest-asyncio", specifier = ">=1.1.0" },
+    { name = "pytest-recording", specifier = ">=0.13.4" },
     { name = "ruff", specifier = ">=0.11.12" },
+    { name = "tomli", specifier = ">=2.0.1" },
     { name = "types-beautifulsoup4", specifier = ">=4.12.0.20240907" },
     { name = "typing-extensions", specifier = ">=4.12.2" },
 ]
@@ -943,6 +954,7 @@ test = [
     { name = "pytest-asyncio", specifier = ">=1.1.0" },
     { name = "pytest-recording", specifier = ">=0.13.4" },
     { name = "tomli", specifier = ">=2.0.1" },
+    { name = "typing-extensions", specifier = ">=4.12.2" },
 ]
 
 [[package]]
