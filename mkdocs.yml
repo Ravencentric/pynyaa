@@ -78,7 +78,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Usage: usage.md
+  - Quick Start: quick-start.md
   - API Reference:
       - Clients: api-reference/clients.md
       - Models: api-reference/models.md

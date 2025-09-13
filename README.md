@@ -33,7 +33,7 @@ pip install pynyaa
 
 # Docs
 
-Checkout the complete documentation [here](https://ravencentric.cc/pynyaa/).
+Checkout the [quick start page](https://ravencentric.cc/pynyaa/quick-start/) and the [API reference](https://ravencentric.cc/pynyaa/api-reference/client/).
 
 ## License
 
