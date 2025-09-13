@@ -8,14 +8,14 @@ from ._aclient import AsyncNyaa
 from ._client import Nyaa
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
 from ._errors import ParsingError, PyNyaaError, TorrentNotFoundError
-from ._models import NyaaTorrentPage, Submitter, TorrentFile
+from ._models import NyaaRelease, Submitter, TorrentFile
 from ._version import __version__
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
-def get(page: int | str) -> NyaaTorrentPage:  # pragma: no cover
+def get(page: int | str) -> NyaaRelease:  # pragma: no cover
     """
     Shortcut for `pynyaa.Nyaa.get`.
     For more advanced or configurable usage, use the `pynyaa.Nyaa` client directly.
@@ -31,7 +31,7 @@ def search(
     filter: Filter = Filter.NO_FILTER,
     sort_by: SortBy = SortBy.DATETIME,
     order: Order = Order.DESCENDING,
-) -> Iterator[NyaaTorrentPage]:  # pragma: no cover
+) -> Iterator[NyaaRelease]:  # pragma: no cover
     """
     Shortcut for `pynyaa.Nyaa.search`.
     For more advanced or configurable usage, use the `pynyaa.Nyaa` client directly.
@@ -45,7 +45,7 @@ __all__: Final = (
     "Category",
     "Filter",
     "Nyaa",
-    "NyaaTorrentPage",
+    "NyaaRelease",
     "Order",
     "ParentCategory",
     "ParsingError",

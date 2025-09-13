@@ -9,7 +9,7 @@ import httpx
 
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
 from ._errors import TorrentNotFoundError
-from ._models import NyaaTorrentPage, TorrentFile
+from ._models import NyaaRelease, TorrentFile
 from ._parser import SearchPageParser, TorrentPageParser, parse_torrent_filename
 from ._utils import assert_type
 from ._version import __version__
@@ -61,7 +61,7 @@ class Nyaa:
         """
         self._client.close()
 
-    def get(self, page: int | str, /) -> NyaaTorrentPage:
+    def get(self, page: int | str, /) -> NyaaRelease:
         """
         Fetch metadata for a specific torrent page.
 
@@ -81,8 +81,8 @@ class Nyaa:
 
         Returns
         -------
-        NyaaTorrentPage
-            Parsed torrent metadata as a `NyaaTorrentPage` object.
+        NyaaRelease
+            Parsed torrent metadata as a `NyaaRelease` object.
 
         """
         match page:
@@ -113,7 +113,7 @@ class Nyaa:
 
         parsed = TorrentPageParser(html=torrent_page.text, base_url=self.base_url)
 
-        return NyaaTorrentPage(
+        return NyaaRelease(
             id=id,
             url=torrent_page_url,
             title=parsed.panel.title(),
@@ -146,7 +146,7 @@ class Nyaa:
         filter: Filter = Filter.NO_FILTER,
         sort_by: SortBy = SortBy.DATETIME,
         order: Order = Order.DESCENDING,
-    ) -> Iterator[NyaaTorrentPage]:
+    ) -> Iterator[NyaaRelease]:
         """
         Search for torrents on Nyaa.
 
@@ -165,7 +165,7 @@ class Nyaa:
 
         Yields
         ------
-        NyaaTorrentPage
+        NyaaRelease
             Parsed torrent metadata for each result.
 
         """

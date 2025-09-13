@@ -48,32 +48,32 @@ class TorrentFile:
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
-class NyaaTorrentPage:
-    """Represents a specific torrent's page on Nyaa."""
+class NyaaRelease:
+    """Represents a specific release (torrent) on Nyaa."""
 
     id: int
-    """The Nyaa ID of the torrent (e.g., `https://nyaa.si/view/{id}`)."""
+    """The Nyaa ID of the release (e.g., `https://nyaa.si/view/{id}`)."""
 
     url: str
-    """The URL to the Nyaa torrent page (e.g., `https://nyaa.si/view/123456`)."""
+    """The URL to the Nyaa release page (e.g., `https://nyaa.si/view/123456`)."""
 
     title: str
-    """The title of the torrent."""
+    """The title of the release."""
 
     category: Category
-    """The torrent's category."""
+    """The release's category."""
 
     submitter: Submitter | None
     """
-    The user who submitted the torrent.
+    The user who submitted the release.
     This is `None` if the submitter is anonymous.
     """
 
     datetime: dt.datetime
-    """The date and time at which the torrent was submitted."""
+    """The date and time at which the release was submitted."""
 
     information: str | None
-    """Additional information about the torrent."""
+    """Additional information about the release."""
 
     seeders: int = field(compare=False)
     """The number of seeders."""
@@ -90,7 +90,7 @@ class NyaaTorrentPage:
 
     Note
     ----
-    An upload can be both trusted and a remake. In this case, the remake
+    A release can be both trusted and a remake. In this case, the remake
     status takes priority, so `is_remake` will be `True` and `is_trusted` will be `False`.
     """
 
@@ -100,15 +100,15 @@ class NyaaTorrentPage:
 
     Note
     ----
-    An upload can be both trusted and a remake. In this case, the remake
+    A release can be both trusted and a remake. In this case, the remake
     status takes priority, so `is_remake` will be `True` and `is_trusted` will be `False`.
     """
 
     torrent: TorrentFile
-    """The `.torrent` file associated with this page."""
+    """The `.torrent` file associated with this release."""
 
     description: str | None
-    """The torrent's description."""
+    """The release's description."""
 
     def __str__(self) -> str:
         return self.title
