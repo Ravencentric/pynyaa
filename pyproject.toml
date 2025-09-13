@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Typing :: Typed",
 ]
-dependencies = ["beautifulsoup4>=4.12.3", "httpx>=0.27.2"]
+dependencies = ["beautifulsoup4>=4.13.5", "httpx>=0.27.2"]
 
 [project.urls]
 Documentation = "https://ravencentric.cc/pynyaa"
@@ -34,12 +34,7 @@ test = [
   "pytest-asyncio>=1.1.0",
   "tomli>=2.0.1",
 ]
-lint = [
-  "mypy>=1.16.0",
-  "ruff>=0.11.12",
-  "types-beautifulsoup4>=4.12.0.20240907",
-  "typing-extensions>=4.12.2",
-]
+lint = ["mypy>=1.16.0", "ruff>=0.11.12", "typing-extensions>=4.12.2"]
 dev = [
   { include-group = "docs" },
   { include-group = "test" },
