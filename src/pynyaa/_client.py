@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 import httpx
 
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
-from ._errors import TorrentNotFoundError
+from ._errors import ReleaseNotFoundError
 from ._models import NyaaRelease, TorrentFile
 from ._parser import SearchPageParser, TorrentPageParser, parse_torrent_filename
 from ._utils import assert_type
@@ -29,7 +29,7 @@ class Nyaa:
         ----------
         base_url : str, optional
             Base URL of Nyaa.
-            Used to construct full URLs from relative paths.
+            Used to construct full URLs from relative URLs.
         client : httpx.Client, optional
             Custom [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
 
@@ -44,8 +44,7 @@ class Nyaa:
     @property
     def base_url(self) -> str:
         """
-        Base URL of Nyaa.
-        Used to construct full URLs from relative paths.
+        Base URL of Nyaa, used to construct full URLs from relative URLs.
         """
         return self._base_url
 
@@ -63,26 +62,26 @@ class Nyaa:
 
     def get(self, page: int | str, /) -> NyaaRelease:
         """
-        Fetch metadata for a specific torrent page.
+        Fetch metadata for a specific Nyaa release.
 
         Parameters
         ----------
         page : int or str
-            Torrent ID or full URL (e.g., `123456` or `https://nyaa.si/view/123456`).
+            Release ID or full URL (e.g., `123456` or `https://nyaa.si/view/123456`).
 
         Raises
         ------
-        TorrentNotFoundError
-            If the torrent does not exist (HTTP 404).
+        ReleaseNotFoundError
+            If the release does not exist (HTTP 404).
         TypeError
             If `page` is not an `int` or `str`.
         ValueError
-            If `page` is a string but not a valid torrent URL.
+            If `page` is a string but not a valid release URL.
 
         Returns
         -------
         NyaaRelease
-            Parsed torrent metadata as a `NyaaRelease` object.
+            Parsed release metadata.
 
         """
         match page:
@@ -107,7 +106,7 @@ class Nyaa:
         )
 
         if httpx.codes.NOT_FOUND in (torrent_page.status_code, torrent_file.status_code):
-            raise TorrentNotFoundError(torrent_page_url)
+            raise ReleaseNotFoundError(torrent_page_url)
         torrent_page.raise_for_status()
         torrent_file.raise_for_status()
 
@@ -148,7 +147,7 @@ class Nyaa:
         order: Order = Order.DESCENDING,
     ) -> Iterator[NyaaRelease]:
         """
-        Search for torrents on Nyaa.
+        Search for releases on Nyaa.
 
         Parameters
         ----------
@@ -166,7 +165,7 @@ class Nyaa:
         Yields
         ------
         NyaaRelease
-            Parsed torrent metadata for each result.
+            Parsed release metadata for each search result.
 
         """
         assert_type(query, str, "query")

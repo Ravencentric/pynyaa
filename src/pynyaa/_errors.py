@@ -16,10 +16,10 @@ class ParsingError(PyNyaaError):
     """Raised when there is an error parsing the HTML."""
 
 
-class TorrentNotFoundError(PyNyaaError):
-    """Raised when the requested torrent page cannot be found on Nyaa."""
+class ReleaseNotFoundError(PyNyaaError):
+    """Raised when the requested release cannot be found on Nyaa."""
 
     def __init__(self, url: str):
         super().__init__(
-            f"Torrent not found at {url!r}\nIt may have been removed, never existed, or the ID/URL is incorrect."
+            f"Release not found at {url!r}\nIt may have been removed, never existed, or the ID/URL is incorrect."
         )

@@ -5,7 +5,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import AsyncNyaa, Category, Order, Submitter, TorrentNotFoundError
+from pynyaa import AsyncNyaa, Category, Order, ReleaseNotFoundError, Submitter
 
 
 def dedent(s: str) -> str:
@@ -27,9 +27,9 @@ async def test_get_errors(async_nyaa_client: AsyncNyaa) -> None:
         await async_nyaa_client.get(None)  # type: ignore[arg-type]
 
     with pytest.raises(
-        TorrentNotFoundError,
+        ReleaseNotFoundError,
         match=(
-            r"Torrent not found at 'https://nyaa.si/view/9999999999999999999'"
+            r"Release not found at 'https://nyaa.si/view/9999999999999999999'"
             "\nIt may have been removed, never existed, or the ID/URL is incorrect."
         ),
     ):

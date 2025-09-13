@@ -7,7 +7,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import Category, Nyaa, Order, Submitter, TorrentNotFoundError
+from pynyaa import Category, Nyaa, Order, ReleaseNotFoundError, Submitter
 
 
 def dedent(s: str) -> str:
@@ -29,9 +29,9 @@ def test_get_errors(nyaa_client: Nyaa) -> None:
         nyaa_client.get(None)  # type: ignore[arg-type]
 
     with pytest.raises(
-        TorrentNotFoundError,
+        ReleaseNotFoundError,
         match=(
-            r"Torrent not found at 'https://nyaa.si/view/9999999999999999999'"
+            r"Release not found at 'https://nyaa.si/view/9999999999999999999'"
             "\nIt may have been removed, never existed, or the ID/URL is incorrect."
         ),
     ):
