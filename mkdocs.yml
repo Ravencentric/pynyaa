@@ -1,7 +1,7 @@
 # Project information
 site_name: pynyaa
 site_author: Ravencentric
-site_description: Turn nyaa.si torrent pages into neat Python objects.
+site_description: Turn nyaa.si releases into neat Python objects.
 
 # Repository
 repo_name: pynyaa

@@ -4,7 +4,7 @@
     <img src="https://raw.githubusercontent.com/Ravencentric/pynyaa/main/docs/assets/logo.png" alt="Logo" width="400">
   </a>
   <p align="center">
-    Turn nyaa.si torrent pages into neat Python objects.
+    Turn nyaa.si releases into neat Python objects.
     <br/>
     <br/>
   </p>

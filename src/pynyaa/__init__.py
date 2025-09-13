@@ -1,4 +1,4 @@
-"""Turn nyaa.si torrent pages into neat Python objects."""
+"""Turn nyaa.si releases into neat Python objects."""
 
 from __future__ import annotations
 
