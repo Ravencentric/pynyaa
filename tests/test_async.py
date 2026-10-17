@@ -16,7 +16,8 @@ async def test_properties(async_nyaa_client: AsyncNyaa) -> None:
     assert async_nyaa_client.base_url == "https://nyaa.si/"
 
 
-@pytest.mark.vcr
+# Reuse recorded 404s for the cache-busting retry, ignoring its query parameter.
+@pytest.mark.vcr(filter_query_parameters=["_"], allow_playback_repeats=True)
 async def test_get_errors(async_nyaa_client: AsyncNyaa) -> None:
     with pytest.raises(
         ValueError, match=r"Invalid format for 'page'. Expected a valid URL or numeric ID, but got 'None'."

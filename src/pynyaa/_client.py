@@ -2,6 +2,7 @@
 # Do not edit it by hand.
 from __future__ import annotations
 
+import time
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urljoin
 
@@ -18,6 +19,29 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from typing_extensions import Self
+
+
+def fetch(client: httpx.Client, url: str) -> httpx.Response:
+    response = client.get(url)
+
+    # Nyaa *seems* to return 404s for torrents uploaded less than ~3 minutes ago.
+    # If you use autobrr, you'll encounter this a lot because the whole point of
+    # autobrr is snatching torrents the instant they get announced.
+    # We can workaround this by passing junk query paramters to bust the underlying
+    # cache and get a fresh result because Nyaa simply ignores all query parameters:
+    #
+    # <https://github.com/nyaadevs/nyaa/blob/4fe0ff5b1aa7ec7c9bb2667d97e10ce2a318c676/nyaa/views/torrents.py#L18>
+    #
+    # Unfortunately, this does cost an extra request and a wasted one at that if it's actually a missing page.
+    if response.status_code == 404:  # noqa: PLR2004
+        response = client.get(
+            url,
+            # The test suite relies on this key being an underscore
+            # so don't forget to update those if this ever changes.
+            params={"_": time.time_ns()},
+        )
+
+    return response
 
 
 class Nyaa:
@@ -101,8 +125,8 @@ class Nyaa:
         torrent_file_url = urljoin(self._base_url, f"/download/{id}.torrent")
 
         torrent_page, torrent_file = (
-            self._client.get(torrent_page_url),
-            self._client.get(torrent_file_url),
+            fetch(self._client, torrent_page_url),
+            fetch(self._client, torrent_file_url),
         )
 
         if httpx.codes.NOT_FOUND in (torrent_page.status_code, torrent_file.status_code):
