@@ -5,7 +5,7 @@ description = "Turn nyaa.si releases into neat Python objects."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-authors = [{ name = "Ravencentric", email = "me@ravencentric.cc" }]
+authors = [{ name = "Ravencentric", email = "me@ravencentri.cc" }]
 keywords = ["anime", "nyaa", "nyaa.si", "nyaasi", "torrent"]
 classifiers = [
   "Operating System :: OS Independent",
@@ -13,12 +13,14 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Typing :: Typed",
 ]
 dependencies = ["beautifulsoup4>=4.13.5", "httpx>=0.27.2"]
 
 [project.urls]
-Documentation = "https://ravencentric.cc/pynyaa"
+Documentation = "https://ravencentri.cc/pynyaa/"
 Repository = "https://github.com/Ravencentric/pynyaa"
 
 [dependency-groups]
