@@ -31,13 +31,13 @@ features = [
     # will generate an edit button for the page. This works for common
     # repository hosting services.
     # https://zensical.org/docs/setup/repository/#content-actions
-    #"content.action.edit",
+    "content.action.edit",
 
     # If you have a repository configured and turn on this feature, Zensical
     # will generate a button that allows the user to view the Markdown
     # code for the current page.
     # https://zensical.org/docs/setup/repository/#content-actions
-    #"content.action.view",
+    "content.action.view",
 
     # Code annotations allow you to add an icon with a tooltip to your
     # code blocks to provide explanations at crucial points.
@@ -256,3 +256,25 @@ combine_header_slug = true
 [project.markdown_extensions.pymdownx.tasklist]
 custom_checkbox = true
 [project.markdown_extensions.pymdownx.tilde]
+
+# ----------------------------------------------------------------------------
+# https://zensical.org/docs/setup/extensions/mkdocstrings/
+# ----------------------------------------------------------------------------
+[project.plugins.mkdocstrings.handlers.python]
+inventories = ["https://docs.python.org/3/objects.inv"]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+members_order = "source"
+allow_inspection = false
+docstring_style = "numpy"
+show_root_heading = true
+show_root_full_path = false
+show_signature_annotations = true
+separate_signature = true
+show_symbol_type_heading = true
+show_symbol_type_toc = true
+signature_crossrefs = true
+merge_init_into_class = true
+filters = ["!^_", "^__init__$"]
+find_stubs_package = true
+show_source = true
