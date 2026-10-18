@@ -13,6 +13,8 @@ def assert_type(obj: object, typ: type[object] | tuple[type[object], ...], param
                 case [*rest, last]:
                     names = (f"{obj.__name__!r}" for obj in rest)
                     expected = ", ".join(names) + f", or {last.__name__!r}"
+                case _:
+                    raise ValueError(f"Expected a tuple of types, but got {typ!r}.")
         else:
             expected = f"{typ.__name__!r}"
 

@@ -33,7 +33,7 @@ docs = [
   "mkdocstrings[python]>=0.27.0",
 ]
 lint = [
-  "mypy>=1.16.0",
+  "pyrefly>=1.4.0",
   "ruff>=0.17.1",
   "typing-extensions>=4.12.2",
 ]
@@ -54,11 +54,21 @@ exclude_also = [
   "if TYPE_CHECKING:",  # Only used for type-hints
 ]
 
-[tool.mypy]
-strict = true
-pretty = true
-files = ["src/**/*.py", "tests/**/*.py", "scripts/**/*.py"]
-enable_error_code = ["ignore-without-code"]
+[tool.pyrefly]
+preset = "all"
+python-platform = "all"
+project-includes = [
+  "src/**/*.py",
+  "tests/**/*.py",
+  "scripts/**/*.py",
+]
+
+[tool.pyrefly.errors]
+# 3.10 doesn't have the @override decorator
+missing-override-decorator = false
+explicit-any = false
+implicit-bool = false
+unused-call-result = false
 
 [tool.pytest.ini_options]
 addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
