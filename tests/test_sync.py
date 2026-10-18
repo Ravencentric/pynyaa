@@ -14,10 +14,6 @@ def dedent(s: str) -> str:
     return textwrap.dedent(s).strip()
 
 
-def test_properties(nyaa_client: Nyaa) -> None:
-    assert nyaa_client.base_url == "https://nyaa.si/"
-
-
 # Reuse recorded 404s for the cache-busting retry, ignoring its query parameter.
 @pytest.mark.vcr(filter_query_parameters=["_"], allow_playback_repeats=True)
 def test_get_errors(nyaa_client: Nyaa) -> None:

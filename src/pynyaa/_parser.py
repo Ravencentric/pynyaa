@@ -65,11 +65,11 @@ class SafeSoup:
 class TorrentPanelParser:
     """Parser for a torrent's metadata panel (title, category, size, etc.)."""
 
-    __slots__ = ("_base_url", "_body")
+    __slots__ = ("_body", "_url")
 
-    def __init__(self, *, body: SafeTag, base_url: str):
+    def __init__(self, *, body: SafeTag, url: str):
         self._body = body
-        self._base_url = base_url
+        self._url = url
 
     def select_field(self, label: str) -> SafeTag:
         return self._body.select_one(f'.panel-body > .row > .col-md-1:-soup-contains-own("{label}") + .col-md-5')
@@ -92,7 +92,7 @@ class TorrentPanelParser:
         if name == "Anonymous":
             return None
 
-        url = urljoin(self._base_url, f"/user/{name}")
+        url = urljoin(self._url, f"/user/{name}")
         title = submitter.select_one("a").attrs["title"].lower()
         is_trusted = "trusted" in title
         is_banned = "banned" in title
@@ -147,16 +147,16 @@ class TorrentPanelParser:
 class TorrentPageParser:
     """Parser for a full torrent details page, including description and status."""
 
-    __slots__ = ("_base_url", "_body", "_soup")
+    __slots__ = ("_body", "_soup", "_url")
 
-    def __init__(self, *, html: str, base_url: str) -> None:
+    def __init__(self, *, html: str, url: str) -> None:
         self._soup = SafeSoup(html)
-        self._base_url = base_url
         self._body = self._soup.select_one("div:is(.panel.panel-default, .panel.panel-success, .panel.panel-danger)")
+        self._url = url
 
     @property
     def panel(self) -> TorrentPanelParser:
-        return TorrentPanelParser(body=self._body, base_url=self._base_url)
+        return TorrentPanelParser(body=self._body, url=self._url)
 
     def is_trusted(self) -> bool:
         return "panel-success" in self._body.attrs["class"]

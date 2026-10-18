@@ -45,32 +45,25 @@ def fetch(client: httpx.Client, url: str) -> httpx.Response:
 
 
 class Nyaa:
-    def __init__(self, *, base_url: str = "https://nyaa.si/", client: httpx.Client | None = None) -> None:
+    def __init__(self, *, url: str = "https://nyaa.si/", client: httpx.Client | None = None) -> None:
         """
         Client for interacting with Nyaa.
 
         Parameters
         ----------
-        base_url : str, optional
+        url : str, optional
             Base URL of Nyaa.
             Used to construct full URLs from relative URLs.
         client : httpx.Client, optional
             Custom [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
 
         """
-        self._base_url = base_url
+        self._url = url
         self._client = (
             httpx.Client(headers={"User-Agent": f"pynyaa/{__version__} (https://pypi.org/project/pynyaa/)"})
             if client is None
             else client
         )
-
-    @property
-    def base_url(self) -> str:
-        """
-        Base URL of Nyaa, used to construct full URLs from relative URLs.
-        """
-        return self._base_url
 
     def __enter__(self) -> Self:
         return self
@@ -121,8 +114,8 @@ class Nyaa:
                 msg = f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}."
                 raise TypeError(msg)
 
-        torrent_page_url = urljoin(self._base_url, f"/view/{id}")
-        torrent_file_url = urljoin(self._base_url, f"/download/{id}.torrent")
+        torrent_page_url = urljoin(self._url, f"/view/{id}")
+        torrent_file_url = urljoin(self._url, f"/download/{id}.torrent")
 
         torrent_page, torrent_file = (
             fetch(self._client, torrent_page_url),
@@ -134,7 +127,7 @@ class Nyaa:
         torrent_page.raise_for_status()
         torrent_file.raise_for_status()
 
-        parsed = TorrentPageParser(html=torrent_page.text, base_url=self.base_url)
+        parsed = TorrentPageParser(html=torrent_page.text, url=self._url)
 
         return NyaaRelease(
             id=id,
@@ -207,7 +200,7 @@ class Nyaa:
         }
 
         # First page
-        first = self._client.get(self._base_url, params=params)
+        first = self._client.get(self._url, params=params)
         first.raise_for_status()
         html = first.text
         parsed = SearchPageParser(html)
@@ -216,7 +209,7 @@ class Nyaa:
 
         for page in parsed.pages():  # Second page onwards
             params["p"] = page
-            other = self._client.get(self._base_url, params=params)
+            other = self._client.get(self._url, params=params)
             other.raise_for_status()
             html = other.text
             parsed = SearchPageParser(html)
