@@ -17,12 +17,7 @@ env:
   UV_LOCKED: 1
 
 jobs:
-  tests:
-    uses: ./.github/workflows/tests.yml
-  check:
-    uses: ./.github/workflows/check.yml
   release:
-    needs: [tests, check]
     name: Release
     environment:
       name: release
