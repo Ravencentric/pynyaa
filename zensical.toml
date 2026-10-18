@@ -2,8 +2,9 @@
 site_name = "pynyaa"
 site_description = "Turn nyaa.si releases into neat Python objects."
 site_author = "Ravencentric"
-site_url = "https://ravencentric.cc/pynyaa/"
+site_url = "https://ravencentri.cc/pynyaa/"
 repo_url = "https://github.com/Ravencentric/pynyaa"
+edit_uri = "edit/main/docs/"
 repo_name = "Ravencentric/pynyaa"
 extra_css = ["stylesheets/extra.css"]
 copyright = """
