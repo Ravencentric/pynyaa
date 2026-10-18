@@ -29,6 +29,15 @@ wheels = [
 ]
 
 [[package]]
+name = "backports-asyncio-runner"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/ff/70dca7d7cb1cbc0edb2c6cc0c38b65cba36cccc491eca64cabd5fe7f8670/backports_asyncio_runner-1.2.0.tar.gz", hash = "sha256:a5aa7b2b7d8f8bfcaa2b57313f70792df84e32a2a746f585213373f900b42162", size = 69893, upload-time = "2025-07-02T02:27:15.685Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/59/76ab57e3fe74484f48a53f8e337171b4a2349e506eabe136d7e01d059086/backports_asyncio_runner-1.2.0-py3-none-any.whl", hash = "sha256:0da0a936a8aeb554eccb426dc55af3ba63bcdc69fa1a600b5bb305413a4477b5", size = 12313, upload-time = "2025-07-02T02:27:14.263Z" },
+]
+
+[[package]]
 name = "beautifulsoup4"
 version = "4.13.5"
 source = { registry = "https://pypi.org/simple" }
@@ -197,6 +206,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f7/fd/3f939c2847f4a72c20cff8b1ac33da78ea91a2d38d9b43336e60db719103/coverage-7.16.2-cp315-cp315t-win_amd64.whl", hash = "sha256:2aca0bdfa9e91621d5b09d815357bf63def4fc0e9cb66da67bf2cf93f3b1a6f5", size = 227374, upload-time = "2026-09-27T12:28:55.158Z" },
     { url = "https://files.pythonhosted.org/packages/5a/35/b98cdc354c952402132e675a87f2cc3227fb68f959c84aaa491fbe15933d/coverage-7.16.2-cp315-cp315t-win_arm64.whl", hash = "sha256:b88841e654f09732804809e435b3e005a929ffd9998b872b7b213957b8759cb8", size = 227064, upload-time = "2026-09-27T12:28:57.075Z" },
     { url = "https://files.pythonhosted.org/packages/3f/0c/7a64e1ac90541a8edf50daef0914848011fb057a5bf55284a4811e21939a/coverage-7.16.2-py3-none-any.whl", hash = "sha256:11d28e9123a9156cb405d8d27b44256c9a58fb5decc2073a8f17862057e3aa0f", size = 215754, upload-time = "2026-09-27T12:28:59.075Z" },
+]
+
+[package.optional-dependencies]
+toml = [
+    { name = "tomli", marker = "python_full_version <= '3.11'" },
 ]
 
 [[package]]
@@ -541,14 +555,14 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "coverage", marker = "python_full_version >= '3.12'" },
+    { name = "coverage", extra = ["toml"] },
     { name = "mkdocstrings", extra = ["python"], marker = "python_full_version >= '3.12'" },
     { name = "pyrefly", marker = "python_full_version >= '3.12'" },
-    { name = "pytest", marker = "python_full_version >= '3.12'" },
-    { name = "pytest-asyncio", marker = "python_full_version >= '3.12'" },
-    { name = "pytest-recording", marker = "python_full_version >= '3.12'" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-recording" },
     { name = "ruff", marker = "python_full_version >= '3.12'" },
-    { name = "tomli", marker = "python_full_version >= '3.12'" },
+    { name = "tomli" },
     { name = "typing-extensions", marker = "python_full_version >= '3.12'" },
     { name = "zensical", marker = "python_full_version >= '3.12'" },
 ]
@@ -562,18 +576,17 @@ lint = [
     { name = "typing-extensions", marker = "python_full_version >= '3.12'" },
 ]
 test = [
-    { name = "coverage", marker = "python_full_version >= '3.12'" },
-    { name = "pytest", marker = "python_full_version >= '3.12'" },
-    { name = "pytest-asyncio", marker = "python_full_version >= '3.12'" },
-    { name = "pytest-recording", marker = "python_full_version >= '3.12'" },
-    { name = "tomli", marker = "python_full_version >= '3.12'" },
+    { name = "coverage", extra = ["toml"] },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-recording" },
+    { name = "tomli" },
 ]
 
 [package.group-requires-python]
-dev = ">=3.12,>=3.12,>=3.12"
+dev = ">=3.12,>=3.12"
 docs = ">=3.12"
 lint = ">=3.12"
-test = ">=3.12"
 
 [package.metadata]
 requires-dist = [
@@ -583,14 +596,14 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "coverage", extras = ["toml"], marker = "python_full_version >= '3.12'", specifier = ">=7.16.2" },
+    { name = "coverage", extras = ["toml"], specifier = ">=7.16.2" },
     { name = "mkdocstrings", extras = ["python"], marker = "python_full_version >= '3.12'", specifier = ">=1.0.7" },
     { name = "pyrefly", marker = "python_full_version >= '3.12'", specifier = ">=1.4.0" },
-    { name = "pytest", marker = "python_full_version >= '3.12'", specifier = ">=9.1.1" },
-    { name = "pytest-asyncio", marker = "python_full_version >= '3.12'", specifier = ">=1.4.0" },
-    { name = "pytest-recording", marker = "python_full_version >= '3.12'", specifier = ">=0.14.0" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "pytest-asyncio", specifier = ">=1.4.0" },
+    { name = "pytest-recording", specifier = ">=0.14.0" },
     { name = "ruff", marker = "python_full_version >= '3.12'", specifier = ">=0.17.1" },
-    { name = "tomli", marker = "python_full_version >= '3.12'", specifier = ">=2.5.0" },
+    { name = "tomli", specifier = ">=2.5.0" },
     { name = "typing-extensions", marker = "python_full_version >= '3.12'", specifier = ">=4.12.2" },
     { name = "zensical", marker = "python_full_version >= '3.12'", specifier = ">=0.0.71" },
 ]
@@ -604,11 +617,11 @@ lint = [
     { name = "typing-extensions", marker = "python_full_version >= '3.12'", specifier = ">=4.12.2" },
 ]
 test = [
-    { name = "coverage", extras = ["toml"], marker = "python_full_version >= '3.12'", specifier = ">=7.16.2" },
-    { name = "pytest", marker = "python_full_version >= '3.12'", specifier = ">=9.1.1" },
-    { name = "pytest-asyncio", marker = "python_full_version >= '3.12'", specifier = ">=1.4.0" },
-    { name = "pytest-recording", marker = "python_full_version >= '3.12'", specifier = ">=0.14.0" },
-    { name = "tomli", marker = "python_full_version >= '3.12'", specifier = ">=2.5.0" },
+    { name = "coverage", extras = ["toml"], specifier = ">=7.16.2" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "pytest-asyncio", specifier = ">=1.4.0" },
+    { name = "pytest-recording", specifier = ">=0.14.0" },
+    { name = "tomli", specifier = ">=2.5.0" },
 ]
 
 [[package]]
@@ -636,10 +649,12 @@ version = "9.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
     { name = "iniconfig" },
     { name = "packaging" },
     { name = "pluggy" },
     { name = "pygments" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e4/47/b9efed96c114afcfa3c9d3fe98a76a1d14c74a9e266d397cf6eb64be5e01/pytest-9.1.1.tar.gz", hash = "sha256:1088fbde8f2b49d95a549a195707afa7a76a3ce9bcadc26b6d71f0ffda5fe313", size = 1636369, upload-time = "2026-06-19T10:58:32.857Z" }
 wheels = [
@@ -651,6 +666,7 @@ name = "pytest-asyncio"
 version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "backports-asyncio-runner", marker = "python_full_version < '3.11'" },
     { name = "pytest" },
     { name = "typing-extensions", marker = "python_full_version < '3.13'" },
 ]
