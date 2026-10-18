@@ -61,9 +61,8 @@ jobs:
 
       - name: Run tests and generate coverage
         run: |
-          uv sync --no-default-groups --group test
-          uv run coverage run -m pytest -vv
-          uv run coverage xml
+          uv run --no-default-groups --group test coverage run -m pytest -vv
+          uv run --no-default-groups --group test coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1

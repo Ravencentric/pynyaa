@@ -1,0 +1,118 @@
+[project]
+site_name = "pynyaa"
+site_description = "Turn nyaa.si releases into neat Python objects."
+site_author = "Ravencentric"
+site_url = "https://ravencentri.cc/pynyaa/"
+repo_url = "https://github.com/Ravencentric/pynyaa"
+edit_uri = "edit/main/docs/"
+repo_name = "Ravencentric/pynyaa"
+extra_css = ["stylesheets/extra.css"]
+copyright = """
+Copyright &copy; 2024-present Ravencentric
+"""
+nav = [
+  { "Home" = "index.md" },
+  { "Quick Start" = "quick-start.md" },
+  { "API Reference" = [
+    { "Clients" = "api-reference/clients.md" },
+    { "Models" = "api-reference/models.md" },
+    { "Enums" = "api-reference/enums.md" },
+    { "Errors" = "api-reference/errors.md" },
+  ] },
+]
+
+[project.theme]
+language = "en"
+features = [
+  "announce.dismiss",
+  "content.action.edit",
+  "content.action.view",
+  "content.code.annotate",
+  "content.code.copy",
+  "content.code.select",
+  "content.footnote.tooltips",
+  "content.tabs.link",
+  "content.tooltips",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.path",
+  "navigation.prune",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  "toc.follow",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.arithmatex.generic = true
+pymdownx.betterem = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+# pymdownx.snippets.base_path = "includes"
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+pymdownx.tasklist.custom_checkbox = true
+pymdownx.tilde = {}
+
+# ----------------------------------------------------------------------------
+# https://zensical.org/docs/setup/extensions/mkdocstrings/
+# ----------------------------------------------------------------------------
+[project.plugins.mkdocstrings.handlers.python]
+paths = ["src"]
+inventories = ["https://docs.python.org/3/objects.inv"]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+members_order = "source"
+allow_inspection = false
+docstring_style = "numpy"
+show_root_heading = true
+show_root_full_path = false
+show_signature_annotations = true
+separate_signature = true
+show_symbol_type_heading = true
+show_symbol_type_toc = true
+signature_crossrefs = true
+merge_init_into_class = true
+filters = ["!^_", "^__init__$"]
+find_stubs_package = true
+show_source = true
