@@ -38,11 +38,11 @@ lint = [
   "typing-extensions>=4.12.2",
 ]
 test = [
-  "coverage[toml]>=7.6.10",
-  "pytest>=8.3.4",
-  "pytest-asyncio>=1.1.0",
-  "pytest-recording>=0.13.4",
-  "tomli>=2.0.1",
+  "coverage[toml]>=7.16.2",
+  "pytest>=9.1.1",
+  "pytest-asyncio>=1.4.0",
+  "pytest-recording>=0.14.0",
+  "tomli>=2.5.0",
 ]
 
 [build-system]
@@ -70,13 +70,11 @@ explicit-any = false
 implicit-bool = false
 unused-call-result = false
 
-[tool.pytest.ini_options]
-addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
-filterwarnings = [
-  "error",
-  '''ignore:The 'strip_cdata' option of HTMLParser\(\) has never done anything and will eventually be removed\.:DeprecationWarning''',
-]
+[tool.pytest]
+addopts = ["-ra", "--showlocals"]
+filterwarnings = ["error"]
 log_cli_level = "INFO"
+strict = true
 testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
