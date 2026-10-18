@@ -4,7 +4,7 @@ import enum
 import sys
 from typing import TYPE_CHECKING, Literal, TypeAlias
 
-if sys.version_info > (3, 11):
+if sys.version_info >= (3, 11):
     from enum import Enum, IntEnum, StrEnum
 else:
     import enum

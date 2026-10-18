@@ -32,7 +32,7 @@ async def fetch(client: httpx.AsyncClient, url: str) -> httpx.Response:
     # <https://github.com/nyaadevs/nyaa/blob/4fe0ff5b1aa7ec7c9bb2667d97e10ce2a318c676/nyaa/views/torrents.py#L18>
     #
     # Unfortunately, this does cost an extra request and a wasted one at that if it's actually a missing page.
-    if response.status_code == 404:  # noqa: PLR2004
+    if response.status_code == 404:
         response = await client.get(
             url,
             # The test suite relies on this key being an underscore

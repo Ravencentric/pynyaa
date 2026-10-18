@@ -12,19 +12,19 @@ release = pynyaa.get("https://nyaa.si/view/1693817")  # Full URL
 release = pynyaa.get(1693817)  # Only the ID also works
 
 print(release.title)
-#> [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+# > [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
 print(release.submitter)
-#> pog42
+# > pog42
 print(release.torrent.infohash)
-#> 6fdc0395a7fdde6ce3fb7f144b31f3cabdcbf537
+# > 6fdc0395a7fdde6ce3fb7f144b31f3cabdcbf537
 
 releases = pynyaa.search("LYS1TH3A")
 
 for release in releases:
     print(release)
-    #> [LYS1TH3A] Fate/Zero Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
-    #> [LYS1TH3A] Tamako Market Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
-    #> [LYS1TH3A] Tamako Love Story (2014) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+    # > [LYS1TH3A] Fate/Zero Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+    # > [LYS1TH3A] Tamako Market Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+    # > [LYS1TH3A] Tamako Love Story (2014) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
 ```
 
 #### Advanced
@@ -43,15 +43,15 @@ with Nyaa() as nyaa:
     release = nyaa.get("https://nyaa.si/view/1693817")
 
     print(release.title)
-    #> [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+    # > [LYS1TH3A] Fate/stay night Heaven's Feel I. Presage Flower (2017) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
 
     releases = nyaa.search("LYS1TH3A")
 
     for release in torrents:
         print(release)
-        #> [LYS1TH3A] Fate/Zero Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
-        #> [LYS1TH3A] Tamako Market Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
-        #> [LYS1TH3A] Tamako Love Story (2014) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+        # > [LYS1TH3A] Fate/Zero Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+        # > [LYS1TH3A] Tamako Market Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
+        # > [LYS1TH3A] Tamako Love Story (2014) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
 ```
 
 You can also pass your own instance of an [`httpx.Client`](https://www.python-httpx.org/api/#client) to the [`Nyaa`][pynyaa.Nyaa] client. This gives you complete control over the requests. For example, we can use this to quickly implement aggressive caching with [`hishel`](https://github.com/karpetrosyan/hishel):
