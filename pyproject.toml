@@ -86,3 +86,6 @@ line-length = 120
 
 [tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]
+
+[tool.uv]
+exclude-newer = "P2D"
