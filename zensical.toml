@@ -5,6 +5,7 @@ site_author = "Ravencentric"
 site_url = "https://ravencentric.cc/pynyaa/"
 repo_url = "https://github.com/Ravencentric/pynyaa"
 repo_name = "Ravencentric/pynyaa"
+extra_css = ["stylesheets/extra.css"]
 copyright = """
 Copyright &copy; 2024-present Ravencentric
 """

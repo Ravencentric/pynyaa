@@ -1,0 +1,4 @@
+/* Prevent ToC text from spilling into the next line. */
+.md-sidebar--secondary .md-ellipsis {
+  white-space: nowrap;
+}
