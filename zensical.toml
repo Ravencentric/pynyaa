@@ -16,6 +16,16 @@ repo_name = "Ravencentric/pynyaa"
 copyright = """
 Copyright &copy; 2024-present Ravencentric
 """
+nav = [
+  { "Home" = "index.md" },
+  { "Quick Start" = "quick-start.md" },
+  { "API Reference" = [
+    { "Clients" = "api-reference/clients.md" },
+    { "Models" = "api-reference/models.md" },
+    { "Enums" = "api-reference/enums.md" },
+    { "Errors" = "api-reference/errors.md" },
+  ] },
+]
 
 [project.theme]
 language = "en"
