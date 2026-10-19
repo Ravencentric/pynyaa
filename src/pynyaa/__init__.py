@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Final
 from ._aclient import AsyncNyaa
 from ._client import Nyaa
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
-from ._errors import ParsingError, PyNyaaError, ReleaseNotFoundError
+from ._errors import BencodeError, ParsingError, PyNyaaError, ReleaseNotFoundError
 from ._models import NyaaRelease, Submitter, TorrentFile
 from ._version import __version__
 
@@ -42,6 +42,7 @@ def search(
 
 __all__: Final = (
     "AsyncNyaa",
+    "BencodeError",
     "Category",
     "Filter",
     "Nyaa",

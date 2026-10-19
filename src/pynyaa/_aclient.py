@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 
 import httpx
 
+from ._bencode import parse_torrent_size
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
 from ._errors import ReleaseNotFoundError
 from ._models import NyaaRelease, TorrentFile
@@ -144,7 +145,7 @@ class AsyncNyaa:
             torrent=TorrentFile(
                 name=parse_torrent_filename(torrent_file.headers["Content-Disposition"]),
                 data=torrent_file.content,
-                size=parsed.panel.size(),
+                size=parse_torrent_size(torrent_file.content),
                 infohash=parsed.panel.infohash(),
                 url=torrent_file_url,
                 magnet=parsed.panel.magnet(),

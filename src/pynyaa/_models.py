@@ -35,7 +35,7 @@ class TorrentFile:
     data: bytes
     """The raw data of the torrent file."""
     size: int
-    """The size of the torrent in bytes."""
+    """The exact total size of the files in the torrent, in bytes."""
     infohash: str
     """The infohash of the torrent."""
     url: str
