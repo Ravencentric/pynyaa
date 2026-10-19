@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import math
 import re
-from typing import TYPE_CHECKING, NewType
+from typing import TYPE_CHECKING
 from urllib.parse import unquote, urljoin
 
 import bs4
@@ -13,10 +13,7 @@ from ._errors import ParsingError
 from ._models import Submitter
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
-
-TorrentID = NewType("TorrentID", int)
-PageNumber = NewType("PageNumber", int)
+    from collections.abc import Iterator, Sequence
 
 
 class SafeTag:
@@ -57,9 +54,8 @@ class SafeSoup:
             raise ParsingError(msg)
         return SafeTag(tag)
 
-    def select(self, selector: str) -> Iterator[SafeTag]:
-        for tag in self._soup.select(selector):
-            yield SafeTag(tag)
+    def select(self, selector: str) -> Sequence[SafeTag]:
+        return [SafeTag(tag) for tag in self._soup.select(selector)]
 
 
 class TorrentPanelParser:
@@ -180,14 +176,14 @@ class SearchPageParser:
         self._html = html
         self._soup = SafeSoup(html)
 
-    def pages(self) -> Iterator[PageNumber]:
-        pages = self._soup.select("ul.pagination > li:not(.next) > a[href]")
-        for page in pages:
-            yield PageNumber(int(page.get_text()))
+    def pages(self) -> Iterator[int]:
+        if pages := self._soup.select("ul.pagination > li:not(.next) > a[href]"):
+            last = int(pages[-1].get_text()) + 1
+            yield from range(2, last)
 
-    def results(self) -> Iterator[TorrentID]:
+    def results(self) -> Iterator[int]:
         for id in re.findall(r"<a href=\"(?:/view/(\d+))\" title=\".*\">.*</a>", self._html):
-            yield TorrentID(int(id))
+            yield int(id)
 
 
 def parse_torrent_filename(content_disposition: str) -> str:
