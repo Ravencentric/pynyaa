@@ -4,7 +4,29 @@ from pathlib import Path
 
 import pytest
 
+from pynyaa import BencodeError, PyNyaaError
 from pynyaa._bencode import _decode, parse_torrent_size
+
+
+@pytest.mark.parametrize(
+    ("data", "message"),
+    [
+        (b"-3:a", "Negative byte string length"),
+        (b"d1:xe", "Dictionary has an unmatched key"),
+        (b"10:abc", "Truncated byte string"),
+    ],
+    ids=["negative-length", "unmatched-key", "truncated-string"],
+)
+def test_decode_invalid(data: bytes, message: str) -> None:
+    with pytest.raises(BencodeError, match=message):
+        _decode(data)
+
+
+@pytest.mark.parametrize("data", [b"iXe", b"li1e", b"dli1eei2ee"])
+def test_decode_errors_are_pynyaa_errors(data: bytes) -> None:
+    with pytest.raises(PyNyaaError) as caught:
+        _decode(data)
+    assert isinstance(caught.value, BencodeError)
 
 
 def test_decode_single_file() -> None:

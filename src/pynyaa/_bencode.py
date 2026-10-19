@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from ._errors import BencodeError
+
 # Decoder adapted from https://github.com/utdemir/bencoder (CC0-1.0).
 
 
@@ -21,14 +23,24 @@ def _decode(data: bytes) -> Any:
                     items.append(item)
                 if token == b"l":
                     return items, index + 1
+                if len(items) % 2:
+                    raise BencodeError("Dictionary has an unmatched key.")
                 return dict(zip(items[::2], items[1::2])), index + 1
             case _:
                 colon = data.index(b":", index)
+                length = int(data[index:colon])
+                if length < 0:
+                    raise BencodeError("Negative byte string length.")
                 start = colon + 1
-                end = start + int(data[index:colon])
+                end = start + length
+                if end > len(data):
+                    raise BencodeError("Truncated byte string.")
                 return data[start:end], end
 
-    value, _ = read(0)
+    try:
+        value, _ = read(0)
+    except (ValueError, TypeError, RecursionError) as error:
+        raise BencodeError(str(error)) from error
     return value
 
 
