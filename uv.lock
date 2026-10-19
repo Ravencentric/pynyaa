@@ -550,6 +550,7 @@ version = "3.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
+    { name = "httpcore" },
     { name = "httpx" },
 ]
 
@@ -591,6 +592,7 @@ lint = ">=3.12"
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.13.5" },
+    { name = "httpcore", specifier = ">=1.0.9" },
     { name = "httpx", specifier = ">=0.27.2" },
 ]
 
