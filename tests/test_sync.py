@@ -70,7 +70,7 @@ def test_nyaa_default(nyaa_client: Nyaa) -> None:
         == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) [2CCEB30C].mkv nyaa.torrent"
     )
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 619603559
+    assert nyaa.torrent.size == 619580447
     assert nyaa.torrent.infohash == "ad596c24e64424aa6fe02c04c20eb25e57dbb042"
     assert nyaa.torrent.url == "https://nyaa.si/download/1755409.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:ad596c24e64424aa6fe02c04c20eb25e57dbb042")
@@ -113,7 +113,7 @@ def test_nyaa_trusted(nyaa_client: Nyaa) -> None:
     """)
     assert str(nyaa.torrent) == nyaa.torrent.name == "[MTBB] I Want to Eat Your Pancreas [DA34C700].mkv.torrent"
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 2040109466
+    assert nyaa.torrent.size == 2034208814
     assert nyaa.torrent.infohash == "78e51b8285dd611dc1728d9b38dc1b8607cd0994"
     assert nyaa.torrent.url == "https://nyaa.si/download/1544043.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:78e51b8285dd611dc1728d9b38dc1b8607cd0994")
@@ -153,7 +153,7 @@ def test_nyaa_trusted_and_remake(nyaa_client: Nyaa) -> None:
         == "[MiniMTBB] Hibike! Euphonium - Chikai no Finale [463406D4].mkv.torrent"
     )
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 1288490189
+    assert nyaa.torrent.size == 1253860771
     assert nyaa.torrent.infohash == "19606f2e09b7013d9fcefbb67955766c19c32c5a"
     assert nyaa.torrent.url == "https://nyaa.si/download/1694824.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:19606f2e09b7013d9fcefbb67955766c19c32c5a")
@@ -205,7 +205,7 @@ def test_nyaa_anon(nyaa_client: Nyaa) -> None:
 
     assert str(nyaa.torrent) == nyaa.torrent.name == "Ascendance of a Bookworm (J-Novel Club) [Kinoworm].torrent"
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 1288490189
+    assert nyaa.torrent.size == 1265929486
     assert nyaa.torrent.infohash == "8732a06d2087c71fddf5dc55d08512ebe146d445"
     assert nyaa.torrent.url == "https://nyaa.si/download/1765655.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:8732a06d2087c71fddf5dc55d08512ebe146d445")
@@ -257,7 +257,7 @@ def test_nyaa_banned(nyaa_client: Nyaa) -> None:
     """)
     assert str(nyaa.torrent) == nyaa.torrent.name == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC].torrent"
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 18360985191
+    assert nyaa.torrent.size == 18337520941
     assert nyaa.torrent.infohash == "5fecba4e64910a38c05d7566131a1318133bbc45"
     assert nyaa.torrent.url == "https://nyaa.si/download/1422797.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:5fecba4e64910a38c05d7566131a1318133bbc45")
@@ -290,7 +290,7 @@ def test_nyaa_banned_and_trusted(nyaa_client: Nyaa) -> None:
         == "[FMA1394] Fullmetal Alchemist (2003) [Dual Audio] [US BD] (batch).torrent"
     )
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 20293720474
+    assert nyaa.torrent.size == 20261666332
     assert nyaa.torrent.infohash == "2959e97cb7796f029d2196fb63bb5c70b56d4206"
     assert nyaa.torrent.url == "https://nyaa.si/download/884488.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:2959e97cb7796f029d2196fb63bb5c70b56d4206")
@@ -336,7 +336,7 @@ def test_nyaa_description(nyaa_client: Nyaa) -> None:
     """)
     assert str(nyaa.torrent) == nyaa.torrent.name == "[MTBB] Steins;Gate 0 S1 (BD 1080p).torrent"
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 44667659879
+    assert nyaa.torrent.size == 44643174063
     assert nyaa.torrent.infohash == "489cb384b126a87e26afc0dfe96ef20216a2fc39"
     assert nyaa.torrent.url == "https://nyaa.si/download/1992716.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:489cb384b126a87e26afc0dfe96ef20216a2fc39")
@@ -363,7 +363,7 @@ def test_nyaa_empty_info(nyaa_client: Nyaa) -> None:
 
     assert str(nyaa.torrent) == nyaa.torrent.name == "[moyism] Myself;Yourself - 08 (RAW).torrent"
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 192728269
+    assert nyaa.torrent.size == 192434336
     assert nyaa.torrent.infohash == "ad35645d31cf4110440a79b062f775bcab717af3"
     assert nyaa.torrent.url == "https://nyaa.si/download/5819.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:ad35645d31cf4110440a79b062f775bcab717af3")
@@ -393,7 +393,7 @@ def test_nyaa_empty_desc(nyaa_client: Nyaa) -> None:
         == "[CommieRaws]GA Geijutsuka Art Design Class 03 848x480[13BADBC6].mkv.torrent"
     )
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 178887066
+    assert nyaa.torrent.size == 178893328
     assert nyaa.torrent.infohash == "88cbf145c04d79e103a4620543098848544283ad"
     assert nyaa.torrent.url == "https://nyaa.si/download/76777.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:88cbf145c04d79e103a4620543098848544283ad")
@@ -423,7 +423,7 @@ def test_nyaa_empty_desc_info(nyaa_client: Nyaa) -> None:
         == "Hatsune Miku - Angel Call -Vocaloid-PV clips Blu-ray Edition- [kuchikirukia].torrent"
     )
     assert nyaa.torrent.data
-    assert nyaa.torrent.size == 2576980378
+    assert nyaa.torrent.size == 2606373450
     assert nyaa.torrent.infohash == "79f9947ec567f1d5edb6ea472818588881094b2f"
     assert nyaa.torrent.url == "https://nyaa.si/download/1586776.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:79f9947ec567f1d5edb6ea472818588881094b2f")

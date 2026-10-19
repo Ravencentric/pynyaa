@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime as dt
-import math
 import re
 from typing import TYPE_CHECKING
 from urllib.parse import unquote, urljoin
@@ -109,28 +108,6 @@ class TorrentPanelParser:
         if information == "No information.":
             return None
         return information
-
-    def size(self) -> int:
-        value, unit = self.select_field("File size:").get_text().split(" ", maxsplit=1)
-
-        match unit:  # pragma: no cover
-            case "Bytes":
-                multiplier = 1
-            case "KiB":
-                multiplier = 1024
-            case "MiB":
-                multiplier = 1024**2
-            case "GiB":
-                multiplier = 1024**3
-            case "TiB":
-                multiplier = 1024**4
-            case "PiB":
-                multiplier = 1024**5
-            case _ as unreachable:
-                msg = f"Unsupported file size unit: {unreachable!r}"
-                raise ParsingError(msg)
-
-        return math.ceil(float(value) * multiplier)
 
     def infohash(self) -> str:
         selector = '.panel-body > .row > .col-md-offset-6.col-md-1:-soup-contains-own("Info hash:") + .col-md-5'
