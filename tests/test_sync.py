@@ -22,6 +22,11 @@ def test_get_errors(nyaa_client: Nyaa) -> None:
     ):
         nyaa_client.get("None")
 
+    with pytest.raises(
+        ValueError, match=r"Invalid format for 'page'. Expected a valid URL or numeric ID, but got '1755409'."
+    ):
+        nyaa_client.get("1755409")
+
     with pytest.raises(TypeError, match=r"Parameter 'page' expected 'int' or 'str', but got 'NoneType'."):
         nyaa_client.get(None)  # type: ignore[arg-type]
 

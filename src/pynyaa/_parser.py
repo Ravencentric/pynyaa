@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import re
 from typing import TYPE_CHECKING
-from urllib.parse import unquote, urljoin
+from urllib.parse import unquote, urljoin, urlsplit
 
 import bs4
 
@@ -161,6 +161,23 @@ class SearchPageParser:
     def results(self) -> Iterator[int]:
         for id in re.findall(r"<a href=\"(?:/view/(\d+))\" title=\".*\">.*</a>", self._html):
             yield int(id)
+
+
+def parse_release_id(page: int | str, /) -> int:
+    """Extract a release ID from an integer or release URL."""
+    match page:
+        case int():
+            return page
+        case str():
+            url = urlsplit(page)
+            _, _, id = url.path.rstrip("/").rpartition("/")
+            if url.netloc and id.isdecimal():
+                return int(id)
+            msg = f"Invalid format for 'page'. Expected a valid URL or numeric ID, but got {page!r}."
+            raise ValueError(msg)
+        case _:
+            msg = f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}."
+            raise TypeError(msg)
 
 
 def parse_torrent_filename(content_disposition: str) -> str:

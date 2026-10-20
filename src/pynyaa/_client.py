@@ -12,7 +12,7 @@ from ._bencode import parse_torrent_size
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
 from ._errors import ReleaseNotFoundError
 from ._models import NyaaRelease, TorrentFile
-from ._parser import SearchPageParser, TorrentPageParser, parse_torrent_filename
+from ._parser import SearchPageParser, TorrentPageParser, parse_release_id, parse_torrent_filename
 from ._utils import assert_type
 from ._version import __version__
 
@@ -102,19 +102,7 @@ class Nyaa:
             Parsed release metadata.
 
         """
-        match page:
-            case int():
-                id = page
-            case str():
-                try:
-                    id = int(page.rstrip("/").split("/")[-1])
-                except ValueError:
-                    msg = f"Invalid format for 'page'. Expected a valid URL or numeric ID, but got {page!r}."
-                    raise ValueError(msg) from None
-            case _:
-                msg = f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}."
-                raise TypeError(msg)
-
+        id = parse_release_id(page)
         torrent_page_url = urljoin(self._url, f"/view/{id}")
         torrent_file_url = urljoin(self._url, f"/download/{id}.torrent")
 
