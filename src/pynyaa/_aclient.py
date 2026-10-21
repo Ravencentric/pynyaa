@@ -24,10 +24,10 @@ if TYPE_CHECKING:
 async def fetch(client: httpx.AsyncClient, url: str) -> httpx.Response:
     response = await client.get(url)
 
-    # Nyaa *seems* to return 404s for torrents uploaded less than ~3 minutes ago.
+    # Nyaa appears to return 404s for torrents uploaded less than ~3 minutes ago.
     # If you use autobrr, you'll encounter this a lot because the whole point of
     # autobrr is snatching torrents the instant they get announced.
-    # We can workaround this by passing junk query paramters to bust the underlying
+    # We can workaround this by passing junk query parameters to bust the underlying
     # cache and get a fresh result because Nyaa simply ignores all query parameters:
     #
     # <https://github.com/nyaadevs/nyaa/blob/4fe0ff5b1aa7ec7c9bb2667d97e10ce2a318c676/nyaa/views/torrents.py#L18>
@@ -53,7 +53,6 @@ class AsyncNyaa:
         ----------
         url : str, optional
             Base URL of Nyaa.
-            Used to construct full URLs from relative URLs.
         client : httpx.AsyncClient, optional
             Custom [`httpx.AsyncClient`](https://www.python-httpx.org/api/#asyncclient) instance.
 
