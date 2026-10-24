@@ -29,13 +29,13 @@ class TorrentParser:
         # https://github.com/nyaadevs/nyaa/blob/4fe0ff5b1aa7ec7c9bb2667d97e10ce2a318c676/tests/test_backend.py#L19
         try:
             if (name := self._info.get(b"name.utf-8")) is not None:
-                name: str = name.decode("utf-8")
+                name = name.decode("utf-8")
             else:
-                name: str = self._info[b"name"].decode(self._encoding)
+                name = self._info[b"name"].decode(self._encoding)
         except KeyError as error:
             raise BencodeError("Torrent info must contain a name and either files or length.") from error
 
-        return name
+        return name  # pyrefly: ignore[no-any-return-explicit]
 
     def files(self) -> tuple[File, ...]:
         name = self.name()
@@ -44,9 +44,9 @@ class TorrentParser:
             entries: list[File] = []
             for file in files:
                 if (parts := file.get(b"path.utf-8")) is not None:
-                    parts: list[str] = [part.decode("utf-8") for part in parts]
+                    parts = [part.decode("utf-8") for part in parts]
                 else:
-                    parts: list[str] = [part.decode(self._encoding) for part in file[b"path"]]
+                    parts = [part.decode(self._encoding) for part in file[b"path"]]
 
                 # If the last value is empty, then it's a "bitcomet directory"
                 # which Nyaa ignores as a file.
