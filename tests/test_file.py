@@ -9,6 +9,7 @@ def test_file() -> None:
     file = File("Release/Subs/English.ass", size=1234)
 
     assert str(file) == "Release/Subs/English.ass"
+    assert repr(file) == "File('Release/Subs/English.ass', size=1234)"
     assert file.name == "English.ass"
     assert file.stem == "English"
     assert file.suffix == ".ass"

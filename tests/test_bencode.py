@@ -22,8 +22,9 @@ def bendecoded(name: str) -> Mapping[bytes, Any]:
         (b"-3:a", "Negative byte string length"),
         (b"d1:xe", "Dictionary has an unmatched key"),
         (b"10:abc", "Truncated byte string"),
+        (b"d1:xiabcee", "invalid literal for int"),
     ],
-    ids=["negative-length", "unmatched-key", "truncated-string"],
+    ids=["negative-length", "unmatched-key", "truncated-string", "invalid-integer"],
 )
 def test_decode_invalid(data: bytes, message: str) -> None:
     with pytest.raises(BencodeError, match=message):
