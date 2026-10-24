@@ -1,3 +1,4 @@
 ::: pynyaa.Submitter
-::: pynyaa.TorrentFile
+::: pynyaa.File
+::: pynyaa.Torrent
 ::: pynyaa.NyaaRelease

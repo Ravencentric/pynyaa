@@ -47,7 +47,7 @@ with Nyaa() as nyaa:
 
     releases = nyaa.search("LYS1TH3A")
 
-    for release in torrents:
+    for release in releases:
         print(release)
         # > [LYS1TH3A] Fate/Zero Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
         # > [LYS1TH3A] Tamako Market Season 1 (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
