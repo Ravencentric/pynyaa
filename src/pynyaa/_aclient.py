@@ -88,6 +88,10 @@ class AsyncNyaa:
         page : int or str
             Release ID or full URL (e.g., `123456` or `https://nyaa.si/view/123456`).
 
+            Note that only the release ID is extracted from a URL.
+            The rest is ignored, and requests use the base URL specified
+            when initializing the client.
+
         Raises
         ------
         ReleaseNotFoundError
