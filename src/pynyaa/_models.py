@@ -5,12 +5,53 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
     import datetime as dt
 
     from ._enums import Category
+
+
+# TODO: use closed=True for all TypedDicts after 3.14
+class SubmitterDict(TypedDict):
+    name: str
+    url: str
+    is_trusted: bool
+    is_banned: bool
+
+
+class FileDict(TypedDict):
+    path: str
+    size: int
+
+
+class TorrentDict(TypedDict):
+    name: str
+    filename: str
+    files: tuple[FileDict, ...]
+    data: bytes
+    infohash: str
+    url: str
+    magnet: str
+    size: int
+
+
+class NyaaReleaseDict(TypedDict):
+    id: int
+    url: str
+    title: str
+    category: Category
+    submitter: SubmitterDict | None
+    submitted_at: dt.datetime
+    information: str | None
+    seeders: int
+    leechers: int
+    completed: int
+    is_trusted: bool
+    is_remake: bool
+    torrent: TorrentDict
+    description: str | None
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
@@ -28,6 +69,15 @@ class Submitter:
 
     def __str__(self) -> str:
         return self.name
+
+    def to_dict(self) -> SubmitterDict:
+        """Return a dictionary representation of the submitter."""
+        return {
+            "name": self.name,
+            "url": self.url,
+            "is_trusted": self.is_trusted,
+            "is_banned": self.is_banned,
+        }
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -81,6 +131,10 @@ class File:
         path, _ = self._inner
         return str(path)
 
+    def to_dict(self) -> FileDict:
+        """Return a dictionary representation of the file."""
+        return {"path": str(self), "size": self.size}
+
 
 @dataclass(frozen=True, kw_only=True, slots=True)
 class Torrent:
@@ -116,6 +170,19 @@ class Torrent:
 
     def __str__(self) -> str:
         return self.filename
+
+    def to_dict(self) -> TorrentDict:
+        """Return a dictionary representation of the torrent."""
+        return {
+            "name": self.name,
+            "filename": self.filename,
+            "files": tuple(file.to_dict() for file in self.files),
+            "data": self.data,
+            "infohash": self.infohash,
+            "url": self.url,
+            "magnet": self.magnet,
+            "size": self.size,
+        }
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
@@ -183,3 +250,22 @@ class NyaaRelease:
 
     def __str__(self) -> str:
         return self.title
+
+    def to_dict(self) -> NyaaReleaseDict:
+        """Return a dictionary representation of the release."""
+        return {
+            "id": self.id,
+            "url": self.url,
+            "title": self.title,
+            "category": self.category,
+            "submitter": self.submitter.to_dict() if self.submitter is not None else None,
+            "submitted_at": self.submitted_at,
+            "information": self.information,
+            "seeders": self.seeders,
+            "leechers": self.leechers,
+            "completed": self.completed,
+            "is_trusted": self.is_trusted,
+            "is_remake": self.is_remake,
+            "torrent": self.torrent.to_dict(),
+            "description": self.description,
+        }
