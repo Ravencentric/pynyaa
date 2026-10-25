@@ -8,7 +8,7 @@ from ._aclient import AsyncNyaa
 from ._client import Nyaa
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
 from ._errors import BencodeError, ParsingError, PyNyaaError, ReleaseNotFoundError
-from ._models import NyaaRelease, Submitter, TorrentFile
+from ._models import File, NyaaRelease, Submitter, Torrent
 from ._version import __version__
 
 if TYPE_CHECKING:
@@ -44,6 +44,7 @@ __all__: Final = (
     "AsyncNyaa",
     "BencodeError",
     "Category",
+    "File",
     "Filter",
     "Nyaa",
     "NyaaRelease",
@@ -54,7 +55,7 @@ __all__: Final = (
     "ReleaseNotFoundError",
     "SortBy",
     "Submitter",
-    "TorrentFile",
+    "Torrent",
     "__version__",
     "get",
     "search",

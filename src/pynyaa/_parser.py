@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import re
 from typing import TYPE_CHECKING
-from urllib.parse import unquote, urljoin, urlsplit
+from urllib.parse import urljoin, urlsplit
 
 import bs4
 
@@ -178,15 +178,3 @@ def parse_release_id(page: int | str, /) -> int:
         case _:
             msg = f"Parameter 'page' expected 'int' or 'str', but got {type(page).__name__!r}."
             raise TypeError(msg)
-
-
-def parse_torrent_filename(content_disposition: str) -> str:
-    """
-    Return the decoded filename from a [`Content-Disposition`][0] header
-    as used by [`Nyaa`][1].
-
-    [0]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
-    [1]: https://github.com/nyaadevs/nyaa/blob/4fe0ff5b1aa7ec7c9bb2667d97e10ce2a318c676/nyaa/views/torrents.py#L316-L335
-    """
-    _, filename = content_disposition.split("filename*=UTF-8''")
-    return unquote(filename)

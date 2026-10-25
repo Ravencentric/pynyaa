@@ -5,7 +5,7 @@ import textwrap
 
 import pytest
 
-from pynyaa import AsyncNyaa, Category, Order, ReleaseNotFoundError, Submitter
+from pynyaa import AsyncNyaa, Category, File, Order, ReleaseNotFoundError, Submitter
 
 
 def dedent(s: str) -> str:
@@ -52,7 +52,7 @@ async def test_nyaa_default(async_nyaa_client: AsyncNyaa) -> None:
         is_banned=False,
     )
     assert str(nyaa.submitter) == "smol"
-    assert nyaa.datetime == dt.datetime(2023, 12, 14, 9, 6, 18, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2023, 12, 14, 9, 6, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://anidb.net/anime/12482"
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -69,11 +69,13 @@ async def test_nyaa_default(async_nyaa_client: AsyncNyaa) -> None:
     """)
     assert (
         str(nyaa.torrent)
-        == nyaa.torrent.name
+        == nyaa.torrent.filename
         == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) [2CCEB30C].mkv nyaa.torrent"
     )
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 619580447
+    assert nyaa.torrent.name == "[smol] Shelter (2016) (BD 1080p HEVC FLAC) [2CCEB30C].mkv"
+    assert nyaa.torrent.files == (File("[smol] Shelter (2016) (BD 1080p HEVC FLAC) [2CCEB30C].mkv", size=619580447),)
     assert nyaa.torrent.infohash == "ad596c24e64424aa6fe02c04c20eb25e57dbb042"
     assert nyaa.torrent.url == "https://nyaa.si/download/1755409.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:ad596c24e64424aa6fe02c04c20eb25e57dbb042")
@@ -93,7 +95,7 @@ async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
         is_banned=False,
     )
     assert str(nyaa.submitter) == "motbob"
-    assert nyaa.datetime == dt.datetime(2022, 6, 20, 0, 0, 18, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2022, 6, 20, 0, 0, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information == "#MTBB on Rizon"
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -114,9 +116,10 @@ async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
     Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
     All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).
     """)
-    assert str(nyaa.torrent) == nyaa.torrent.name == "[MTBB] I Want to Eat Your Pancreas [DA34C700].mkv.torrent"
+    assert str(nyaa.torrent) == nyaa.torrent.filename == "[MTBB] I Want to Eat Your Pancreas [DA34C700].mkv.torrent"
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 2034208814
+    assert nyaa.torrent.name == "[MTBB] I Want to Eat Your Pancreas [DA34C700].mkv"
     assert nyaa.torrent.infohash == "78e51b8285dd611dc1728d9b38dc1b8607cd0994"
     assert nyaa.torrent.url == "https://nyaa.si/download/1544043.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:78e51b8285dd611dc1728d9b38dc1b8607cd0994")
@@ -137,7 +140,7 @@ async def test_nyaa_trusted_and_remake(async_nyaa_client: AsyncNyaa) -> None:
         is_trusted=True,
         is_banned=False,
     )
-    assert nyaa.datetime == dt.datetime(2023, 7, 19, 15, 18, 2, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2023, 7, 19, 15, 18, 2, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://discord.gg/r9gyPwJeqW"
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -152,11 +155,12 @@ async def test_nyaa_trusted_and_remake(async_nyaa_client: AsyncNyaa) -> None:
 
     assert (
         str(nyaa.torrent)
-        == nyaa.torrent.name
+        == nyaa.torrent.filename
         == "[MiniMTBB] Hibike! Euphonium - Chikai no Finale [463406D4].mkv.torrent"
     )
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 1253860771
+    assert nyaa.torrent.name == "[MiniMTBB] Hibike! Euphonium - Chikai no Finale [463406D4].mkv"
     assert nyaa.torrent.infohash == "19606f2e09b7013d9fcefbb67955766c19c32c5a"
     assert nyaa.torrent.url == "https://nyaa.si/download/1694824.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:19606f2e09b7013d9fcefbb67955766c19c32c5a")
@@ -173,7 +177,7 @@ async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
     """)
     assert nyaa.category is Category.LITERATURE_ENGLISH_TRANSLATED
     assert nyaa.submitter is None
-    assert nyaa.datetime == dt.datetime(2024, 1, 13, 7, 20, 33, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2024, 1, 13, 7, 20, 33, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://www.goodreads.com/series/220639-ascendance-of-a-bookworm-light-novel"
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -206,9 +210,10 @@ async def test_nyaa_anon(async_nyaa_client: AsyncNyaa) -> None:
     Go here https://thewiki.moe/getting-started/literature
     """)
 
-    assert str(nyaa.torrent) == nyaa.torrent.name == "Ascendance of a Bookworm (J-Novel Club) [Kinoworm].torrent"
+    assert str(nyaa.torrent) == nyaa.torrent.filename == "Ascendance of a Bookworm (J-Novel Club) [Kinoworm].torrent"
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 1265929486
+    assert nyaa.torrent.name == "Ascendance of a Bookworm (J-Novel Club) [Kinoworm]"
     assert nyaa.torrent.infohash == "8732a06d2087c71fddf5dc55d08512ebe146d445"
     assert nyaa.torrent.url == "https://nyaa.si/download/1765655.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:8732a06d2087c71fddf5dc55d08512ebe146d445")
@@ -228,7 +233,7 @@ async def test_nyaa_banned(async_nyaa_client: AsyncNyaa) -> None:
         is_trusted=False,
         is_banned=True,
     )
-    assert nyaa.datetime == dt.datetime(2021, 8, 19, 14, 56, 35, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2021, 8, 19, 14, 56, 35, tzinfo=dt.timezone.utc)
     assert nyaa.information == "@succ_#2864 on discord"
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -258,9 +263,10 @@ async def test_nyaa_banned(async_nyaa_client: AsyncNyaa) -> None:
 
     ### Torrent died cba to reseed, get it from [animetosho](https://animetosho.org/view/succ_-tsugumomo-bdrip-1920x1080-x264-flac.n1422797) or [mega](https://mega.nz/folder/dlhEFBCR#QWJMFi2chNH8TIwHwU6UJg)
     """)
-    assert str(nyaa.torrent) == nyaa.torrent.name == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC].torrent"
+    assert str(nyaa.torrent) == nyaa.torrent.filename == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC].torrent"
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 18337520941
+    assert nyaa.torrent.name == "[succ_] Tsugumomo [BDRip 1920x1080 x264 FLAC]"
     assert nyaa.torrent.infohash == "5fecba4e64910a38c05d7566131a1318133bbc45"
     assert nyaa.torrent.url == "https://nyaa.si/download/1422797.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:5fecba4e64910a38c05d7566131a1318133bbc45")
@@ -279,7 +285,7 @@ async def test_nyaa_banned_and_trusted(async_nyaa_client: AsyncNyaa) -> None:
         is_trusted=True,
         is_banned=True,
     )
-    assert nyaa.datetime == dt.datetime(2016, 12, 27, 1, 13, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2016, 12, 27, 1, 13, tzinfo=dt.timezone.utc)
     assert nyaa.information is None
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -289,11 +295,12 @@ async def test_nyaa_banned_and_trusted(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.description
     assert (
         str(nyaa.torrent)
-        == nyaa.torrent.name
+        == nyaa.torrent.filename
         == "[FMA1394] Fullmetal Alchemist (2003) [Dual Audio] [US BD] (batch).torrent"
     )
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 20261666332
+    assert nyaa.torrent.name == "[FMA1394] Fullmetal Alchemist (2003)"
     assert nyaa.torrent.infohash == "2959e97cb7796f029d2196fb63bb5c70b56d4206"
     assert nyaa.torrent.url == "https://nyaa.si/download/884488.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:2959e97cb7796f029d2196fb63bb5c70b56d4206")
@@ -312,7 +319,7 @@ async def test_nyaa_description(async_nyaa_client: AsyncNyaa) -> None:
         is_trusted=True,
         is_banned=False,
     )
-    assert nyaa.datetime == dt.datetime(2025, 7, 13, 9, 51, 18, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2025, 7, 13, 9, 51, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information == "https://discord.gg/r9gyPwJeqW"
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -337,9 +344,12 @@ async def test_nyaa_description(async_nyaa_client: AsyncNyaa) -> None:
     Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
     All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).    
     """)
-    assert str(nyaa.torrent) == nyaa.torrent.name == "[MTBB] Steins;Gate 0 S1 (BD 1080p).torrent"
+    assert str(nyaa.torrent) == nyaa.torrent.filename == "[MTBB] Steins;Gate 0 S1 (BD 1080p).torrent"
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 44643174063
+    assert nyaa.torrent.name == "[MTBB] Steins;Gate 0 S1 (BD 1080p)"
+    assert len(nyaa.torrent.files) == 25
+    assert all(str(file).startswith(nyaa.torrent.name + "/") for file in nyaa.torrent.files)
     assert nyaa.torrent.infohash == "489cb384b126a87e26afc0dfe96ef20216a2fc39"
     assert nyaa.torrent.url == "https://nyaa.si/download/1992716.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:489cb384b126a87e26afc0dfe96ef20216a2fc39")
@@ -355,7 +365,7 @@ async def test_nyaa_empty_info(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter == Submitter(
         name="NyaaTorrents", url="https://nyaa.si/user/NyaaTorrents", is_trusted=False, is_banned=False
     )
-    assert nyaa.datetime == dt.datetime(2008, 6, 23, 3, 24, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2008, 6, 23, 3, 24, tzinfo=dt.timezone.utc)
     assert nyaa.information is None
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -364,9 +374,11 @@ async def test_nyaa_empty_info(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.is_remake is False
     assert nyaa.description == "Share - YS2YSUOe1cLtf - D-tvk DivX6.6 704x396"
 
-    assert str(nyaa.torrent) == nyaa.torrent.name == "[moyism] Myself;Yourself - 08 (RAW).torrent"
+    assert str(nyaa.torrent) == nyaa.torrent.filename == "[moyism] Myself;Yourself - 08 (RAW).torrent"
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 192434336
+    assert nyaa.torrent.name == "[moyism] Myself;Yourself - 08 (RAW).avi"
+    assert nyaa.torrent.files == (File("[moyism] Myself;Yourself - 08 (RAW).avi", size=192434336),)
     assert nyaa.torrent.infohash == "ad35645d31cf4110440a79b062f775bcab717af3"
     assert nyaa.torrent.url == "https://nyaa.si/download/5819.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:ad35645d31cf4110440a79b062f775bcab717af3")
@@ -382,7 +394,7 @@ async def test_nyaa_empty_desc(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter == Submitter(
         name="NyaaTorrents", url="https://nyaa.si/user/NyaaTorrents", is_trusted=False, is_banned=False
     )
-    assert nyaa.datetime == dt.datetime(2009, 7, 24, 23, 47, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2009, 7, 24, 23, 47, tzinfo=dt.timezone.utc)
     assert nyaa.information == "irc://irc.rizon.net/commie"
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -392,11 +404,12 @@ async def test_nyaa_empty_desc(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.description is None
     assert (
         str(nyaa.torrent)
-        == nyaa.torrent.name
+        == nyaa.torrent.filename
         == "[CommieRaws]GA Geijutsuka Art Design Class 03 848x480[13BADBC6].mkv.torrent"
     )
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 178893328
+    assert nyaa.torrent.name == "[CommieRaws]GA Geijutsuka Art Design Class 03 848x480[13BADBC6].mkv"
     assert nyaa.torrent.infohash == "88cbf145c04d79e103a4620543098848544283ad"
     assert nyaa.torrent.url == "https://nyaa.si/download/76777.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:88cbf145c04d79e103a4620543098848544283ad")
@@ -412,7 +425,7 @@ async def test_nyaa_empty_desc_info(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.submitter == Submitter(
         name="kuchikirukia", url="https://nyaa.si/user/kuchikirukia", is_trusted=False, is_banned=False
     )
-    assert nyaa.datetime == dt.datetime(2022, 10, 5, 20, 35, 18, tzinfo=dt.timezone.utc)
+    assert nyaa.submitted_at == dt.datetime(2022, 10, 5, 20, 35, 18, tzinfo=dt.timezone.utc)
     assert nyaa.information is None
     assert nyaa.seeders >= 0
     assert nyaa.leechers >= 0
@@ -422,11 +435,12 @@ async def test_nyaa_empty_desc_info(async_nyaa_client: AsyncNyaa) -> None:
     assert nyaa.description is None
     assert (
         str(nyaa.torrent)
-        == nyaa.torrent.name
+        == nyaa.torrent.filename
         == "Hatsune Miku - Angel Call -Vocaloid-PV clips Blu-ray Edition- [kuchikirukia].torrent"
     )
     assert nyaa.torrent.data
     assert nyaa.torrent.size == 2606373450
+    assert nyaa.torrent.name == "Hatsune Miku - Angel Call -Vocaloid-PV clips Blu-ray Edition- [kuchikirukia]"
     assert nyaa.torrent.infohash == "79f9947ec567f1d5edb6ea472818588881094b2f"
     assert nyaa.torrent.url == "https://nyaa.si/download/1586776.torrent"
     assert nyaa.torrent.magnet.startswith("magnet:?xt=urn:btih:79f9947ec567f1d5edb6ea472818588881094b2f")

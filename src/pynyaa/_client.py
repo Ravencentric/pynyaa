@@ -8,11 +8,11 @@ from urllib.parse import urljoin
 
 import httpx
 
-from ._bencode import parse_torrent_size
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
 from ._errors import ReleaseNotFoundError
-from ._models import NyaaRelease, TorrentFile
-from ._parser import SearchPageParser, TorrentPageParser, parse_release_id, parse_torrent_filename
+from ._models import NyaaRelease, Torrent
+from ._parser import SearchPageParser, TorrentPageParser, parse_release_id
+from ._torrent import TorrentParser, parse_torrent_filename
 from ._utils import assert_type
 from ._version import __version__
 
@@ -115,30 +115,34 @@ class Nyaa:
         torrent_page.raise_for_status()
         torrent_file.raise_for_status()
 
-        parsed = TorrentPageParser(html=torrent_page.text, url=self._url)
+        html = TorrentPageParser(html=torrent_page.text, url=self._url)
+
+        payload = TorrentParser(data=torrent_file.content)
+        torrent = Torrent(
+            name=payload.name(),
+            filename=parse_torrent_filename(torrent_file.headers["Content-Disposition"]),
+            files=payload.files(),
+            data=torrent_file.content,
+            infohash=html.panel.infohash(),
+            url=torrent_file_url,
+            magnet=html.panel.magnet(),
+        )
 
         return NyaaRelease(
             id=id,
             url=torrent_page_url,
-            title=parsed.panel.title(),
-            category=parsed.panel.category(),
-            datetime=parsed.panel.datetime(),
-            submitter=parsed.panel.submitter(),
-            information=parsed.panel.information(),
-            seeders=parsed.panel.seeders(),
-            leechers=parsed.panel.leechers(),
-            completed=parsed.panel.completed(),
-            is_trusted=parsed.is_trusted(),
-            is_remake=parsed.is_remake(),
-            torrent=TorrentFile(
-                name=parse_torrent_filename(torrent_file.headers["Content-Disposition"]),
-                data=torrent_file.content,
-                size=parse_torrent_size(torrent_file.content),
-                infohash=parsed.panel.infohash(),
-                url=torrent_file_url,
-                magnet=parsed.panel.magnet(),
-            ),
-            description=parsed.description(),
+            title=html.panel.title(),
+            category=html.panel.category(),
+            submitted_at=html.panel.datetime(),
+            submitter=html.panel.submitter(),
+            information=html.panel.information(),
+            seeders=html.panel.seeders(),
+            leechers=html.panel.leechers(),
+            completed=html.panel.completed(),
+            is_trusted=html.is_trusted(),
+            is_remake=html.is_remake(),
+            torrent=torrent,
+            description=html.description(),
         )
 
     def search(
