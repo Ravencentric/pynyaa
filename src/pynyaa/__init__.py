@@ -1,3 +1,6 @@
+# Copyright (c) 2024-present Ravencentric
+# SPDX-License-Identifier: MPL-2.0
+
 """Turn nyaa.si releases into neat Python objects."""
 
 from __future__ import annotations

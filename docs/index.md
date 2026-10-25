@@ -33,4 +33,4 @@ pip install pynyaa
 
 ## License
 
-Distributed under the [MIT](https://choosealicense.com/licenses/mit/) License. See [LICENSE](https://github.com/Ravencentric/pynyaa/blob/main/LICENSE) for more information.
+Distributed under the [Mozilla Public License 2.0](https://www.mozilla.org/MPL/2.0/). See [LICENSE](https://github.com/Ravencentric/pynyaa/blob/main/LICENSE) for more information.
