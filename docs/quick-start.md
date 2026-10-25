@@ -54,15 +54,16 @@ with Nyaa() as nyaa:
         # > [LYS1TH3A] Tamako Love Story (2014) (BD 1080p HEVC x265 10-bit Opus) [Dual-Audio]
 ```
 
-You can also pass your own instance of an [`httpx.Client`](https://www.python-httpx.org/api/#client) to the [`Nyaa`][pynyaa.Nyaa] client. This gives you complete control over the requests. For example, we can use this to quickly implement aggressive caching with [`hishel`](https://github.com/karpetrosyan/hishel):
+You can also pass your own instance of an [`httpx.Client`](https://www.python-httpx.org/api/#client) to the [`Nyaa`][pynyaa.Nyaa] client. This gives you complete control over the requests. For example, you can cache responses with [Hishel](https://hishel.com/httpx.html).
 
 ```py
-from hishel import CacheClient, Controller, InMemoryStorage
+from hishel import FilterPolicy, SyncSqliteStorage
+from hishel.httpx import SyncCacheClient
+
 from pynyaa import Nyaa
 
-storage = InMemoryStorage(capacity=256)
-controller = Controller(force_cache=True)
-client = CacheClient(storage=storage, controller=controller)
+storage = SyncSqliteStorage(default_ttl=60)
+client = SyncCacheClient(storage=storage, policy=FilterPolicy())
 
 with Nyaa(client=client) as nyaa:
     release = nyaa.get("https://nyaa.si/view/1693817")  # First request
