@@ -43,6 +43,10 @@ def search(
         yield from nyaa.search(query, category=category, filter=filter, sort_by=sort_by, order=order)
 
 
+def __dir__() -> list[str]:
+    return list(__all__)
+
+
 __all__: Final = (
     "AsyncNyaa",
     "BencodeError",
