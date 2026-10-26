@@ -563,7 +563,6 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "pytest-recording" },
     { name = "ruff", marker = "python_full_version >= '3.12'" },
-    { name = "tomli" },
     { name = "typing-extensions", marker = "python_full_version >= '3.12'" },
     { name = "zensical", marker = "python_full_version >= '3.12'" },
 ]
@@ -581,7 +580,6 @@ test = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-recording" },
-    { name = "tomli" },
 ]
 
 [package.group-requires-python]
@@ -605,7 +603,6 @@ dev = [
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-recording", specifier = ">=0.14.0" },
     { name = "ruff", marker = "python_full_version >= '3.12'", specifier = ">=0.17.1" },
-    { name = "tomli", specifier = ">=2.5.0" },
     { name = "typing-extensions", marker = "python_full_version >= '3.12'", specifier = ">=4.12.2" },
     { name = "zensical", marker = "python_full_version >= '3.12'", specifier = ">=0.0.71" },
 ]
@@ -623,7 +620,6 @@ test = [
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-recording", specifier = ">=0.14.0" },
-    { name = "tomli", specifier = ">=2.5.0" },
 ]
 
 [[package]]
