@@ -1,3 +1,5 @@
+## Python
+
 For quick, single interactions with `Nyaa.si` you can use the top-level convenience functions:
 
 - `pynyaa.get`
@@ -68,4 +70,13 @@ client = SyncCacheClient(storage=storage, policy=FilterPolicy())
 with Nyaa(client=client) as nyaa:
     release = nyaa.get("https://nyaa.si/view/1693817")  # First request
     release = nyaa.get("https://nyaa.si/view/1693817")  # Returns the cached result
+```
+
+## Command Line
+
+Fetch a release and print its metadata as JSON:
+
+```sh
+pynyaa https://nyaa.si/view/1755409
+pynyaa https://nyaa.si/view/1755409 > release.json
 ```

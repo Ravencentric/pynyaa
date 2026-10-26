@@ -23,6 +23,9 @@ dependencies = [
   "httpx>=0.27.2",
 ]
 
+[project.scripts]
+pynyaa = "pynyaa.__main__:main"
+
 [project.urls]
 Documentation = "https://ravencentri.cc/pynyaa/"
 Repository = "https://github.com/Ravencentric/pynyaa"
