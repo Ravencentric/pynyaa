@@ -31,7 +31,7 @@
 pip install pynyaa
 ```
 
-# Docs
+## Docs
 
 Checkout the [quick start page](https://ravencentri.cc/pynyaa/quick-start/) and the [API reference](https://ravencentri.cc/pynyaa/api-reference/clients/).
 
