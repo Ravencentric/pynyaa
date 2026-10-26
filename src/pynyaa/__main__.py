@@ -17,8 +17,8 @@ def url(value: str) -> str:
     match value.split("/"):
         case ['https:', '', 'nyaa.si', 'view', id] if id.isdigit():
             return value
-
-    raise argparse.ArgumentTypeError("expected a nyaa release url such as https://nyaa.si/view/123456")
+        case _:
+            raise argparse.ArgumentTypeError("expected a nyaa release url such as https://nyaa.si/view/123456")
 
 
 def serialize(o: object) -> Any:
