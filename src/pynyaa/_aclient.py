@@ -57,7 +57,11 @@ class AsyncNyaa:
         url : str, optional
             Base URL of Nyaa.
         client : httpx.AsyncClient, optional
-            Custom [`httpx.AsyncClient`](https://www.python-httpx.org/api/#asyncclient) instance.
+            An existing HTTP client instance to be used for requests.
+            If `None`, a new client is created. In either case,
+            this takes ownership of the client and will close it
+            when the instance is closed or exits its context
+            manager.
 
         """
         self._url = url

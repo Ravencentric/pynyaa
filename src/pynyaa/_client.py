@@ -58,7 +58,11 @@ class Nyaa:
         url : str, optional
             Base URL of Nyaa.
         client : httpx.Client, optional
-            Custom [`httpx.Client`](https://www.python-httpx.org/api/#client) instance.
+            An existing HTTP client instance to be used for requests.
+            If `None`, a new client is created. In either case,
+            this takes ownership of the client and will close it
+            when the instance is closed or exits its context
+            manager.
 
         """
         self._url = url
