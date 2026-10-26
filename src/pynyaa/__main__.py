@@ -18,7 +18,7 @@ def url(value: str) -> str:
         case ['https:', '', 'nyaa.si', 'view', id] if id.isdigit():
             return value
 
-    raise argparse.ArgumentTypeError("expected a Nyaa release URL such as https://nyaa.si/view/123456")
+    raise argparse.ArgumentTypeError("expected a nyaa release url such as https://nyaa.si/view/123456")
 
 
 def serialize(o: object) -> Any:
@@ -32,8 +32,8 @@ def serialize(o: object) -> Any:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(prog="pynyaa", description="Fetch a Nyaa release and print its metadata as JSON.")
-    parser.add_argument("url", type=url, help="URL of the Nyaa release")
+    parser = argparse.ArgumentParser(prog="pynyaa", description="Fetch a nyaa release and print its metadata as JSON.")
+    parser.add_argument("url", type=url, help="URL of the nyaa release")
     args = parser.parse_args()
 
     try:
