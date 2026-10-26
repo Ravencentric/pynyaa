@@ -16,25 +16,25 @@ def test_enum_errors() -> None:
         Filter(999)
 
     with pytest.raises(ValueError):
-        Filter(None)  # type: ignore[arg-type]
+        Filter(None)
 
     with pytest.raises(ValueError):
         ParentCategory("asdadadsad")
 
     with pytest.raises(ValueError):
-        ParentCategory(None)  # type: ignore[arg-type]
+        ParentCategory(None)
 
     with pytest.raises(ValueError):
         SortBy("asdadadsad")
 
     with pytest.raises(ValueError):
-        SortBy(None)  # type: ignore[arg-type]
+        SortBy(None)
 
     with pytest.raises(ValueError):
         Category("asdadadsad")
 
     with pytest.raises(ValueError):
-        Category(None)  # type: ignore[arg-type]
+        Category(None)
 
 
 @pytest.mark.parametrize(

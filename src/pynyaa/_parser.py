@@ -38,7 +38,7 @@ class SafeTag:
 
     @property
     def attrs(self) -> dict[str, str]:
-        return self._tag.attrs  # type: ignore[return-value]
+        return self._tag.attrs  # pyrefly: ignore[bad-return]
 
 
 class SafeSoup:
