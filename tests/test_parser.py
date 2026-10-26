@@ -51,3 +51,8 @@ def test_parse_release_id_requires_release_url(page: str) -> None:
 def test_parse_release_id_requires_digits(id: str) -> None:
     with pytest.raises(ValueError):
         parse_release_id(f"https://nyaa.si/view/{id}")
+
+
+def test_parse_release_id_requires_int_or_str() -> None:
+    with pytest.raises(TypeError, match="Parameter 'page' expected 'int' or 'str', but got 'NoneType'."):
+        parse_release_id(None)  # type: ignore[arg-type]
