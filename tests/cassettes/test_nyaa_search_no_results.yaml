@@ -12,7 +12,7 @@ interactions:
       - nyaa.si
       user-agent:
       - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/128.0.0.0 Safari/537.36
+        Gecko) Chrome/156.0.0.0 Safari/537.36
     method: GET
     uri: https://nyaa.si/?f=0&c=0_0&q=akldlaskdjsaljdksd&s=id&o=desc
   response:
@@ -88,38 +88,29 @@ interactions:
         4fh9AVTSfVrcocCZmuvj8nH8nI3ViH/WMOmnQ7rITdfi8GuE6rj0R30bX90B15dszGUbfScgpXBT
         QEkJPgMF6m4THEy/EPof2JXghzE0AAA=
     headers:
-      Cache-Control:
+      cache-control:
       - no-cache, no-store, must-revalidate
-      Connection:
+      connection:
       - keep-alive
-      Content-Encoding:
+      content-encoding:
       - gzip
-      Content-Security-Policy:
+      content-security-policy:
       - upgrade-insecure-requests;
-      Content-Type:
+      content-type:
       - text/html; charset=utf-8
-      Date:
-      - Fri, 29 Aug 2025 16:25:11 GMT
-      Keep-Alive:
+      date:
+      - Mon, 26 Oct 2026 15:57:28 GMT
+      keep-alive:
       - timeout=60
-      Referrer-Policy:
+      referrer-policy:
       - same-origin
-      Server:
+      server:
       - ddos-guard
-      Set-Cookie:
-      - __ddg8_=Hu8f8og2fjWFObo9; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025
-        16:45:11 GMT
-      - __ddg10_=1756484711; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 16:45:11
-        GMT
-      - __ddg9_=146.70.67.90; Domain=.nyaa.si; Path=/; Expires=Fri, 29-Aug-2025 16:45:11
-        GMT
-      - __ddg1_=qrTw86HSYW2YP5xLe0aw; Domain=.nyaa.si; HttpOnly; Path=/; Expires=Sat,
-        29-Aug-2026 16:25:11 GMT
-      Transfer-Encoding:
+      transfer-encoding:
       - chunked
-      X-Proxy-Cache:
+      x-proxy-cache:
       - MISS
-      X-Robots-Tag:
+      x-robots-tag:
       - noarchive
     status:
       code: 200
