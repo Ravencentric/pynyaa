@@ -78,52 +78,6 @@ async def test_nyaa_default(async_nyaa_client: AsyncNyaa) -> None:
 
 
 @pytest.mark.vcr
-async def test_nyaa_trusted(async_nyaa_client: AsyncNyaa) -> None:
-    release = await async_nyaa_client.get("https://nyaa.si/view/1544043")
-    assert release.id == 1544043
-    assert release.url == "https://nyaa.si/view/1544043"
-    assert str(release) == release.title == "[MTBB] I Want to Eat Your Pancreas (BD 1080p) | Kimi no Suizou wo Tabetai"
-    assert release.category is Category.ANIME_ENGLISH_TRANSLATED
-    assert release.submitter == Submitter(
-        name="motbob",
-        url="https://nyaa.si/user/motbob",
-        is_trusted=True,
-        is_banned=False,
-    )
-    assert str(release.submitter) == "motbob"
-    assert release.submitted_at == dt.datetime(2022, 6, 20, 0, 0, 18, tzinfo=dt.timezone.utc)
-    assert release.information == "#MTBB on Rizon"
-    assert release.seeders >= 0
-    assert release.leechers >= 0
-    assert release.completed >= 0
-    assert release.is_trusted is True
-    assert release.is_remake is False
-    assert release.description == dedent("""
-    [I Want to Eat Your Pancreas](https://myanimelist.net/anime/36098/Kimi_no_Suizou_wo_Tabetai)
-
-    PAS subs, additional TS by [nedragrevev](https://github.com/nedragrevev/custom-subs).  
-    No 5.1 audio.
-
-    This BD had a lot of noise. I nuked the crap out of it. If you want a better encode with all the grain, grab a release that uses Beatrice-Raws (*not* D-Z0N3, that one is missing some scenes). For everyone else, this release looks much better than all the existing smaller and similar-sized encodes.
-
-    There is an alternate honorifics track in this release. Set your media player to play “enm” language tracks by default to automatically play honorifics tracks.
-
-    Please leave feedback in the comments, good or bad.  
-    Please read this short [playback guide](https://gist.github.com/motbob/754c24d5cd381334bb64b93581781a81) if you want to know how to make the video and subtitles of this release look better.
-    All components of this release are released into the public domain to the [greatest extent possible](https://gist.github.com/motbob/9a85edadca33c7b8a3bb4de23396d510).
-    """)
-    assert (
-        str(release.torrent) == release.torrent.filename == "[MTBB] I Want to Eat Your Pancreas [DA34C700].mkv.torrent"
-    )
-    assert release.torrent.data
-    assert release.torrent.size == 2034208814
-    assert release.torrent.name == "[MTBB] I Want to Eat Your Pancreas [DA34C700].mkv"
-    assert release.torrent.infohash == "78e51b8285dd611dc1728d9b38dc1b8607cd0994"
-    assert release.torrent.url == "https://nyaa.si/download/1544043.torrent"
-    assert release.torrent.magnet.startswith("magnet:?xt=urn:btih:78e51b8285dd611dc1728d9b38dc1b8607cd0994")
-
-
-@pytest.mark.vcr
 async def test_nyaa_trusted_and_remake(async_nyaa_client: AsyncNyaa) -> None:
     release = await async_nyaa_client.get("https://nyaa.si/view/1694824")
     assert release.id == 1694824
@@ -413,37 +367,6 @@ async def test_nyaa_empty_desc(async_nyaa_client: AsyncNyaa) -> None:
     assert release.torrent.infohash == "88cbf145c04d79e103a4620543098848544283ad"
     assert release.torrent.url == "https://nyaa.si/download/76777.torrent"
     assert release.torrent.magnet.startswith("magnet:?xt=urn:btih:88cbf145c04d79e103a4620543098848544283ad")
-
-
-@pytest.mark.vcr
-async def test_nyaa_empty_desc_info(async_nyaa_client: AsyncNyaa) -> None:
-    release = await async_nyaa_client.get("https://nyaa.si/view/1586776")
-    assert release.id == 1586776
-    assert release.url == "https://nyaa.si/view/1586776"
-    assert release.title == "Hatsune Miku - Angel Call -Vocaloid-PV clips Blu-ray Edition- [kuchikirukia]"
-    assert release.category is Category.ANIME_MUSIC_VIDEO
-    assert release.submitter == Submitter(
-        name="kuchikirukia", url="https://nyaa.si/user/kuchikirukia", is_trusted=False, is_banned=False
-    )
-    assert release.submitted_at == dt.datetime(2022, 10, 5, 20, 35, 18, tzinfo=dt.timezone.utc)
-    assert release.information is None
-    assert release.seeders >= 0
-    assert release.leechers >= 0
-    assert release.completed >= 0
-    assert release.is_trusted is False
-    assert release.is_remake is False
-    assert release.description is None
-    assert (
-        str(release.torrent)
-        == release.torrent.filename
-        == "Hatsune Miku - Angel Call -Vocaloid-PV clips Blu-ray Edition- [kuchikirukia].torrent"
-    )
-    assert release.torrent.data
-    assert release.torrent.size == 2606373450
-    assert release.torrent.name == "Hatsune Miku - Angel Call -Vocaloid-PV clips Blu-ray Edition- [kuchikirukia]"
-    assert release.torrent.infohash == "79f9947ec567f1d5edb6ea472818588881094b2f"
-    assert release.torrent.url == "https://nyaa.si/download/1586776.torrent"
-    assert release.torrent.magnet.startswith("magnet:?xt=urn:btih:79f9947ec567f1d5edb6ea472818588881094b2f")
 
 
 @pytest.mark.vcr

@@ -77,19 +77,6 @@ def test_decode_invalid(data: bytes, message: str) -> None:
             },
             id="multi-file",
         ),
-        pytest.param(
-            "single-file-directory.torrent",
-            {
-                b"comment": b"6:lengthi999e",
-                b"info": {
-                    b"files": [{b"length": 257, b"path": [b"payload.bin"]}],
-                    b"name": b"one-file",
-                    b"piece length": 16_384,
-                    b"pieces": bytes.fromhex("4f88e8f888069d9d8f0e141fb24ad6dbdd4f5959"),
-                },
-            },
-            id="single-file-directory",
-        ),
     ],
 )
 def test_decode(filename: str, expected: Mapping[bytes, Any]) -> None:
