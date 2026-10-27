@@ -15,11 +15,6 @@
 <img src="https://img.shields.io/pypi/pyversions/pynyaa" alt="PyPI - Python Version">
 <img src="https://img.shields.io/github/license/Ravencentric/pynyaa" alt="License">
 <img src="https://img.shields.io/pypi/types/pynyaa" alt="PyPI - Types">
-</p>
-
-<p align="center">
-<img src="https://img.shields.io/github/actions/workflow/status/Ravencentric/pynyaa/release.yml" alt="GitHub Build Workflow Status">
-<img src="https://img.shields.io/github/actions/workflow/status/ravencentric/pynyaa/tests.yml" alt="GitHub Tests Workflow Status">
 <a href="https://codecov.io/gh/Ravencentric/pynyaa"><img src="https://codecov.io/gh/Ravencentric/pynyaa/graph/badge.svg?token=9LZ2I4LDYT" alt="Codecov Status"></a>
 </p>
 
