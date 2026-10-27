@@ -61,7 +61,7 @@ jobs:
 
       - name: Run tests and generate coverage
         run: |
-          uv run --no-default-groups --group test coverage run -m pytest -vv
+          uv run --no-default-groups --group test coverage run -m pytest -vv --block-network
           uv run --no-default-groups --group test coverage xml
 
       - name: Upload coverage to Codecov

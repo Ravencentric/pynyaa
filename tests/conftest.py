@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -34,13 +35,17 @@ def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
 
 @pytest.fixture(scope="module")
 def vcr_config() -> dict[str, Any]:
-    return {
+    config: dict[str, Any] = {
         "filter_headers": ["cookie"],
         "before_record_response": lambda response: {
             **response,
             "headers": {key: value for key, value in response["headers"].items() if key.lower() != "set-cookie"},
         },
     }
+    if sys.platform == "win32":
+        # Windows asyncio uses localhost for something.
+        config["allowed_hosts"] = [r"^127\.0\.0\.1$", r"^::1$"]
+    return config
 
 
 @pytest.fixture
