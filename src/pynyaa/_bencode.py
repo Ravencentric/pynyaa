@@ -5,10 +5,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ._errors import BencodeError
-
 if TYPE_CHECKING:
     from collections.abc import Mapping
+
+
+class BencodeError(ValueError):
+    """Raised when bencoded data cannot be decoded."""
 
 
 def bendecode(data: bytes) -> Mapping[bytes, Any]:
@@ -50,6 +52,8 @@ def bendecode(data: bytes) -> Mapping[bytes, Any]:
 
     try:
         value: Mapping[bytes, Any] = read(0)[0]
+    except BencodeError:
+        raise
     except (ValueError, TypeError, RecursionError) as error:
         raise BencodeError(str(error)) from error
 

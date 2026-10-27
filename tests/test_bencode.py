@@ -9,8 +9,7 @@ from typing import Any
 
 import pytest
 
-from pynyaa import BencodeError
-from pynyaa._bencode import bendecode
+from pynyaa._bencode import BencodeError, bendecode
 
 
 def bendecoded(name: str) -> Mapping[bytes, Any]:
@@ -30,8 +29,9 @@ def bendecoded(name: str) -> Mapping[bytes, Any]:
     ids=["negative-length", "unmatched-key", "truncated-string", "invalid-integer"],
 )
 def test_decode_invalid(data: bytes, message: str) -> None:
-    with pytest.raises(BencodeError, match=message):
+    with pytest.raises(BencodeError, match=message) as error:
         bendecode(data)
+    assert isinstance(error.value, ValueError)
 
 
 @pytest.mark.parametrize(

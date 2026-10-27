@@ -101,6 +101,8 @@ class Nyaa:
         ------
         ReleaseNotFoundError
             If the release does not exist (HTTP 404).
+        UnexpectedContentError
+            If the release's HTML or torrent metadata cannot be parsed.
         TypeError
             If `page` is not an `int` or `str`.
         ValueError
@@ -181,6 +183,11 @@ class Nyaa:
             Field used to sort the results.
         order : Order, optional
             Order of the results.
+
+        Raises
+        ------
+        UnexpectedContentError
+            If a release's HTML or torrent metadata cannot be parsed.
 
         Yields
         ------

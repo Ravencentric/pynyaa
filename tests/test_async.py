@@ -9,8 +9,19 @@ from typing import cast
 from unittest.mock import Mock
 
 import pytest
+from httpx import AsyncClient, MockTransport, Request, Response
 
-from pynyaa import AsyncNyaa, Category, File, NyaaRelease, Order, ReleaseNotFoundError, Submitter
+from pynyaa import (
+    AsyncNyaa,
+    Category,
+    File,
+    NyaaRelease,
+    Order,
+    ReleaseNotFoundError,
+    Submitter,
+    UnexpectedContentError,
+)
+from pynyaa._bencode import BencodeError
 
 
 def dedent(s: str) -> str:
@@ -28,6 +39,30 @@ async def test_get_errors(async_nyaa_client: AsyncNyaa) -> None:
         ),
     ):
         await async_nyaa_client.get(9999999999999999999)
+
+
+async def test_get_unexpected_html() -> None:
+    def handle(request: Request) -> Response:
+        if request.url.path.startswith("/view/"):
+            return Response(200, text="<html></html>")
+        return Response(200, content=b"d4:infod4:name4:test6:lengthi1eee")
+
+    async with AsyncNyaa(client=AsyncClient(transport=MockTransport(handle))) as client:
+        with pytest.raises(UnexpectedContentError) as error:
+            await client.get(1)
+        assert "Missing expected element" in str(error.value)
+
+
+async def test_get_invalid_torrent() -> None:
+    def handle(request: Request) -> Response:
+        if request.url.path.startswith("/view/"):
+            return Response(200, text='<div class="panel panel-default"></div>')
+        return Response(200, content=b"invalid")
+
+    async with AsyncNyaa(client=AsyncClient(transport=MockTransport(handle))) as client:
+        with pytest.raises(UnexpectedContentError, match="Invalid torrent metadata") as error:
+            await client.get(1)
+        assert isinstance(error.value.__cause__, BencodeError)
 
 
 @pytest.mark.vcr

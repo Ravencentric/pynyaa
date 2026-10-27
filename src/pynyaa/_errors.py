@@ -15,12 +15,8 @@ class PyNyaaError(Exception):
         cls.__module__ = "pynyaa"
 
 
-class BencodeError(PyNyaaError):
-    """Raised when bencoded torrent data cannot be decoded."""
-
-
-class ParsingError(PyNyaaError):
-    """Raised when there is an error parsing the HTML."""
+class UnexpectedContentError(PyNyaaError):
+    """Raised when Nyaa HTML or torrent metadata cannot be parsed."""
 
 
 class ReleaseNotFoundError(PyNyaaError):

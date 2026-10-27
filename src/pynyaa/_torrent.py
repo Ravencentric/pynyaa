@@ -6,8 +6,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from urllib.parse import unquote
 
-from ._bencode import bendecode
-from ._errors import BencodeError
+from ._bencode import BencodeError, bendecode
+from ._errors import UnexpectedContentError
 from ._models import File
 
 if TYPE_CHECKING:
@@ -19,7 +19,10 @@ class TorrentParser:
     __slots__ = ("_encoding", "_info")
 
     def __init__(self, *, data: bytes) -> None:
-        metadata = bendecode(data)
+        try:
+            metadata = bendecode(data)
+        except BencodeError as error:
+            raise UnexpectedContentError(f"Invalid torrent metadata: {error}") from error
         self._info: Mapping[bytes, Any] = metadata[b"info"]
 
         # Nyaa decodes stuff using the declared encoding, defaulting to UTF-8.
@@ -36,7 +39,7 @@ class TorrentParser:
             else:
                 name = self._info[b"name"].decode(self._encoding)
         except KeyError as error:
-            raise BencodeError("Torrent info must contain a name and either files or length.") from error
+            raise UnexpectedContentError("Torrent info must contain a name and either files or length.") from error
 
         return name  # pyrefly: ignore[no-any-return-explicit]
 
@@ -66,7 +69,7 @@ class TorrentParser:
         try:
             size = self._info[b"length"]
         except KeyError as error:
-            raise BencodeError("Torrent info must contain a name and either files or length.") from error
+            raise UnexpectedContentError("Torrent info must contain a name and either files or length.") from error
 
         return (File(name, size=size),)
 

@@ -11,7 +11,7 @@ from urllib.parse import urljoin, urlsplit
 import bs4
 
 from ._enums import Category
-from ._errors import ParsingError
+from ._errors import UnexpectedContentError
 from ._models import Submitter
 
 if TYPE_CHECKING:
@@ -30,7 +30,7 @@ class SafeTag:
         tag = self._tag.select_one(selector)
         if tag is None:  # pragma: no cover
             msg = f"Missing expected child element: {selector!r}"
-            raise ParsingError(msg)
+            raise UnexpectedContentError(msg)
         return SafeTag(tag)
 
     def get_text(self) -> str:
@@ -42,7 +42,7 @@ class SafeTag:
 
 
 class SafeSoup:
-    """`BeautifulSoup` wrapper that always returns `SafeTag`, raising ParsingError if missing."""
+    """`BeautifulSoup` wrapper that always returns `SafeTag`, raising UnexpectedContentError if missing."""
 
     __slots__ = ("_soup",)
 
@@ -53,7 +53,7 @@ class SafeSoup:
         tag = self._soup.select_one(selector)
         if tag is None:  # pragma: no cover
             msg = f"Missing expected element: {selector!r}"
-            raise ParsingError(msg)
+            raise UnexpectedContentError(msg)
         return SafeTag(tag)
 
     def select(self, selector: str) -> Sequence[SafeTag]:

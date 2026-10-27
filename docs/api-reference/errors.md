@@ -1,4 +1,3 @@
 ::: pynyaa.PyNyaaError
-::: pynyaa.BencodeError
-::: pynyaa.ParsingError
+::: pynyaa.UnexpectedContentError
 ::: pynyaa.ReleaseNotFoundError

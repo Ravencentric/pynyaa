@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Final
 from ._aclient import AsyncNyaa
 from ._client import Nyaa
 from ._enums import Category, Filter, Order, ParentCategory, SortBy
-from ._errors import BencodeError, ParsingError, PyNyaaError, ReleaseNotFoundError
+from ._errors import PyNyaaError, ReleaseNotFoundError, UnexpectedContentError
 from ._models import File, NyaaRelease, Submitter, Torrent
 from ._version import __version__
 
@@ -49,7 +49,6 @@ def __dir__() -> list[str]:  # pragma: no cover
 
 __all__: Final = (
     "AsyncNyaa",
-    "BencodeError",
     "Category",
     "File",
     "Filter",
@@ -57,12 +56,12 @@ __all__: Final = (
     "NyaaRelease",
     "Order",
     "ParentCategory",
-    "ParsingError",
     "PyNyaaError",
     "ReleaseNotFoundError",
     "SortBy",
     "Submitter",
     "Torrent",
+    "UnexpectedContentError",
     "__version__",
     "get",
     "search",

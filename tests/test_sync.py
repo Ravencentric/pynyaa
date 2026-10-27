@@ -11,8 +11,19 @@ from typing import cast
 from unittest.mock import Mock
 
 import pytest
+from httpx import Client, MockTransport, Request, Response
 
-from pynyaa import Category, File, Nyaa, NyaaRelease, Order, ReleaseNotFoundError, Submitter
+from pynyaa import (
+    Category,
+    File,
+    Nyaa,
+    NyaaRelease,
+    Order,
+    ReleaseNotFoundError,
+    Submitter,
+    UnexpectedContentError,
+)
+from pynyaa._bencode import BencodeError
 
 
 def dedent(s: str) -> str:
@@ -30,6 +41,30 @@ def test_get_errors(nyaa_client: Nyaa) -> None:
         ),
     ):
         nyaa_client.get(9999999999999999999)
+
+
+def test_get_unexpected_html() -> None:
+    def handle(request: Request) -> Response:
+        if request.url.path.startswith("/view/"):
+            return Response(200, text="<html></html>")
+        return Response(200, content=b"d4:infod4:name4:test6:lengthi1eee")
+
+    with Nyaa(client=Client(transport=MockTransport(handle))) as client:
+        with pytest.raises(UnexpectedContentError) as error:
+            client.get(1)
+        assert "Missing expected element" in str(error.value)
+
+
+def test_get_invalid_torrent() -> None:
+    def handle(request: Request) -> Response:
+        if request.url.path.startswith("/view/"):
+            return Response(200, text='<div class="panel panel-default"></div>')
+        return Response(200, content=b"invalid")
+
+    with Nyaa(client=Client(transport=MockTransport(handle))) as client:
+        with pytest.raises(UnexpectedContentError, match="Invalid torrent metadata") as error:
+            client.get(1)
+        assert isinstance(error.value.__cause__, BencodeError)
 
 
 @pytest.mark.vcr

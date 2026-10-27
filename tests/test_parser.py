@@ -54,5 +54,5 @@ def test_parse_release_id_requires_digits(id: str) -> None:
 
 
 def test_parse_release_id_requires_int_or_str() -> None:
-    with pytest.raises(TypeError, match="Parameter 'page' expected 'int' or 'str', but got 'NoneType'."):
+    with pytest.raises(TypeError, match=r"Parameter 'page' expected 'int' or 'str', but got 'NoneType'."):
         parse_release_id(None)  # pyrefly: ignore[bad-argument-type]

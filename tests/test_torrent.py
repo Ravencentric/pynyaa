@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from pynyaa import BencodeError, File
+from pynyaa import File, UnexpectedContentError
 from pynyaa._torrent import TorrentParser, parse_torrent_filename
 
 
@@ -112,5 +112,5 @@ def test_torrent_preserves_empty_file_list() -> None:
 @pytest.mark.parametrize("data", [b"d4:infodee", b"d4:infod4:name4:rootee"])
 def test_torrent_requires_payload_layout(data: bytes) -> None:
     parser = TorrentParser(data=data)
-    with pytest.raises(BencodeError, match="Torrent info must contain a name and either files or length"):
+    with pytest.raises(UnexpectedContentError, match="Torrent info must contain a name and either files or length"):
         parser.files()
