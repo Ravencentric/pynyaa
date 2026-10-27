@@ -42,7 +42,7 @@ def vcr_config() -> dict[str, Any]:
             "headers": {key: value for key, value in response["headers"].items() if key.lower() != "set-cookie"},
         },
     }
-    if sys.platform == "win32":
+    if sys.platform == "win32":  # pragma: no cover
         # Windows asyncio uses localhost for something.
         config["allowed_hosts"] = [r"^127\.0\.0\.1$", r"^::1$"]
     return config
